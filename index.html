@@ -3683,7 +3683,7 @@ const bonusName=k=>(BONUS_MAP[k]||{}).n||k;
 const PAY_WAYS=['Наличные','Перевод','Kaspi'];
 const RET_REASONS=['Не подошёл тон','Брак','Истёк срок','Не продалось','Ошибка в заказе','Клиент отказался'];
 const CFG = {
-  КОМПАНИЯ:'ТОО "Italcolours Central Asia"',
+  КОМПАНИЯ:'Trade Agent',
   ВАЛЮТА:'₸',
   СКИДКА_ПО_УМОЛЧАНИЮ:0,
   ВОДИТЕЛИ:[],
@@ -7770,7 +7770,7 @@ function fbOneTimeAdminEmail(){
     const el=document.createElement('div');el.id='fbBindOverlay';
     el.innerHTML=`<div class="fb-bind-card"><button class="fb-bind-x" type="button">×</button><div class="fb-bind-k">ОДНОКРАТНАЯ ПРИВЯЗКА</div><h3>Служебный вход администратора</h3><p>Email нужен только сейчас, чтобы привязать новый вход «Администратор + код». После успешной привязки на этом и других устройствах email больше не потребуется.</p><input id="fbBindEmail" type="email" inputmode="email" autocomplete="username" placeholder="Email администратора Firebase"><button id="fbBindGo" type="button">Продолжить</button></div>`;
     const st=document.createElement('style');st.id='fbBindStyle';st.textContent=`
-      #fbBindOverlay{position:fixed;inset:0;z-index:12000;display:grid;place-items:center;padding:18px;background:rgba(2,6,3,.74);backdrop-filter:blur(8px)}
+      #fbBindOverlay{position:fixed;inset:0;z-index:2147483000!important;display:grid;place-items:center;padding:18px;background:rgba(2,6,3,.74);backdrop-filter:blur(8px)}
       .fb-bind-card{position:relative;width:min(100%,390px);padding:22px;border-radius:22px;background:#0b140d;border:1px solid rgba(217,242,118,.18);box-shadow:0 28px 90px #000a;color:#eef3ea}
       .fb-bind-x{position:absolute;right:12px;top:10px;width:36px;height:36px;border-radius:10px;color:#8b9688;font-size:24px}
       .fb-bind-k{font-size:9px;font-weight:900;letter-spacing:.15em;color:#9eb35a}.fb-bind-card h3{margin:9px 0 7px;font-size:20px}.fb-bind-card p{margin:0 0 16px;color:#929e91;font-size:13px;line-height:1.45}
