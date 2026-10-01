@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function userPath() { return /databases/$(database)/documents/users/$(request.auth.uid); }
+    function hasProfile() { return signedIn() && exists(userPath()); }
+    function me() { return get(userPath()).data; }
+    function active() { return hasProfile() && me().active == true; }
+    function admin() { return active() && me().role == 'admin'; }
+    function bootstrapMissing() { return !exists(/databases/$(database)/documents/state/bootstrap); }
+
+    match /users/{uid} {
+      allow read: if signedIn() && (uid == request.auth.uid || admin());
+      allow create: if admin() || (
+        signedIn() && uid == request.auth.uid && bootstrapMissing() &&
+        request.resource.data.role == 'admin' && request.resource.data.appId == 'admin' && request.resource.data.active == true &&
+        getAfter(/databases/$(database)/documents/state/bootstrap).data.adminUid == request.auth.uid
+      );
+      allow update, delete: if admin();
+    }
+
+    match /state/{doc} {
+      // loginDirectory contains only synthetic Firebase aliases, never real employee emails.
+      // It must be readable before authentication so "user + code" works on a new device.
+      allow read: if doc == 'loginDirectory' || active() || (signedIn() && doc == 'bootstrap');
+      allow create: if admin() || (
+        doc == 'bootstrap' && signedIn() && bootstrapMissing() &&
+        request.resource.data.adminUid == request.auth.uid &&
+        getAfter(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      ) || (doc == 'clientBook' && active());
+      allow update: if admin() || (doc == 'clientBook' && active());
+      allow delete: if admin();
+    }
+
+    match /orders/{id} {
+      allow read: if active() && (admin() || resource.data.uid == me().appId);
+      allow create: if active() && (admin() || request.resource.data.uid == me().appId);
+      allow update: if active() && (admin() || (resource.data.uid == me().appId && request.resource.data.uid == resource.data.uid));
+      allow delete: if admin();
+    }
+
+    match /usage/{appId} {
+      allow read: if active();
+      allow create, update: if active() && request.resource.data.appId == appId && (admin() || appId == me().appId);
+      allow delete: if admin();
+    }
+
+    match /sequences/{id} {
+      allow read: if active();
+      allow create: if active() && (admin() || request.resource.data.appId == me().appId);
+      allow update: if active() && (admin() || (resource.data.appId == me().appId && request.resource.data.appId == resource.data.appId));
+      allow delete: if admin();
+    }
+
+    match /presence/{appId} {
+      allow read: if active();
+      allow create, update: if active() && (admin() || request.resource.data.appId == me().appId) && request.resource.data.appId == appId;
+      allow delete: if admin() || (active() && appId == me().appId);
+    }
+
+    match /photos/{id} {
+      allow read: if active();
+      allow write: if admin();
+    }
+
+    // Trade Agent Desktop publishes each rep's prices, clients and debts here.
+    // Only the server (service account) writes; a rep reads only his own document.
+    match /tdRep/{id} {
+      allow read: if active() && (admin() || resource == null || resource.data.appId == me().appId);
+      allow write: if false;
+    }
+
+    match /audit/{id} {
+      allow create: if active() && request.resource.data.uid == request.auth.uid && request.resource.data.appId == me().appId;
+      allow read, delete: if admin();
+      allow update: if false;
+    }
+  }
+}
