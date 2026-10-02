@@ -9,13 +9,13 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="31.0.0" name="app-version"/>
+<meta content="31.1.0" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=30.4.0" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=30.4.0" rel="icon" type="image/svg+xml"/>
-<link href="./manifest.webmanifest?v=30.4.0" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=31.1.0" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=31.1.0" rel="icon" type="image/svg+xml"/>
+<link href="./manifest.webmanifest?v=31.1.0" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3437,7 +3437,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 </g>
 </svg></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v30.4.0</i>
+<i id="loginVersion">v31.1.0</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -3493,7 +3493,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>TradeAgent Manager · v30.4.0</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>TradeAgent Manager · v31.1.0</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -3590,7 +3590,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'31.0.0';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'31.1.0';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -3683,7 +3683,7 @@ const bonusName=k=>(BONUS_MAP[k]||{}).n||k;
 const PAY_WAYS=['Наличные','Перевод','Kaspi'];
 const RET_REASONS=['Не подошёл тон','Брак','Истёк срок','Не продалось','Ошибка в заказе','Клиент отказался'];
 const CFG = {
-  КОМПАНИЯ:'Trade Agent',
+  КОМПАНИЯ:'ТОО "Italcolours Central Asia"',
   ВАЛЮТА:'₸',
   СКИДКА_ПО_УМОЛЧАНИЮ:0,
   ВОДИТЕЛИ:[],
@@ -7613,12 +7613,12 @@ document.documentElement.classList.toggle('ta24-offline',navigator.onLine===fals
    LocalStorage is only cache/drafts/backup/migration source.
    ===================================================================== */
 const FIREBASE_CONFIG={
-  apiKey:"AIzaSyDEsLD8iGxIxupd13ebnJPTMIZ6Z_tHNqk",
-  authDomain:"tradeagent-farmavita.firebaseapp.com",
-  projectId:"tradeagent-farmavita",
-  storageBucket:"tradeagent-farmavita.firebasestorage.app",
-  messagingSenderId:"69299185967",
-  appId:"1:69299185967:web:7c40d3ae5f0fb23255d9da"
+  apiKey:"AIzaSyDQOLOCsobjnp6QcNPAQtnoC-j_9Uww3CM",
+  authDomain:"tradeagent-farmavita-kz.firebaseapp.com",
+  projectId:"tradeagent-farmavita-kz",
+  storageBucket:"tradeagent-farmavita-kz.firebasestorage.app",
+  messagingSenderId:"427499452438",
+  appId:"1:427499452438:web:076f855c7ebd44179cdd37"
 };
 let FBAPP=null,FBAUTH=null,FBDB=null,FB_READY=false,FB_UNSUB=[],FB_APPLYING=false;
 let FB_LAST={orders:'',stock:'',settings:'',photos:'',users:'',clientBook:''};
@@ -14153,6 +14153,1090 @@ html body .empty:not([data-ta304-empty]){--ta304-rgb:168 206 90;--ta304-ei:url("
     return r;
   };
   window.taDynUsers={add:add,makeId:makeId,save:save};
+})();
+</script>
+
+<style id="td-rep-policy-style">
+/* Режим представителя (v31.1.0): прячем то, что представителю не положено. Разметку убирает скрипт ниже;
+   эти правила — страховка на случай, если какой-то старый слой нарисует элемент заново. */
+html.trp-rep #cmdBtn,
+html.trp-rep .ref-layout,
+html.trp-rep .ref-fav,
+html.trp-rep [data-recent25],
+html.trp-rep [data-new23],
+html.trp-rep [data-quick25="recent"],
+html.trp-rep #refKpis [data-stock22="fav"],
+html.trp-rep #refKpis [data-stock22="all"],
+html.trp-rep #wPlan,
+html.trp-rep #expDebt,
+html.trp-rep #payAll,
+html.trp-rep #clientExport22,
+html.trp-rep #reportAudit22,
+html.trp-rep [data-c26="addr"]{display:none!important}
+/* колокольчик уведомлений представителя (в общей шапке он был скрыт) */
+html.trp-rep #top .who #ta22Bell{display:grid!important;place-items:center!important;position:relative!important;overflow:visible!important}
+html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
+@media(max-width:699px){
+  html.trp-rep #top .who{grid-template-columns:minmax(56px,72px) minmax(44px,56px) 36px 36px 36px!important}
+  html.trp-rep #top .who #ta22Bell{grid-column:4!important;width:36px!important;min-width:36px!important;max-width:36px!important;height:36px!important;min-height:36px!important;padding:0!important;margin:0!important}
+  html.trp-rep #top #meBtn{grid-column:5!important}
+}
+@media(max-width:380px){
+  html.trp-rep body #app #top .who{grid-template-columns:repeat(4,auto)!important}
+  html.trp-rep #top .who #ta22Bell,html.trp-rep #top #meBtn,html.trp-rep #top #ta252Search{grid-column:auto!important}
+}
+.trp-wh{font-size:11.5px;line-height:1.35;color:var(--mut,#8a9486);margin:3px 0 4px;letter-spacing:.01em}
+.trp-ro{display:flex!important;align-items:center;min-height:46px;color:var(--ink2,#d7ddcf)!important;cursor:default;user-select:text}
+.trp-ro small{margin-left:6px;color:var(--mut,#8a9486);font-size:11.5px}
+.trp-warn{border:1px solid rgba(240,189,93,.45)!important;background:rgba(240,189,93,.08)!important;color:var(--ink,#f5f7ed)!important;margin:0 0 12px!important;line-height:1.5}
+.trp-warn b.trp-warn-h{color:var(--warn,#f0bd5d)}
+.trp-warn span.trp-warn-f{display:block;margin-top:4px;font-size:12px;color:var(--mut,#8a9486)}
+.trp-status{margin:10px 0 12px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.trp-status .trp-chip{font-size:12.5px;padding:5px 11px}
+.trp-why{font-size:12.5px;line-height:1.4;color:var(--mut,#8a9486)}
+.trp-locked{margin-top:2px}
+.trp-timeline .trp-todo{opacity:.42}
+.trp-recent-row{display:flex;gap:8px;align-items:stretch}
+.trp-recent-row>.ta253-order{flex:1 1 auto;min-width:0}
+.trp-repeat{flex:0 0 auto;min-width:88px;padding:0 10px;border-radius:14px;border:1px solid rgba(210,238,107,.22);background:rgba(210,238,107,.08);color:#d7ef79;font-weight:700;font-size:12.5px}
+.trp-err{display:block;color:var(--red,#ff8275);font-size:12px;margin-top:5px;min-height:0}
+.trp-err:empty{display:none}
+.trp-req-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft,#171d16)}
+.trp-req-row:last-child{border-bottom:0}
+.trp-req-row .trp-req-main{min-width:0;flex:1}
+.trp-req-row .trp-req-main b{display:block;font-size:14px;color:var(--ink,#f5f7ed)}
+.trp-req-row .trp-req-main span{display:block;font-size:12px;color:var(--mut,#8a9486);margin-top:2px}
+.trp-note-row{display:flex;gap:10px;align-items:flex-start;padding:11px 2px;border-bottom:1px solid var(--soft,#171d16)}
+.trp-note-row:last-child{border-bottom:0}
+.trp-note-row i{flex:0 0 8px;width:8px;height:8px;border-radius:50%;margin-top:6px;background:rgba(255,255,255,.12)}
+.trp-note-row.unread i{background:#d2ee6b;box-shadow:0 0 10px rgba(210,238,107,.55)}
+.trp-note-row div{min-width:0;flex:1}
+.trp-note-row b{display:block;font-size:13.5px;font-weight:650;line-height:1.35;color:var(--ink,#f5f7ed)}
+.trp-note-row time{display:block;font-size:11px;color:var(--mut,#8a9486);margin-top:2px}
+.trp-pick-wait{opacity:.55;cursor:not-allowed}
+.trp-pl-bar{display:flex;justify-content:flex-end;margin:-2px 0 12px}
+.trp-pl-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;border-radius:14px;border:1px solid rgba(210,238,107,.22);background:rgba(210,238,107,.07);color:#d7ef79;font-size:13px;font-weight:700;white-space:nowrap}
+.trp-pl-btn svg{flex:0 0 auto}
+.trp-pl-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;margin:6px 0 12px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.02)}
+.trp-pl-opt input{width:20px;height:20px;margin:0;accent-color:#d2ee6b}
+.trp-pl-opt span{font-size:14px;font-weight:500;color:var(--ink,#eef3ea)}
+</style>
+<script id="td-rep-policy">
+/* =====================================================================
+   Trade Agent Manager 31.1.0 — режим представителя (Farmavita).
+   Администратор (role 'admin') работает как раньше. Каждый другой пользователь —
+   представитель с ограниченными правами (решения владельца, см. spec_manager_reps.md).
+   Ничего в странице не переписано: функции оборачиваются после загрузки,
+   как в остальных слоях файла. Данные Desktop: DB.td (tdRep / tdCatalog / stockByWh).
+   ===================================================================== */
+(function(){
+  'use strict';
+  if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
+  var VER='31.1.0';
+  var HINT_LOCKED='Заявка принята оператором — изменить или отменить можно только через оператора';
+  var NEW_RET_REASONS=['Брак','Истёк срок годности','Короткий срок годности','Повреждена упаковка','Ошибка в заказе / пересорт','Клиент отказался'];
+
+  function rep(){ try{ return !!ME&&!isAdmin(); }catch(_){ return false; } }
+  function num(v){ v=Number(v); return isFinite(v)?v:0; }
+  function repTd(){ var r=DB&&DB.td&&DB.td.rep; return (r&&ME&&String(r.appId)===String(ME.id))?r:null; }
+  function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(_){ return d; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(_){} }
+  function mark(){ try{ document.documentElement.classList.toggle('trp-rep',rep()); }catch(_){} }
+  function wrap(name,make){
+    try{ var base=window[name]; if(typeof base!=='function')return; var w=make(base); if(typeof w==='function')window[name]=w; }
+    catch(e){ try{console.warn('rep policy: '+name,e)}catch(_){} }
+  }
+  function onlyDigits(s){ return String(s||'').replace(/\D/g,''); }
+  function dt(t){ try{ return new Date(t).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(_){ return ''; } }
+
+  /* ---------------------------------------------------------------
+     0. Остатки старого ассортимента — для всех пользователей
+     --------------------------------------------------------------- */
+  try{ RET_REASONS.splice(0,RET_REASONS.length); NEW_RET_REASONS.forEach(function(x){RET_REASONS.push(x)}); }catch(_){}
+  window.toneColor=function(){ return null; };                       /* без «цвета тона» на плитках */
+  window.ta23BrandOf=function(p){ try{ return String((CATALOG.cats||[])[p&&p.c]||''); }catch(_){ return ''; } };
+
+  /* ---------------------------------------------------------------
+     1. Статус заявки по данным Desktop (tdRep.orders)
+     --------------------------------------------------------------- */
+  function tdOrder(o){ var r=repTd(); if(!o||!r||!Array.isArray(r.orders))return null;
+    for(var i=0;i<r.orders.length;i++){ var x=r.orders[i]; if(x&&String(x.id)===String(o.id))return x; } return null; }
+  function queued(o){ try{ return (DB.queue||[]).some(function(op){return op&&op.type==='order.save'&&op.order&&String(op.order.id)===String(o.id)}); }catch(_){ return false; } }
+  /* Представитель меняет и отменяет заявку, пока оператор её не принял:
+     записи в tdRep.orders ещё нет или st == "new". Заявки старше 120 дней Desktop уже не публикует —
+     их отсутствие в списке не значит «не принята». */
+  function canChange(o){
+    if(!o||!ME||String(o.uid)!==String(ME.id))return false;
+    if(o.status==='Отменён'||o.status==='Списан')return false;
+    var t=tdOrder(o); if(t)return String(t.st||'new')==='new';
+    var born=num(o.createdAt||o.serverCreatedAt);
+    return !born||(Date.now()-born)<120*864e5;
+  }
+  /* Изменение заявки, которое база отклонила (нет прав): отложено, видно представителю, можно повторить */
+  function failedOp(o){ var f=(DB&&Array.isArray(DB.repFailed))?DB.repFailed:[]; for(var i=0;i<f.length;i++){ var x=f[i]; if(x&&x.op&&x.op.order&&String(x.op.order.id)===String(o.id))return x; } return null; }
+  var REFUSED_RE=/не принят/i, LOCKED_STATES=/^(accepted|assembling|assembled|shipped)$/;
+  function effState(o){
+    var t=tdOrder(o), st=t?String(t.st||'new'):'';
+    var fo=failedOp(o);
+    if(fo)return {st:'failed',why:'Не отправлено в базу: '+String(fo.err||'нет доступа'),td:!!t};
+    if(o.status==='Отменён'){
+      if(t&&st==='cancelled')return {st:'cancelled',why:t.why||o.cancelReason||'',at:t.at||'',td:true};
+      /* отмену отказали: заявка уже в работе (st не new) или оператор прямо так написал */
+      if(t&&(st!=='new'||REFUSED_RE.test(String(t.why||''))))
+        return {st:st,why:t.why||'Отмена не принята: заявка уже в работе',debt:t.debt,paid:!!t.paid,no:t.no||'',at:t.at||'',td:true,cancelReq:true};
+      var born=num(o.createdAt||o.serverCreatedAt);
+      if(!t&&born&&(Date.now()-born)>120*864e5)return {st:'cancelled',why:o.cancelReason||'',td:false};
+      return {st:'cancelSent',why:o.cancelReason||'',at:t?t.at||'':'',td:!!t};
+    }
+    if(t)return {st:st,why:t.why||'',debt:t.debt,paid:!!t.paid,no:t.no||'',at:t.at||'',td:true};
+    return {st:queued(o)?'queued':'sent',td:false};
+  }
+  function effCancelled(o){ var s=effState(o).st; return s==='cancelled'||s==='cancelSent'; }
+  function chipOf(e){
+    switch(e.st){
+      case 'queued': return {t:'Ждёт отправки',c:'t-warn'};
+      case 'accepted': return {t:'Принята',c:'t-acc'};
+      case 'assembling': return {t:'Собирается',c:'t-acc'};
+      case 'assembled': return {t:'Собрана',c:'t-acc'};
+      case 'shipped': if(e.paid)return {t:'Оплачена',c:'t-ok'}; if(num(e.debt)>0)return {t:'Отгружена · долг '+money(e.debt)+' ₸',c:'t-warn'}; return {t:'Отгружена',c:'t-ok'};
+      case 'cancelled': return {t:'Отменена',c:'t-red'};
+      case 'cancelSent': return {t:'Отмена отправлена оператору',c:'t-warn'};
+      case 'failed': return {t:'Не отправлена',c:'t-red'};
+      default: return {t:'Отправлена',c:'t-warn'};
+    }
+  }
+  function whyOf(o,e){
+    if(e.st==='cancelled'||e.st==='cancelSent'){ var w=e.why||o.cancelReason||''; return w?'Причина: '+w:''; }
+    if(e.cancelReq)return e.why||'Отмена не принята: заявка уже в работе';
+    return e.why||'';
+  }
+  function retAllowed(o){
+    var e=effState(o); if(e.st==='cancelled'||e.st==='cancelSent'||e.st==='failed')return false;
+    if(e.td)return e.st==='shipped';
+    return !canChange(o);                     /* старая заявка вне окна публикации — возврат можно */
+  }
+  function timelineHtml(o){
+    var e=effState(o), rank={queued:0,sent:0,'new':0,accepted:1,assembling:2,assembled:2,shipped:3}[e.st];
+    var rows=[];
+    if(e.st==='cancelSent'){
+      rows.push({t:'Отправлена',s:dt(o.createdAt||o.updatedAt||Date.now()),cls:'',ico:'✓'});
+      rows.push({t:'Отмена отправлена оператору'+(o.cancelReason?' ('+o.cancelReason+')':''),s:dt(o.updatedAt||Date.now()),cls:'warn',ico:'×'});
+    }else if(e.st==='cancelled'){
+      rows.push({t:'Отправлена',s:ruDate(String(o.shipDate||'')),cls:'',ico:'✓'});
+      var w=e.why||o.cancelReason||'';
+      rows.push({t:'Отменена'+(w?' ('+w+')':''),s:e.at?dt(e.at):'',cls:'bad',ico:'×'});
+    }else{
+      if(rank==null)rank=0;
+      var debt=num(e.debt);
+      rows.push({t:e.st==='queued'?'Ждёт отправки':'Отправлена',s:dt(o.createdAt||o.updatedAt||Date.now()),cls:e.st==='queued'?'warn':'',ico:rank>=0&&e.st!=='queued'?'✓':'•'});
+      rows.push({t:'Принята',s:rank===1&&e.at?dt(e.at):'',cls:rank>=1?'':'trp-todo',ico:rank>=1?'✓':'•'});
+      rows.push({t:e.st==='assembled'?'Собрана':'Собирается',s:rank===2&&e.at?dt(e.at):'',cls:rank>=2?'':'trp-todo',ico:rank>=2?'✓':'•'});
+      rows.push({t:'Отгружена',s:rank===3&&e.at?dt(e.at):'',cls:rank>=3?'':'trp-todo',ico:rank>=3?'✓':'•'});
+      if(rank>=3&&e.paid)rows.push({t:'Оплачена',s:'',cls:'',ico:'₸'});
+      else if(rank>=3&&debt>0)rows.push({t:'Долг '+money(debt)+' ₸',s:'',cls:'warn',ico:'₸'});
+      else rows.push({t:'Оплачена',s:'',cls:'trp-todo',ico:'₸'});
+    }
+    return '<div class="ta26-order-timeline trp-timeline"><h4>Статус в Trade Agent Desktop</h4><div class="ta26-time-list">'+rows.map(function(r){
+      return '<div class="ta26-time-row '+r.cls+'"><span class="ta26-time-dot">'+r.ico+'</span><span class="ta26-time-copy"><b>'+esc(r.t)+'</b><span></span></span><time>'+esc(r.s||'')+'</time></div>';
+    }).join('')+'</div></div>';
+  }
+
+  /* ---------------------------------------------------------------
+     2. Клиенты представителя: Desktop + свои заявки; заявки на новых клиентов
+     --------------------------------------------------------------- */
+  function clientTd(name){ var r=repTd(); if(!r||!Array.isArray(r.clients))return null; var k=norm(name||'');
+    for(var i=0;i<r.clients.length;i++){ var c=r.clients[i]; if(c&&norm(c.name||'')===k)return c; } return null; }
+  function repClients(){
+    var map=new Map();
+    function put(name,phone,last,src,td){ name=String(name||'').trim(); if(!name)return; var k=norm(name);
+      var cur=map.get(k)||{name:name,phone:'',last:0,orders:0,source:src};
+      if(phone&&!cur.phone)cur.phone=String(phone); cur.last=Math.max(cur.last||0,num(last)); if(src==='order')cur.orders++; if(td){cur.td=td;cur.source='desktop';} map.set(k,cur); }
+    try{ myOrders().forEach(function(o){ put(o.client,o.phone,o.updatedAt||o.createdAt,'order'); }); }catch(_){}
+    var r=repTd(); if(r&&Array.isArray(r.clients))r.clients.forEach(function(c){ if(c)put(c.name,c.phone,0,'desktop',c); });
+    return Array.from(map.values()).sort(function(a,b){ return (b.last||0)-(a.last||0)||String(a.name).localeCompare(String(b.name),'ru'); });
+  }
+  function allowedClient(name){ var k=norm(String(name||'').trim()); if(!k)return false; return repClients().some(function(c){return norm(c.name)===k}); }
+
+  function reqKey(){ return 'trp.req.'+String(ME&&ME.id||''); }
+  function localReqs(){ var a=lsGet(reqKey(),[]); return Array.isArray(a)?a:[]; }
+  function saveLocalReqs(a){ lsSet(reqKey(),a.slice(0,80)); }
+  /* Все свои заявки на клиентов: локальные + из Firestore (requests) + решение оператора (tdRep.requests) */
+  function myClientRequests(){
+    var by=new Map();
+    localReqs().forEach(function(x){ if(x&&x.id)by.set(String(x.id),Object.assign({},x)); });
+    ((DB&&DB.td&&DB.td.myReq)||[]).forEach(function(x){ if(x&&x.id&&x.kind==='client'){ var cur=by.get(String(x.id))||{}; by.set(String(x.id),Object.assign({},x,cur,{sent:true})); } });
+    var r=repTd(), td=(r&&Array.isArray(r.requests))?r.requests:[];
+    td.forEach(function(q){ if(!q||q.kind!=='client')return; var cur=by.get(String(q.id)); if(cur)cur.td=q; else by.set(String(q.id),{id:q.id,kind:'client',client:{name:q.title||q.customer||''},createdAt:Date.parse(q.at)||0,sent:true,td:q}); });
+    return Array.from(by.values()).sort(function(a,b){ return num(b.createdAt)-num(a.createdAt); });
+  }
+  function reqState(x){
+    var q=x.td;
+    if(q){ if(q.st==='approved')return {t:'одобрен',c:'t-ok',st:'approved',why:''}; if(q.st==='rejected')return {t:'отклонён',c:'t-red',st:'rejected',why:q.why||''}; return {t:'ждёт оператора',c:'t-warn',st:'new',why:''}; }
+    if(x.failed&&!x.sent)return {t:'не отправлена',c:'t-red',st:'failed',why:'База не приняла заявку: '+(x.err||'нет доступа')};
+    return x.sent?{t:'ждёт оператора',c:'t-warn',st:'new',why:''}:{t:'ждёт отправки',c:'t-warn',st:'queued',why:''};
+  }
+  function reqName(x){ return String((x.client&&x.client.name)||(x.td&&(x.td.customer||x.td.title))||''); }
+  function pendingClient(name){ var k=norm(String(name||'').trim()); if(!k)return null;
+    var f=myClientRequests().find(function(x){ return norm(reqName(x))===k&&reqState(x).st!=='approved'; }); return f||null; }
+
+  /* uid ставится в момент отправки: заявка, сохранённая без входа или без связи, иначе не прошла бы правило uid == auth.uid */
+  function reqDoc(x){ var d=Object.assign({},x); delete d.sent; delete d.td; delete d.failed; delete d.err;
+    d.uid=(FBAUTH&&FBAUTH.currentUser&&FBAUTH.currentUser.uid)||''; d.appId=String(ME&&ME.id||d.appId||''); return d; }
+  async function sendRequest(doc){
+    if(typeof FBDB==='undefined'||!FBDB||!FBAUTH||!FBAUTH.currentUser)throw new Error('нет связи с базой');
+    var d=reqDoc(doc);
+    await fbWithTimeout(FBDB.collection('requests').doc(String(d.id)).set(fbClean(d)),9000,'База не ответила вовремя');
+  }
+  /* Заявка могла дойти, хотя ответ не пришёл вовремя: повторная запись стала бы изменением (его правила
+     разрешают только администратору). Поэтому перед повтором проверяем, есть ли она уже в базе. */
+  async function alreadySent(id){
+    if(((DB&&DB.td&&DB.td.myReq)||[]).some(function(x){return x&&String(x.id)===String(id)}))return true;
+    try{ var g=await fbWithTimeout(FBDB.collection('requests').doc(String(id)).get(),6000,'timeout'); return !!(g&&g.exists); }catch(_){ return false; }
+  }
+  var RETRYING=false;
+  async function retryRequests(){
+    if(RETRYING||!rep()||typeof FBDB==='undefined'||!FBDB||!FBAUTH||!FBAUTH.currentUser)return; RETRYING=true;
+    try{
+      var list=localReqs(), changed=false;
+      for(var i=0;i<list.length;i++){ var x=list[i]; if(!x||x.sent||x.failed)continue;
+        if(await alreadySent(x.id)){ x.sent=true; changed=true; continue; }
+        try{ await sendRequest(x); x.sent=true; changed=true; }
+        catch(e){ if(isDenied(e)){ if(await alreadySent(x.id)){ x.sent=true; } else { x.failed=true; x.err=String(e&&e.message||e).slice(0,120); } changed=true; } }
+      }
+      if(changed){ saveLocalReqs(list); if(VIEW==='clients')render(); }
+    }finally{ RETRYING=false; }
+  }
+
+  function openClientRequest(prefill){
+    if(!rep())return;
+    var f=function(id,label,attrs,tag){ return '<label class="f"><span>'+label+'</span>'+(tag==='textarea'?'<textarea class="inp" id="'+id+'" '+(attrs||'')+'></textarea>':'<input class="inp" id="'+id+'" '+(attrs||'')+'>')+'<i class="trp-err" data-err="'+id+'"></i></label>'; };
+    sheet('Новый клиент',
+      '<div class="note g">Заявка уйдёт оператору в Trade Agent Desktop. Пока оператор не одобрит клиента, заказ на него оформить нельзя. Поля со звёздочкой обязательны.</div>'
+      +f('trqName','Название *','maxlength="120" placeholder="Название магазина / салона" value="'+esc(prefill||'')+'"')
+      +f('trqBin','БИН * (12 цифр)','inputmode="numeric" maxlength="12" placeholder="123456789012" autocomplete="off"')
+      +f('trqPhone','Телефон *','type="tel" inputmode="tel" maxlength="20" placeholder="+7"')
+      +f('trqAddr','Адрес *','maxlength="200" placeholder="Город, улица, дом" autocomplete="street-address"')
+      +f('trqContact','Контактное лицо *','maxlength="80" placeholder="Имя и фамилия"')
+      +f('trqComment','Комментарий','maxlength="400" placeholder="Необязательно"','textarea')
+      +'<button class="btn pri" id="trqSend" type="button">Отправить заявку оператору</button>',
+      function(el){
+        setTimeout(function(){ var n=document.getElementById('trqName'); if(n)n.focus(); },120);
+        var bin=el.querySelector('#trqBin'); if(bin)bin.addEventListener('input',function(){ var v=onlyDigits(bin.value).slice(0,12); if(v!==bin.value)bin.value=v; });
+        el.querySelector('#trqSend').addEventListener('click',async function(){
+          var b=this, val=function(id){ return String((el.querySelector('#'+id)||{}).value||'').replace(/\s+/g,' ').trim(); };
+          var c={name:val('trqName'),bin:onlyDigits(val('trqBin')),phone:val('trqPhone'),address:val('trqAddr'),contact:val('trqContact'),comment:String((el.querySelector('#trqComment')||{}).value||'').trim()};
+          var errs={};
+          if(c.name.length<2)errs.trqName='Укажите название клиента';
+          else if(allowedClient(c.name))errs.trqName='Такой клиент уже есть в вашем списке';
+          else if(pendingClient(c.name)&&!/^(rejected|failed)$/.test(reqState(pendingClient(c.name)).st))errs.trqName='Заявка на этого клиента уже отправлена';
+          if(!/^\d{12}$/.test(c.bin))errs.trqBin='БИН — ровно 12 цифр';
+          if(onlyDigits(c.phone).length<10)errs.trqPhone='Укажите телефон (не меньше 10 цифр)';
+          if(c.address.length<3)errs.trqAddr='Укажите адрес';
+          if(c.contact.length<2)errs.trqContact='Укажите контактное лицо';
+          el.querySelectorAll('[data-err]').forEach(function(x){ x.textContent=errs[x.dataset.err]||''; });
+          var first=Object.keys(errs)[0];
+          if(first){ toast(errs[first]); var fe=el.querySelector('#'+first); if(fe)try{fe.focus()}catch(_){} return; }
+          b.disabled=true;
+          var id='rq'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+          var doc={id:id,kind:'client',appId:String(ME.id),uid:(FBAUTH&&FBAUTH.currentUser&&FBAUTH.currentUser.uid)||'',status:'new',createdAt:Date.now(),client:c};
+          var list=localReqs(); var rec=Object.assign({},doc,{sent:false}); list.unshift(rec); saveLocalReqs(list);
+          var ok=false; try{ await sendRequest(doc); ok=true; }catch(_){}
+          if(ok){ var l2=localReqs(); l2.forEach(function(x){ if(x.id===id)x.sent=true; }); saveLocalReqs(l2); }
+          window.taRepPolicy.lastRequest=doc;
+          closeSheet();
+          toast(ok?('Заявка на клиента «'+c.name+'» отправлена оператору'):'Заявка сохранена на телефоне и уйдёт оператору при появлении связи');
+          if(VIEW==='clients')render();
+        });
+      });
+  }
+
+  /* ---------------------------------------------------------------
+     3. Вход: стартовый экран представителя — «Главная»
+     --------------------------------------------------------------- */
+  var LOGIN_HOME=false;
+  wrap('fbFinishExplicitLogin',function(base){ return async function(){ LOGIN_HOME=true; try{ return await base.apply(this,arguments); }finally{ LOGIN_HOME=false; setTimeout(function(){ mark(); scheduleNotes(); retryRequests(); },0); } }; });
+  wrap('go',function(base){ return function(v){ if(LOGIN_HOME&&v==='price'&&rep()){ LOGIN_HOME=false; v='home'; } mark(); return base.call(this,v); }; });
+
+  /* ---------------------------------------------------------------
+     4. Главная
+     --------------------------------------------------------------- */
+  function overdueDocs(){ var r=repTd(); if(!r||!Array.isArray(r.debts))return []; var T=today();
+    return r.debts.filter(function(d){ return d&&num(d.debt)>0&&((d.due&&d.due<T)||num(d.days)>0); }); }
+  wrap('ta252Metrics',function(base){ return function(){
+    var m=base.apply(this,arguments); if(!rep())return m;
+    /* продажи: заявка, отмену которой оператор не принял, остаётся в продажах (как в «Отчётах») */
+    var all=myOrders().filter(function(o){return o.status!=='Списан'&&!effCancelled(o)}), day=today(), month=day.slice(0,7);
+    m.all=all; m.dayOrders=all.filter(function(o){return MONEY.shipDay(o)===day}); m.monthOrders=all.filter(function(o){return String(MONEY.shipDay(o)||'').slice(0,7)===month});
+    m.salesDay=m.dayOrders.reduce(function(s,o){return s+MONEY.net(o)},0); m.salesMonth=m.monthOrders.reduce(function(s,o){return s+MONEY.net(o)},0);
+    var r=repTd();
+    if(r&&Array.isArray(r.debts)){ var od=overdueDocs(); m.debt=r.debts.reduce(function(s,d){return s+num(d&&d.debt)},0); m.overdue=od; m.overdueSum=od.reduce(function(s,d){return s+num(d.debt)},0); }
+    return m; }; });
+  wrap('ta29PlanData',function(base){ return function(){
+    var P=base.apply(this,arguments); if(!rep())return P;
+    var m=today().slice(0,7);
+    P.fact=myOrders().filter(function(o){return !effCancelled(o)&&o.status!=='Списан'&&String(o.shipDate||'').slice(0,7)===m}).reduce(function(s,o){return s+MONEY.net(o)},0);
+    P.left=Math.max(0,P.plan-P.fact); P.pct=P.plan?Math.round(P.fact/P.plan*100):0;
+    return P; }; });
+  function repHome(){
+    var v=document.getElementById('view'); if(!v)return;
+    v.querySelectorAll('.ta253-kpi').forEach(function(t){ var u=t.querySelector('u'); if(u&&/^Оплаты сегодня/i.test((u.textContent||'').trim()))t.remove(); });
+    v.querySelectorAll('.ta253-section').forEach(function(s){ var h=s.querySelector('.ta253-section-head h3'); var t=h?(h.textContent||'').trim():''; if(t==='Центр внимания'||t==='Быстрые действия')s.remove(); });
+    v.querySelectorAll('.ta253-order[data-home-order252]').forEach(function(b){
+      if(b.parentElement&&b.parentElement.classList.contains('trp-recent-row'))return;
+      var o=(DB.orders||[]).find(function(x){return x.id===b.dataset.homeOrder252}); if(!o)return;
+      var badge=b.querySelector('.badge'); if(badge)badge.textContent=chipOf(effState(o)).t;
+      var sum=b.querySelector('strong'); if(sum){ sum.classList.remove('debt'); sum.textContent=money(MONEY.net(o))+' ₸'; }   /* долг считает Desktop, не Manager */
+      var row=document.createElement('div'); row.className='trp-recent-row';
+      b.parentNode.insertBefore(row,b); row.appendChild(b);
+      var r=document.createElement('button'); r.type='button'; r.className='trp-repeat'; r.dataset.trpRepeat=o.id; r.textContent='Повторить';
+      r.onclick=function(ev){ ev.stopPropagation(); if(typeof ta25DraftCount==='function'&&ta25DraftCount()&&!confirm('В черновике уже есть товары. Добавить позиции из этой заявки к текущему черновику?'))return; repeatOrderToDraft(o); };
+      row.appendChild(r);
+    });
+  }
+  wrap('vHome252',function(base){ return function(){ var r=base.apply(this,arguments); if(rep())try{repHome()}catch(e){console.warn('rep home',e)} return r; }; });
+
+  /* ---------------------------------------------------------------
+     5. Каталог
+     --------------------------------------------------------------- */
+  wrap('ta22Products',function(base){ return function(){
+    if(rep()){ try{ TA25_RECENT_ONLY=false; TA23_NEW_ONLY=false; }catch(_){}
+      if(TA22.stock==='all'||TA22.stock==='fav')TA22.stock='available'; }
+    return base.apply(this,arguments); }; });
+  wrap('ta23PaintKpis',function(base){ return function(){ var r=base.apply(this,arguments);
+    if(rep())try{ var box=document.getElementById('refKpis'); if(box)box.querySelectorAll('[data-stock22="all"],[data-stock22="fav"],[data-recent25],[data-new23]').forEach(function(x){x.remove()}); }catch(_){}
+    return r; }; });
+  wrap('ta22FilterSheet',function(base){ return function(){
+    if(!rep())return base.apply(this,arguments);
+    sheet('Фильтры каталога','<div class="seg">'+[['available','В наличии'],['low','Мало'],['out','Нет']].map(function(x){return '<button data-trp-stock="'+x[0]+'" class="'+(TA22.stock===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div>'
+      +'<div class="note g" style="margin-top:10px">Товары без остатка в каталоге скрыты. «Нет» показывает их отдельно — заказать их нельзя.</div>',
+      function(el){ el.querySelectorAll('[data-trp-stock]').forEach(function(b){ b.onclick=function(){ TA22.stock=b.dataset.trpStock; try{localStorage.setItem('ta22.stock',TA22.stock)}catch(_){} CAT=null; TA22.limit=90; closeSheet(); ta23PaintCatalog(); }; }); });
+  }; });
+  function whLine(a){
+    var w=DB&&DB.td&&DB.td.stockByWh; if(!w||!Array.isArray(w.whs)||w.whs.length<2||!w.map)return '';
+    var q=w.map[String(a)]; if(!Array.isArray(q))return '';
+    return '<div class="trp-wh">'+w.whs.map(function(x,i){ return esc(String((x&&(x.name||x.id))||('Склад '+(i+1))))+': '+num(q[i]); }).join(' · ')+'</div>';
+  }
+  wrap('ta23ProductCard',function(base){ return function(p){
+    var h=base.apply(this,arguments);
+    try{
+      if(rep())h=h.replace(/<button class="ref-fav[^"]*"[^>]*>[\s\S]*?<\/button>/,'');
+      var w=whLine(p&&p.a); if(w)h=h.replace('<div class="ref-pname"',w+'<div class="ref-pname"');
+    }catch(_){}
+    return h; }; });
+  wrap('meCfg',function(base){ return function(){ var c=base.apply(this,arguments); return rep()?Object.assign({},c,{freePrice:false,seeDisc:false}):c; }; });
+  wrap('viewPrice',function(base){ return function(p){ if(rep())return {base:p.p,disc:0,now:p.p,edit:false,showDisc:false}; return base.apply(this,arguments); }; });
+  function decorateCatalog(){
+    var root=document.querySelector('#view .ref-catalog'); if(!root)return;
+    var tb=root.querySelector('.ref-toolbar');
+    if(tb&&!root.querySelector('#trpPriceList')){
+      var bar=document.createElement('div'); bar.className='trp-pl-bar';
+      bar.innerHTML='<button type="button" id="trpPriceList" class="trp-pl-btn" title="Прайс-лист в PDF"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6M9 7h3"/></svg><span>Прайс-лист PDF</span></button>';
+      tb.insertAdjacentElement('afterend',bar);
+      bar.querySelector('#trpPriceList').addEventListener('click',openPriceListSheet);
+    }
+    if(rep()){
+      root.querySelectorAll('.ref-layout,[data-quick25="recent"]').forEach(function(x){x.remove()});
+      var ov=root.querySelector('[data-quick25="over"] b'); if(ov&&repTd()&&Array.isArray(repTd().debts)){ var n=overdueDocs().length; ov.textContent=n; ov.parentElement.classList.toggle('hot',n>0); }
+    }
+  }
+  wrap('vPrice23',function(base){ return function(){ if(rep())try{TA22.layout='grid'}catch(_){} var r=base.apply(this,arguments); try{decorateCatalog()}catch(e){console.warn('rep catalog',e)} return r; }; });
+
+  /* ---------- Прайс-лист PDF (администратор и представители) ---------- */
+  async function buildPriceListPdf(opts){
+    opts=opts||{};
+    await loadPDF();
+    var J=window.jspdf.jsPDF, doc=new J({unit:'mm',format:'a4'});
+    doc.addFileToVFS('AgentSans.ttf',PDF_FONT_REG); doc.addFont('AgentSans.ttf','AgentSans','normal');
+    doc.addFileToVFS('AgentSansB.ttf',PDF_FONT_BOLD); doc.addFont('AgentSansB.ttf','AgentSans','bold');
+    try{recalcUsed()}catch(_){}
+    var cats=CATALOG.cats||[];
+    var list=(CATALOG.prods||[]).filter(function(p){ return !opts.inStock||stockOf(p.a)>0; }).slice()
+      .sort(function(a,b){ return String(cats[a.c]||'').localeCompare(String(cats[b.c]||''),'ru')||String(a.n).localeCompare(String(b.n),'ru'); });
+    var L=15,R=195,W=R-L,y=16;
+    var txt=function(s,x,yy,o){ o=o||{}; doc.setFont('AgentSans',o.bold?'bold':'normal'); doc.setFontSize(o.size||9); doc.setTextColor.apply(doc,o.color||[30,30,30]); doc.text(s,x,yy,{align:o.align||'left'}); };
+    var fit=function(s,w,size){ doc.setFont('AgentSans','normal'); doc.setFontSize(size); var lines=doc.splitTextToSize(String(s||''),w); if(lines.length>2){ lines=lines.slice(0,2); var t=lines[1]; while(t.length>1&&doc.getTextWidth(t+'…')>w)t=t.slice(0,-1); lines[1]=t+'…'; } return lines; };
+    var line=function(yy,w,c){ doc.setDrawColor(c==null?200:c); doc.setLineWidth(w||0.2); doc.line(L,yy,R,yy); };
+    var r=repTd(), priceType=(r&&r.priceType)||'';
+    txt(String(CFG.КОМПАНИЯ||''),L,y,{size:14,bold:true,color:[20,20,20]});
+    txt('Прайс-лист от '+ruDate(today()),R,y,{size:10,align:'right',color:[90,90,90]}); y+=6;
+    txt([rep()&&ME.name?('Представитель: '+ME.name):'',priceType?('Цены: '+priceType):'',opts.inStock?'Только товары в наличии':'Весь ассортимент'].filter(Boolean).join(' · '),L,y,{size:8.5,color:[110,110,110]}); y+=4; line(y,0.5,90); y+=6;
+    var cols=[{t:'Артикул',x:L,w:24},{t:'Наименование',x:L+26,w:112},{t:'Ед.',x:L+141,w:14},{t:'Цена, '+CFG.ВАЛЮТА,x:R,w:30,r:true}];
+    var head=function(){ cols.forEach(function(c){ txt(c.t,c.x,y,{size:7.2,bold:true,color:[120,120,120],align:c.r?'right':'left'}); }); y+=2.5; line(y,0.3,150); y+=4.6; };
+    head();
+    var lastCat=null;
+    list.forEach(function(p){
+      var cat=String(cats[p.c]||'Без категории');
+      if(cat!==lastCat){ if(y>270){doc.addPage();y=18;head();} txt(cat.toUpperCase(),L,y+1,{size:8,bold:true,color:[110,130,40]}); y+=6; lastCat=cat; }
+      var nm=fit(p.n,cols[1].w,8.6), h=Math.max(5,nm.length*3.9)+1.4;
+      if(y+h>280){ doc.addPage(); y=18; head(); }
+      txt(String(p.a),cols[0].x,y,{size:8,color:[80,80,80]});
+      txt(nm,cols[1].x,y,{size:8.6});
+      txt(String(p.u||'шт'),cols[2].x,y,{size:8,color:[90,90,90]});
+      txt(money(viewPrice(p).now),cols[3].x,y,{size:9,bold:true,align:'right'});
+      y+=h; doc.setDrawColor(230); doc.setLineWidth(0.1); doc.line(L,y-2.6,R,y-2.6);
+    });
+    var pages=doc.getNumberOfPages();
+    for(var i=1;i<=pages;i++){ doc.setPage(i); txt('Trade Agent Manager · '+String(CFG.КОМПАНИЯ||'')+' · стр. '+i+' из '+pages,L+W/2,290,{size:7,align:'center',color:[150,150,150]}); }
+    return {doc:doc,count:list.length};
+  }
+  async function savePriceListPdf(opts){
+    try{
+      toast('Готовлю прайс-лист…');
+      var res=await buildPriceListPdf(opts);
+      if(!res.count){ toast('Нет товаров для прайс-листа'); return false; }
+      res.doc.save('Прайс-лист '+today()+'.pdf');
+      try{ auditEvent23('скачал прайс-лист','каталог','',res.count+' позиций'); }catch(_){}
+      toast('Прайс-лист сохранён · '+res.count+' '+plural(res.count,'позиция','позиции','позиций'));
+      return true;
+    }catch(e){ toast('Не удалось сделать PDF: '+String(e&&e.message||e).slice(0,60)); return false; }
+  }
+  function openPriceListSheet(){
+    try{loadPDF().catch(function(){})}catch(_){}
+    var total=(CATALOG.prods||[]).length, avail=(CATALOG.prods||[]).filter(function(p){return stockOf(p.a)>0}).length;
+    sheet('Прайс-лист PDF','<div class="note g">PDF с вашими ценами: категория, артикул, наименование, единица и цена. Шапка — '+esc(String(CFG.КОМПАНИЯ||''))+' и сегодняшняя дата.</div>'
+      +'<label class="trp-pl-opt"><input type="checkbox" id="trpPlStock" checked><span>Только товары в наличии · '+avail+' из '+total+'</span></label>'
+      +'<button class="btn pri" id="trpPlGo" type="button">Скачать PDF</button>',
+      function(el){ el.querySelector('#trpPlGo').addEventListener('click',async function(){ var b=this; b.disabled=true; var ok=await savePriceListPdf({inStock:!!el.querySelector('#trpPlStock').checked}); b.disabled=false; if(ok)closeSheet(); }); });
+  }
+
+  /* ---------------------------------------------------------------
+     6. Заказ
+     --------------------------------------------------------------- */
+  wrap('ta27ClientDirectory',function(base){ return function(){ return rep()?repClients():base.apply(this,arguments); }; });
+  wrap('ta27NewClient',function(base){ return function(prefill){ if(rep()){ closeSheet(); setTimeout(function(){ openClientRequest(typeof prefill==='string'?prefill:''); },60); return; } return base.apply(this,arguments); }; });
+  wrap('ta27PickClient',function(base){ return function(){
+    var r=base.apply(this,arguments);
+    if(rep())try{
+      var nb=document.getElementById('clientPickNew'); if(nb)nb.textContent='＋ Новый клиент';
+      var wait=myClientRequests().filter(function(x){ var s=reqState(x).st; return s!=='approved'&&s!=='rejected'&&s!=='failed'&&!allowedClient(reqName(x)); });
+      var host=document.querySelector('#shBody .client-picker');
+      if(host&&wait.length&&!host.querySelector('.trp-pick-waitlist')){
+        var d=document.createElement('div'); d.className='trp-pick-waitlist';
+        d.innerHTML='<div class="sec" style="margin-top:12px">Ждут одобрения оператора</div>'+wait.map(function(x){ return '<div class="client-pick-row trp-pick-wait" aria-disabled="true"><span><b>'+esc(reqName(x))+'</b><i>заказ можно оформить после одобрения</i></span><em>ждёт</em></div>'; }).join('');
+        host.appendChild(d);
+      }
+    }catch(_){}
+    return r; }; });
+  function termsFor(name){
+    var c=clientTd(name), pays=(meCfg().pay||[]);
+    if(c&&c.pay)return {pay:String(c.pay),days:Math.max(0,Math.round(num(c.days))),has:true};
+    return {pay:String(pays[0]||'Наличные'),days:0,has:false};
+  }
+  function applyTerms(){
+    if(!rep())return;
+    var fc=document.getElementById('fClient'), fp=document.getElementById('fPay'), fd=document.getElementById('fDays'); if(!fc||!fp||!fd)return;
+    var t=termsFor(fc.value);
+    if(!Array.from(fp.options).some(function(o){return o.value===t.pay})){ var o=document.createElement('option'); o.value=t.pay; o.textContent=t.pay; fp.appendChild(o); }
+    if(!Array.from(fd.options).some(function(o){return Number(o.value)===t.days})){ var o2=document.createElement('option'); o2.value=String(t.days); o2.textContent=t.days+' дней'; fd.appendChild(o2); }
+    var changed=fp.value!==t.pay||Number(fd.value)!==t.days;
+    fp.value=t.pay; fd.value=String(t.days);
+    var inst=INSTANT.indexOf(t.pay)>=0;
+    var pr=document.getElementById('trpPayRO'); if(pr)pr.innerHTML=esc(t.pay)+(t.has?'':'<small>условия задаст оператор</small>');
+    var dr=document.getElementById('trpDaysRO'); if(dr)dr.textContent=inst?'при отгрузке':(t.days+' '+plural(t.days,'день','дня','дней'));
+    if(changed)fp.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function cartWarn(){
+    var box=document.getElementById('trpWarn'); if(!box)return;
+    var name=String((document.getElementById('fClient')||{}).value||'').trim(), c=clientTd(name);
+    if(!c){ box.innerHTML=''; return; }
+    var total=MONEY.totals(cartLines()).total, debt=num(c.debt), over=num(c.overdue), limit=num(c.limit);
+    if(!(over>0)){ var r=repTd(), T=today(); if(r&&Array.isArray(r.debts))over=r.debts.filter(function(d){ return d&&norm(d.client||'')===norm(name)&&num(d.debt)>0&&d.due&&d.due<T; }).reduce(function(s,d){return s+num(d.debt)},0); }
+    var msgs=[];
+    if(over>0)msgs.push('У клиента просроченный долг: <b>'+money(over)+' ₸</b>');
+    if(limit>0&&debt+total>limit)msgs.push('Долг '+money(debt)+' ₸ + заказ '+money(total)+' ₸ = <b>'+money(debt+total)+' ₸</b> — больше кредитного лимита '+money(limit)+' ₸ (на '+money(debt+total-limit)+' ₸)');
+    box.innerHTML=msgs.length?'<div class="note trp-warn"><b class="trp-warn-h">Внимание</b><br>'+msgs.join('<br>')+'<span class="trp-warn-f">Заявку можно отправить — решение примет оператор.</span></div>':'';
+  }
+  function repDecorateCart(){
+    var v=document.getElementById('view'); if(!v)return;
+    var fc=document.getElementById('fClient');
+    if(fc){
+      fc.readOnly=true; fc.removeAttribute('list'); fc.placeholder='Выберите клиента из списка';
+      fc.addEventListener('click',function(){ try{ta27PickClient()}catch(_){} });
+      fc.addEventListener('input',function(){ setTimeout(function(){applyTerms();cartWarn()},0); });
+      var dl=document.getElementById('clients'); if(dl)dl.innerHTML='';
+      var lab=fc.closest('label'); if(lab){ var s=lab.querySelector('span'); if(s)s.textContent='Клиент'; }
+    }
+    v.querySelectorAll('[data-clientpick]').forEach(function(b){ b.addEventListener('click',function(){ setTimeout(function(){applyTerms();cartWarn()},0); }); });
+    var drv=document.getElementById('fDriver'); if(drv){ var dl2=drv.closest('label'); if(dl2)dl2.style.display='none'; }
+    var wp=document.getElementById('wPlan'); if(wp)wp.style.display='none';
+    [['fPay','trpPayRO','Тип оплаты'],['fDays','trpDaysRO','Срок оплаты']].forEach(function(x){
+      var s=document.getElementById(x[0]); if(!s||document.getElementById(x[1]))return;
+      s.style.display='none'; s.setAttribute('aria-hidden','true'); s.tabIndex=-1;
+      var ro=document.createElement('div'); ro.className='inp trp-ro'; ro.id=x[1]; ro.setAttribute('role','note'); ro.setAttribute('aria-label',x[2]+' — по условиям клиента');
+      s.insertAdjacentElement('afterend',ro);
+      var lab=s.closest('label'); if(lab){ var sp=lab.querySelector('span'); if(sp)sp.textContent=x[2]+' · по условиям клиента'; }
+    });
+    var sh=document.getElementById('fShip'); if(sh){ var l3=sh.closest('label'); var sp3=l3&&l3.querySelector('span'); if(sp3)sp3.textContent='Желаемая дата отгрузки'; }
+    var inst=document.getElementById('instNote'); if(inst)inst.textContent='Оплата при отгрузке. Окончательные условия подтверждает оператор.';
+    var nb=document.getElementById('refNewClient'); if(nb)nb.textContent='＋ Новый клиент';
+    if(!document.getElementById('trpWarn')){ var w=document.createElement('div'); w.id='trpWarn'; var bar=v.querySelector('.ref-order-bar'); if(bar)bar.insertAdjacentElement('afterend',w); else v.prepend(w); }
+    applyTerms(); cartWarn();
+  }
+  wrap('vCart',function(base){ return function(){ var r=base.apply(this,arguments); if(rep())try{repDecorateCart()}catch(e){console.warn('rep cart',e)} return r; }; });
+  wrap('ta27ApplyClient',function(base){ return function(){ var r=base.apply(this,arguments); if(rep())try{applyTerms();cartWarn()}catch(_){} return r; }; });
+  wrap('paintCartTotals',function(base){ return function(){ var r=base.apply(this,arguments); if(rep()&&VIEW==='cart')try{cartWarn()}catch(_){} return r; }; });
+  wrap('saveOrder',function(base){ return function(){
+    if(!rep())return base.apply(this,arguments);
+    if(typeof SAVING!=='undefined'&&SAVING)return;
+    if(EDIT&&!canChange(EDIT)){ toast(HINT_LOCKED); return; }
+    var name=String((document.getElementById('fClient')||{}).value||'').trim();
+    if(cartLines().length&&name){
+      if(!allowedClient(name)){
+        var pend=pendingClient(name);
+        if(pend&&reqState(pend).st!=='approved'){ toast('Клиент «'+name+'» ещё не одобрен оператором — заказ на него оформить нельзя'); return; }
+        toast('Выберите клиента из своего списка'); try{ta27PickClient()}catch(_){} return;
+      }
+      applyTerms();
+    }
+    try{ PLAN=[]; }catch(_){}
+    /* Представитель оплаты не вносит: даже «Наличные» и «Перевод» уходят без записи об оплате.
+       Тип оплаты меряется до первого await внутри saveOrderInner — на это время список «оплата сразу» пуст. */
+    var keep=INSTANT.slice(); INSTANT.length=0;
+    try{ return base.apply(this,arguments); }
+    finally{ INSTANT.length=0; keep.forEach(function(x){INSTANT.push(x)}); }
+  }; });
+  wrap('ta23MoreCart',function(base){ return function(){
+    if(!rep())return base.apply(this,arguments);
+    sheet('Еще','<div class="action-sheet-grid"><button data-cartmore22="bonus"><span>◆</span><b>Бонусный товар</b><i>Выбрать бесплатную позицию со склада</i></button><button data-cartmore22="park"><span>◷</span><b>Сохранить черновик</b><i>Продолжить позднее</i></button><button class="danger" data-cartmore22="clear"><span>×</span><b>Очистить заказ</b><i>Удалить все позиции</i></button></div>');
+  }; });
+  wrap('ta22MoreCart',function(base){ return function(){ return rep()?window.ta23MoreCart():base.apply(this,arguments); }; });
+  ['ta22Scan','ta22ImportOrder','ta22ApplyDiscount'].forEach(function(n){ wrap(n,function(base){ return function(){ if(rep()){ toast('Недоступно для представителя'); return; } return base.apply(this,arguments); }; }); });
+  ['ta26QuickActions','quickActions'].forEach(function(n){ wrap(n,function(base){ return function(){ if(rep())return ta252GlobalSearch(); return base.apply(this,arguments); }; }); });
+
+  /* ---------------------------------------------------------------
+     7. Заявки: статус Desktop, правка и отмена до принятия, только PDF
+     --------------------------------------------------------------- */
+  wrap('editable',function(base){ return function(o){ return rep()?canChange(o):base.apply(this,arguments); }; });
+  wrap('orderCard',function(base){ return function(o){
+    var h=base.apply(this,arguments); if(!rep())return h;
+    try{
+      var t=document.createElement('template'); t.innerHTML=String(h).trim(); var b=t.content.firstElementChild; if(!b)return h;
+      var e=effState(o), ch=chipOf(e);
+      b.querySelectorAll('.h .tag.t-mut,.h .tag.t-ok').forEach(function(x){x.remove()});
+      var chip=document.createElement('span'); chip.className='tag '+ch.c+' trp-chip'; chip.textContent=ch.t;
+      var no=b.querySelector('.h .no'); if(no)no.insertAdjacentElement('afterend',chip); else b.prepend(chip);
+      var m=b.querySelector('.m');
+      if(m){ m.innerHTML=m.innerHTML.replace(/<br>\s*Долг:\s*<b class="mono">[^<]*<\/b>/,'').replace('· отгрузка ','· желаемая отгрузка ');
+        var why=whyOf(o,e); if(why)m.insertAdjacentHTML('beforeend','<br><span class="trp-why">'+esc(why)+'</span>'); }
+      b.classList.remove('paid','debt','due');
+      if(e.st==='shipped')b.classList.add(e.paid?'paid':'due');
+      return b.outerHTML;
+    }catch(_){ return h; }
+  }; });
+  /* «С долгом» / «Оплачены» в списке заявок — по данным Desktop (представитель оплаты не вносит) */
+  wrap('ordersFiltered',function(base){ return function(){
+    if(!rep()||(OF.status!=='debt'&&OF.status!=='paid'))return base.apply(this,arguments);
+    var s=OF.status, list; OF.status='';
+    try{ list=base.apply(this,arguments); }finally{ OF.status=s; }
+    return list.filter(function(o){ var e=effState(o); if(e.st!=='shipped')return false; return s==='paid'?!!e.paid:(!e.paid&&num(e.debt)>0); });
+  }; });
+  wrap('navBadge',function(base){ return function(id){
+    if(rep()&&id==='ret')return allReturns().filter(function(x){return retView(x.r).wait}).length;
+    return base.apply(this,arguments); }; });
+  function cancelSheet(o){
+    var id=o.id;
+    sheet('Отмена заявки '+o.no,'<div class="note">Пока оператор не принял заявку, её можно отменить. Отмена уйдёт оператору в Trade Agent Desktop.</div>'
+      +'<label class="f"><span>Причина (необязательно)</span><input class="inp" id="trpCancelWhy" maxlength="200" placeholder="Например: клиент передумал"></label>'
+      +'<div class="btns two"><button class="btn dz" id="trpCancelGo" type="button">Отменить заявку</button><button class="btn" id="trpCancelBack" type="button">Назад</button></div>',
+      function(el){
+        el.querySelector('#trpCancelBack').onclick=function(){ closeSheet(); setTimeout(function(){openOrder(o.id)},80); };
+        el.querySelector('#trpCancelGo').onclick=function(){
+          o=(DB.orders||[]).find(function(x){return String(x.id)===String(id)})||null;   /* актуальная копия: снимок мог обновиться, пока лист открыт */
+          if(!o){ toast('Заявка не найдена'); closeSheet(); return; }
+          if(!canChange(o)){ toast(HINT_LOCKED); closeSheet(); return; }
+          var why=String(el.querySelector('#trpCancelWhy').value||'').replace(/\s+/g,' ').trim().slice(0,200);
+          o.status='Отменён'; o.cancelReason=why; o.updatedAt=Date.now();
+          save(); enqueue('order.save',{order:o});
+          closeSheet(); try{recalcUsed()}catch(_){} render();
+          toast('Заявка '+o.no+' отменена');
+        };
+      });
+  }
+  function repDecorateOrder(id){
+    var o=(DB.orders||[]).find(function(x){return x.id===id}), el=document.querySelector('#shBody .order-detail');
+    if(!o||!el)return;
+    var e=effState(o), ch=chipOf(e), change=canChange(o), why=whyOf(o,e);
+    var st=document.createElement('div'); st.className='trp-status';
+    st.innerHTML='<span class="tag '+ch.c+' trp-chip">'+esc(ch.t)+'</span>'+(why?'<div class="trp-why">'+esc(why)+'</div>':'')
+      +(!change&&LOCKED_STATES.test(e.st)&&o.uid===ME.id?'<div class="note g trp-locked">'+HINT_LOCKED+'</div>':'');
+    var top=el.querySelector('.note'); if(top)top.insertAdjacentElement('afterend',st); else el.prepend(st);
+    var tl=el.querySelector('.ta26-order-timeline'); var nt=document.createElement('div'); nt.innerHTML=timelineHtml(o); nt=nt.firstElementChild;
+    if(tl)tl.replaceWith(nt); else { var act=el.querySelector('.order-actions-primary'); el.insertBefore(nt,act||null); }
+    el.querySelectorAll('.order-actions-primary [data-a="pay"],.order-actions-primary [data-a="wa"]').forEach(function(x){x.remove()});
+    var panel=el.querySelector('#orderMorePanel'); if(!panel)return;
+    panel.querySelectorAll('[data-a="print"],[data-a="xlsx"],[data-a="fact"],[data-a="unfact"],[data-a="writeoff"],[data-a="unwrite"]').forEach(function(x){x.remove()});
+    panel.querySelectorAll('.note.g').forEach(function(x){ if(/24 часа/.test(x.textContent||''))x.remove(); });
+    var ed=panel.querySelector('[data-a="edit"]');
+    if(ed){ if(change){ var sp=ed.querySelector('span'); if(sp)sp.textContent='Пока оператор не принял'; } else ed.remove(); }
+    var ret=panel.querySelector('[data-a="ret"]');
+    if(ret){
+      if(retAllowed(o)){ var c=ret.cloneNode(true); ret.replaceWith(c); c.addEventListener('click',function(){ returnDialog(o); }); }
+      else ret.remove();
+    }
+    panel.querySelectorAll('.order-danger-zone').forEach(function(x){x.remove()});
+    if(change){
+      var dz=document.createElement('div'); dz.className='order-danger-zone';
+      dz.innerHTML='<button data-a="trpcancel" type="button">Отменить заявку</button>';
+      panel.appendChild(dz);
+      dz.querySelector('[data-a="trpcancel"]').addEventListener('click',function(){ cancelSheet(o); });
+    }else if(LOCKED_STATES.test(e.st)&&!panel.querySelector('.trp-locked')){
+      var n=document.createElement('div'); n.className='note g trp-locked'; n.textContent=HINT_LOCKED; panel.appendChild(n);
+    }
+  }
+  wrap('openOrder',function(base){ return function(id){ var r=base.apply(this,arguments); if(rep())try{repDecorateOrder(id)}catch(e){console.warn('rep order',e)} return r; }; });
+
+  /* ---------------------------------------------------------------
+     7б. Запись заявок представителя: без поля payments и без «пробки» в очереди
+     Правило Firestore: представитель не меняет payments. Поэтому заявка пишется слиянием
+     (set merge) без payments — оплаты на сервере остаются как есть. Если база всё же отказала
+     в доступе, операция откладывается в DB.repFailed (видна в «Заявках», можно повторить),
+     а остальные заявки уходят дальше.
+     --------------------------------------------------------------- */
+  function isDenied(e){ return !!e&&(e.code==='permission-denied'||/permission|insufficient/i.test(String(e.message||e))); }
+  async function writeRepOrder(o){
+    var d=fbClean(o)||{}; delete d.payments;
+    await FBDB.collection('orders').doc(fbSafeId(o.id)).set(d,{merge:true});
+  }
+  function setAside(op,e){
+    DB.repFailed=Array.isArray(DB.repFailed)?DB.repFailed:[];
+    DB.repFailed=DB.repFailed.filter(function(x){return !(x&&x.op&&x.op.order&&String(x.op.order.id)===String(op.order.id))});
+    DB.repFailed.push({op:op,err:String((e&&e.message)||e||'нет доступа').replace(/^Firebase:\s*/,'').slice(0,140),at:Date.now()});
+  }
+  wrap('flush',function(base){ return async function(){
+    if(!rep())return base.apply(this,arguments);
+    if(FLUSHING||!FB_READY||!FBAUTH||!FBAUTH.currentUser||!Array.isArray(DB.queue)||!DB.queue.length)return false;
+    FLUSHING=true; try{paintSync()}catch(_){}
+    var batch=DB.queue.slice(0,50), done=new Set(), aside=[];
+    try{
+      for(var i=0;i<batch.length;i++){
+        var op=batch[i]; if(!op)continue;
+        if(op.type==='order.save'&&op.order&&op.order.id){
+          try{ await writeRepOrder(op.order); }
+          catch(e){ if(isDenied(e)){ setAside(op,e); aside.push(op); done.add(op.opId); continue; } throw e; }
+          try{ await fbPushUsage(op.order.uid); }catch(_){}
+          done.add(op.opId);
+        }
+      }
+      if(done.size){ DB.queue=DB.queue.filter(function(op){return !done.has(op.opId)}); DB.sync.err=''; DB.sync.code=''; DB.sync.at=Date.now(); persist(); }
+      if(aside.length){ toast('База не приняла '+aside.length+' '+plural(aside.length,'изменение','изменения','изменений')+' заявок — откройте «Заявки», чтобы повторить'); try{ if(safeToRender())render(); }catch(_){} }
+      if(DB.queue.some(function(op){return op&&op.type==='order.save'&&op.order}))setTimeout(function(){ flush().catch(function(){}); },1200);
+      return done.size>aside.length;
+    }catch(e){
+      batch.forEach(function(op){ if(op&&op.tries!=null)op.tries=Number(op.tries||0)+1; });
+      DB.sync.err=String(e&&e.message||e||'Ошибка Firebase').slice(0,120); DB.sync.code='FIREBASE'; persist();
+      throw e;
+    }finally{ FLUSHING=false; try{paintSync()}catch(_){} }
+  }; });
+  /* возвраты и прочие правки заявки представителя идут через ту же очередь */
+  wrap('fbPushOrder',function(base){ return async function(id){
+    if(!rep())return base.apply(this,arguments);
+    var o=(DB.orders||[]).find(function(x){return String(x.id)===String(id)}); if(!o)return;
+    fbQueueOrderSave(o); await flush();
+  }; });
+  /* отклонённая базой новая заявка не пропадает из списка, пока представитель не решит */
+  wrap('fbMergePendingOrders',function(base){ return function(remote){
+    var r=base.apply(this,arguments); if(!rep()||!Array.isArray(DB.repFailed)||!DB.repFailed.length)return r;
+    var have=new Set(r.map(function(o){return String(o.id)}));
+    DB.repFailed.forEach(function(x){ var o=x&&x.op&&x.op.order; if(o&&!have.has(String(o.id))&&String(o.uid)===String(ME.id))r.push(o); });
+    return r;
+  }; });
+  function retryFailed(){
+    var f=Array.isArray(DB.repFailed)?DB.repFailed:[]; DB.repFailed=[];
+    f.forEach(function(x){ if(x&&x.op&&x.op.order)fbQueueOrderSave(x.op.order); });
+    persist(); render(); return flush().catch(function(){ return false; });
+  }
+  function dropFailed(){ DB.repFailed=[]; persist(); try{ fbPullAll().then(function(){render()}).catch(function(){}); }catch(_){} render(); }
+  wrap('vOrders',function(base){ return function(){
+    var r=base.apply(this,arguments); if(!rep())return r;
+    try{
+      var v=document.getElementById('view'); if(!v)return r;
+      var old=document.getElementById('trpFailed'); if(old)old.remove();
+      var f=Array.isArray(DB.repFailed)?DB.repFailed:[]; if(!f.length)return r;
+      var box=document.createElement('div'); box.id='trpFailed'; box.className='note trp-warn';
+      box.innerHTML='<b class="trp-warn-h">Не отправлено в базу: '+f.length+'</b><br>'+f.map(function(x){ var o=x.op.order; return esc(o.no||'заявка')+' · '+esc(o.client||'')+' — '+esc(x.err||''); }).join('<br>')
+        +'<div class="btns two" style="margin-top:10px"><button class="btn pri" id="trpFailRetry" type="button">Повторить отправку</button><button class="btn" id="trpFailDrop" type="button">Отменить изменения</button></div>';
+      v.insertBefore(box,v.firstChild);
+      box.querySelector('#trpFailRetry').onclick=function(){ retryFailed(); };
+      box.querySelector('#trpFailDrop').onclick=function(){ if(confirm('Отменить неотправленные изменения? Заявки вернутся к состоянию в базе.'))dropFailed(); };
+    }catch(_){}
+    return r; }; });
+
+  /* Общий справочник state/clientBook представитель не читает (правила дают его только администратору).
+     Чтение подменяется пустым документом — общая синхронизация fbPullAll/fbListen не падает. */
+  function stubClientBook(){
+    return {id:'clientBook',
+      get:function(){ return Promise.resolve({id:'clientBook',exists:false,data:function(){return undefined}}); },
+      onSnapshot:function(cb){ setTimeout(function(){ try{cb({id:'clientBook',exists:false,data:function(){return undefined}})}catch(_){} },0); return function(){}; },
+      set:function(){ return Promise.reject(Object.assign(new Error('Недоступно для представителя'),{code:'permission-denied'})); },
+      update:function(){ return Promise.reject(Object.assign(new Error('Недоступно для представителя'),{code:'permission-denied'})); }};
+  }
+  function patchFB(){
+    try{
+      if(typeof FBDB==='undefined'||!FBDB||FBDB.__trpPatched)return;
+      var orig=FBDB.collection;
+      FBDB.collection=function(name){
+        var c=orig.apply(this,arguments);
+        if(name==='state'&&c&&typeof c.doc==='function'&&!c.__trp){ var od=c.doc; c.__trp=1;
+          c.doc=function(id){ if(id==='clientBook'&&rep())return stubClientBook(); return od.apply(this,arguments); }; }
+        return c;
+      };
+      FBDB.__trpPatched=true;
+    }catch(_){}
+  }
+  patchFB();
+  wrap('fbInit',function(base){ return async function(){ var r=await base.apply(this,arguments); patchFB(); return r; }; });
+  /* Sync Center: отложенные изменения заявок видны и здесь */
+  wrap('vSync',function(base){ return function(){
+    var r=base.apply(this,arguments);
+    try{ var f=Array.isArray(DB.repFailed)?DB.repFailed:[]; if(rep()&&f.length){ var body=document.getElementById('shBody');
+      if(body&&!body.querySelector('#trpSyncFailed')){ var d=document.createElement('div'); d.id='trpSyncFailed'; d.className='note trp-warn'; d.style.marginTop='12px';
+        d.innerHTML='<b class="trp-warn-h">Не отправлено в базу: '+f.length+'</b><br>'+f.map(function(x){ return esc((x.op.order.no||'заявка')+' — '+(x.err||'')); }).join('<br>')
+          +'<div class="btns" style="margin-top:10px"><button class="btn pri" id="trpSyncRetry" type="button">Повторить отправку</button></div>';
+        body.appendChild(d); d.querySelector('#trpSyncRetry').onclick=function(){ closeSheet(); retryFailed(); }; } } }catch(_){}
+    return r; }; });
+
+  /* ---------------------------------------------------------------
+     8. Деньги: оплаты вносит и подтверждает оператор в Desktop
+     --------------------------------------------------------------- */
+  ['payDialog','payClient'].forEach(function(n){ wrap(n,function(base){ return function(){ if(rep()){ toast('Оплаты вносит оператор в Trade Agent Desktop'); return; } return base.apply(this,arguments); }; }); });
+  wrap('vAttentionPayments',function(base){ return function(){ if(rep())return vAttention(); return base.apply(this,arguments); }; });
+  wrap('vDebts',function(base){ return function(){
+    var r=base.apply(this,arguments); if(!rep())return r;
+    try{
+      var v=document.getElementById('view'); if(!v)return r;
+      v.querySelectorAll('#expDebt,#payAll').forEach(function(x){ var b=x.closest('.btns'); (b||x).remove(); });
+      var td=repTd(); if(!td||!Array.isArray(td.clients))return r;
+      if(DCLIENT){
+        var c=clientTd(DCLIENT), card=v.querySelector('.card.pad');
+        if(card&&!/Кредитный лимит/.test(card.textContent||'')){
+          var row=document.createElement('div'); row.className='sums';
+          row.innerHTML='<span>Кредитный лимит</span><b>'+(c&&num(c.limit)>0?money(c.limit):'не установлен')+'</b>';
+          var tot=card.querySelector('.total'); card.insertBefore(row,tot||null);
+        }
+        if(card&&c&&num(c.overdue)>0&&!/Просрочено/.test(card.textContent||'')){
+          card.insertAdjacentHTML('beforeend','<div class="note" style="margin-top:10px">Просрочено: <b>'+money(c.overdue)+'</b></div>');
+        }
+      }else{
+        v.querySelectorAll('[data-dc]').forEach(function(b){
+          var c=clientTd(b.dataset.dc), m=b.querySelector('.m'); if(!c||!m||m.querySelector('.trp-limit'))return;
+          if(num(c.limit)>0)m.insertAdjacentHTML('beforeend','<br><span class="trp-limit">Кредитный лимит '+money(c.limit)+' ₸</span>');
+        });
+      }
+    }catch(e){ console.warn('rep debts',e); }
+    return r;
+  }; });
+
+  /* ---------------------------------------------------------------
+     9. Возвраты: состояние из tdRep.requests (kind "return")
+     --------------------------------------------------------------- */
+  function tdReq(kind,id){ var r=repTd(); if(!r||!Array.isArray(r.requests))return null;
+    for(var i=0;i<r.requests.length;i++){ var q=r.requests[i]; if(q&&q.kind===kind&&String(q.id)===String(id))return q; } return null; }
+  function retView(rr){
+    var q=rr&&rr.id?tdReq('return',rr.id):null;
+    if(q){ if(q.st==='approved')return {t:'принят',c:'t-ok',why:'',wait:false,ok:true};
+      if(q.st==='rejected')return {t:'отклонён',c:'t-red',why:q.why||'',wait:false,rej:true};
+      return {t:'ждёт оператора',c:'t-warn',why:'',wait:true}; }
+    var s=(rr&&rr.state)||'ждёт проверки';
+    if(s==='ждёт проверки')return {t:'ждёт оператора',c:'t-warn',why:'',wait:true};
+    return {t:s,c:s==='принят'?'t-ok':(s==='отклонён'?'t-red':'t-warn'),why:(rr&&rr.reject)||'',wait:false,ok:s==='принят',rej:s==='отклонён'};
+  }
+  /* Деньги и количества по возвратам — по решению оператора (tdRep.requests), а не по ret.state в заявке:
+     отклонённый возврат освобождает количество, принятый уменьшает сумму к оплате и продажи. */
+  (function(){
+    if(typeof MONEY!=='object'||!MONEY)return;
+    var b={returned:MONEY.returned,pendingRet:MONEY.pendingRet,retQty:MONEY.retQty,retClaimed:MONEY.retClaimed};
+    MONEY.returned=function(o){ if(!rep())return b.returned.apply(MONEY,arguments);
+      return (o&&o.returns||[]).filter(function(r){return retView(r).ok}).reduce(function(s,r){return s+Math.max(0,+r.sum||0)},0); };
+    MONEY.pendingRet=function(o){ if(!rep())return b.pendingRet.apply(MONEY,arguments); return (o&&o.returns||[]).filter(function(r){return retView(r).wait}).length; };
+    MONEY.retQty=function(o){ if(!rep())return b.retQty.apply(MONEY,arguments); var m={};
+      (o&&o.returns||[]).filter(function(r){return retView(r).ok}).forEach(function(r){(r.items||[]).forEach(function(i){m[i.a]=(m[i.a]||0)+(+i.q||0)})}); return m; };
+    MONEY.retClaimed=function(o){ if(!rep())return b.retClaimed.apply(MONEY,arguments); var m={};
+      (o&&o.returns||[]).filter(function(r){return !retView(r).rej}).forEach(function(r){(r.items||[]).forEach(function(i){m[i.a]=(m[i.a]||0)+(+i.q||0)})}); return m; };
+  })();
+  wrap('returnDialog',function(base){ return function(o){
+    var r=base.apply(this,arguments); if(!rep())return r;
+    try{
+      var body=document.getElementById('shBody'); if(!body)return r;
+      var note=body.querySelector('.note'); if(note)note.textContent='Укажите, сколько штук вернул клиент. Возврат уйдёт оператору в Trade Agent Desktop; долг изменится после его решения.';
+      var sec=Array.from(body.querySelectorAll('.sec')).find(function(x){return /История возвратов/.test(x.textContent||'')});
+      var card=sec&&sec.nextElementSibling;
+      if(card)Array.from(card.querySelectorAll(':scope > .sums')).forEach(function(row,i){
+        var rr=(o.returns||[])[i]; if(!rr)return; var v=retView(rr), tag=row.querySelector('.tag');
+        if(tag){ tag.className='tag '+v.c; tag.textContent=v.t; }
+        if(v.why&&!row.querySelector('.trp-why'))(row.querySelector('span')||row).insertAdjacentHTML('beforeend','<br><span class="trp-why" style="color:var(--red)">'+esc(v.why)+'</span>');
+      });
+    }catch(_){}
+    return r; }; });
+  function repReturns(){
+    var all=allReturns(), wait=all.filter(function(x){return retView(x.r).wait}), rest=all.filter(function(x){return !retView(x.r).wait});
+    var M=today().slice(0,7);
+    var card=function(x){ var v=retView(x.r);
+      return '<button class="item '+(v.ok?'paid':(v.c==='t-red'?'debt':'due'))+'" data-ro="'+esc(x.o.id)+':'+x.idx+'"><div class="h"><span class="no">'+esc(x.o.no)+'</span><span class="tag '+v.c+'">'+esc(v.t)+'</span><span class="sum">−'+money(x.r.sum)+'</span></div>'
+        +'<div class="cl">'+esc(x.o.client)+'</div><div class="m">'+ruDate(x.r.d)+' · '+esc(x.r.note||'без причины')+' · '+(x.r.items||[]).length+' '+plural((x.r.items||[]).length,'позиция','позиции','позиций')
+        +(v.why?'<br><span style="color:var(--red)">'+esc(v.why)+'</span>':'')+'</div></button>'; };
+    $('#view').innerHTML='<div class="kpis"><div class="kpi"><u>Ждут оператора</u><b style="color:'+(wait.length?'var(--warn)':'var(--ok)')+'">'+wait.length+'</b><i>на '+money(wait.reduce(function(s,x){return s+num(x.r.sum)},0))+'</i></div>'
+      +'<div class="kpi"><u>Принято за месяц</u><b>'+money(all.filter(function(x){return retView(x.r).ok&&String(x.r.d||'').slice(0,7)===M}).reduce(function(s,x){return s+num(x.r.sum)},0))+'</b><i>'+all.filter(function(x){return retView(x.r).ok}).length+' всего</i></div></div>'
+      +(wait.length?'<div class="sec">Ждут оператора</div>'+wait.map(card).join(''):'')
+      +(rest.length?'<div class="sec">История · '+rest.length+'</div>'+rest.slice(0,60).map(card).join(''):'')
+      +(!all.length?'<div class="empty"><b>Возвратов нет</b>Оформить можно из отгруженной заявки</div>':'');
+    document.querySelectorAll('#view [data-ro]').forEach(function(b){ b.addEventListener('click',function(){ var p=b.dataset.ro.split(':'); var o=DB.orders.find(function(x){return x.id===p[0]}); if(o)checkReturn(o,+p[1]); }); });
+  }
+  wrap('vReturns',function(base){ return function(){ return rep()?repReturns():base.apply(this,arguments); }; });
+  wrap('checkReturn',function(base){ return function(o,idx){
+    if(!rep())return base.apply(this,arguments);
+    var r=(o.returns||[])[idx]; if(!r)return; var v=retView(r);
+    sheet('Возврат · '+o.no,'<div class="note '+(v.ok?'ok':'')+'">'+esc(o.client)+' · '+ruDate(r.d)+'<br>Причина: <b>'+esc(r.note||'—')+'</b><br>Состояние: <b>'+esc(v.t)+'</b>'+(v.why?'<br>Отклонён: '+esc(v.why):'')+'</div>'
+      +'<div class="card pad">'+docTable(r.items||[])+'<div class="total"><span>Сумма возврата</span><b>−'+money(r.sum)+' '+CFG.ВАЛЮТА+'</b></div></div>'
+      +'<div class="btns"><button class="btn" id="rPdf">Документ на возврат</button></div>',
+      function(el){ el.querySelector('#rPdf').addEventListener('click',function(){ saveReturnPDF(o,r); }); });
+  }; });
+  wrap('attentionData',function(base){ return function(){
+    var a=base.apply(this,arguments); if(!rep())return a;
+    a.pendingPayments=[]; a.waitingPay=0;
+    a.pendingReturns=allReturns().filter(function(x){return retView(x.r).wait}); a.waitingRet=a.pendingReturns.length;
+    var td=repTd(); if(td&&Array.isArray(td.debts))a.overdue=overdueDocs();
+    a.total=a.overdue.length+a.waitingRet+a.low;
+    return a; }; });
+  wrap('vAttentionOverdue',function(base){ return function(){
+    var td=repTd(); if(!rep()||!td||!Array.isArray(td.debts))return base.apply(this,arguments);
+    var list=overdueDocs().slice().sort(function(a,b){return num(b.days)-num(a.days)});
+    sheet('Просроченные долги',attentionBackButton()+'<div class="att-head"><b>'+list.length+' '+plural(list.length,'документ','документа','документов')+' с просрочкой</b><span>Данные Trade Agent Desktop.</span></div>'
+      +'<div class="att-detail-list">'+(list.length?list.map(function(d){ return '<div class="att-detail-card danger"><div class="att-detail-main"><b>'+esc(d.client||'Без клиента')+'</b><i>'+esc(d.no||'')+(num(d.days)?' · просрочка '+num(d.days)+' дн.':'')+'</i><small>Срок: '+ruDate(d.due||'')+'</small></div><strong>'+money(d.debt)+' '+CFG.ВАЛЮТА+'</strong><div class="att-actions"><button data-debt-open="'+esc(d.client||'')+'">Открыть долг</button></div></div>'; }).join(''):'<div class="empty"><b>Просрочек нет</b></div>')+'</div>',
+      function(el){ el.querySelector('[data-att-back]')&&el.querySelector('[data-att-back]').addEventListener('click',function(){closeSheet();setTimeout(vAttention,70)});
+        el.querySelectorAll('[data-debt-open]').forEach(function(b){ b.addEventListener('click',function(){ DCLIENT=b.dataset.debtOpen; closeSheet(); go('debts'); }); }); });
+  }; });
+
+  /* ---------------------------------------------------------------
+     10. Клиенты и «Клиент 360°»
+     --------------------------------------------------------------- */
+  function reqListHtml(){
+    var list=myClientRequests();
+    return '<div class="sec trp-reqsec">Мои заявки на клиентов · '+list.length+'</div><div class="card pad trp-reqlist">'
+      +(list.length?list.map(function(x){ var s=reqState(x), c=x.client||{};
+          return '<div class="trp-req-row" data-trp-req="'+esc(x.id)+'"><div class="trp-req-main"><b>'+esc(reqName(x)||'—')+'</b><span>'+(c.bin?'БИН '+esc(c.bin)+' · ':'')+(x.createdAt?dt(x.createdAt):'')+'</span>'
+            +(s.why?'<span class="trp-why" style="color:var(--red)">'+esc(s.why)+'</span>':'')+'</div><span class="tag '+s.c+'">'+esc(s.t)+'</span></div>'; }).join('')
+        :'<div style="font-size:13px;color:var(--mut)">Заявок пока нет. Новый клиент появится в списке после одобрения оператором.</div>')
+      +'</div>';
+  }
+  wrap('vClients22',function(base){ return function(){
+    var r=base.apply(this,arguments); if(!rep())return r;
+    try{
+      var v=document.getElementById('view'); if(!v)return r;
+      var ex=document.getElementById('clientExport22'); if(ex)ex.remove();
+      var acts=v.querySelector('.ta22-pagehead .actions');
+      if(acts&&!document.getElementById('trpNewClient')){ var b=document.createElement('button'); b.id='trpNewClient'; b.type='button'; b.textContent='＋ Новый клиент'; b.onclick=function(){openClientRequest('')}; acts.insertBefore(b,acts.firstChild); }
+      v.insertAdjacentHTML('beforeend',reqListHtml());
+    }catch(e){ console.warn('rep clients',e); }
+    return r; }; });
+  wrap('ta22OpenClient',function(base){ return function(key){
+    var r=base.apply(this,arguments); if(!rep())return r;
+    try{
+      var host=document.querySelector('#shBody .ta26-client-actions'); if(!host)return r;
+      host.querySelectorAll('[data-c26="addr"]').forEach(function(x){x.remove()});
+      var x=ta22ClientStats().find(function(v){return v.key===key});
+      var ph=x&&(x.phone||(x.td&&x.td.phone)); var d=onlyDigits(ph);
+      if(d&&!host.querySelector('.trp-call')){ if(d.length===11&&d[0]==='8')d='7'+d.slice(1); if(d.length===10)d='7'+d;
+        var a=document.createElement('a'); a.className='btn trp-call'; a.href='tel:+'+d; a.textContent='Позвонить'; host.appendChild(a); }
+    }catch(_){}
+    return r; }; });
+  wrap('ta29AddrOf',function(base){ return function(name){
+    if(!rep())return base.apply(this,arguments);
+    var c=clientTd(name); return (c&&c.address)||'';                 /* общий clientBook представителю не нужен */
+  }; });
+  wrap('vHelp',function(base){ return function(){ return rep()?window.vHelp26():base.apply(this,arguments); }; });
+  wrap('ta29EditAddr',function(base){ return function(){ if(rep()){ toast('Адрес клиента меняет оператор в Trade Agent Desktop'); return; } return base.apply(this,arguments); }; });
+
+  /* ---------------------------------------------------------------
+     11. Отчёты: коротко — мои продажи, план, итог дня
+     --------------------------------------------------------------- */
+  function repDayData(){
+    var list=myOrders().filter(function(o){return !effCancelled(o)&&o.status!=='Списан'}), T=today(), M=T.slice(0,7);
+    var day=list.filter(function(o){return o.shipDate===T}), month=list.filter(function(o){return String(o.shipDate||'').slice(0,7)===M});
+    var sum=function(a){return a.reduce(function(s,o){return s+MONEY.net(o)},0)};
+    var td=repTd(), debt=0, over=0;
+    if(td&&Array.isArray(td.debts)){ debt=td.debts.reduce(function(s,d){return s+num(d&&d.debt)},0); over=overdueDocs().reduce(function(s,d){return s+num(d.debt)},0); }
+    return {T:T,day:day,month:month,sumDay:sum(day),sumMonth:sum(month),plan:targetOf(ME.id),debt:debt,over:over,
+      created:list.filter(function(o){ var c=num(o.createdAt); return c&&isoLocal(new Date(c))===T; }).length};
+  }
+  function repDayText(){
+    var d=repDayData();
+    var L=['Trade Agent Manager · итог дня '+ruDate(d.T),(ME&&ME.name)||'','',
+      'Продажи за день: '+money(d.sumDay)+' '+CFG.ВАЛЮТА+' ('+d.day.length+' '+plural(d.day.length,'заявка','заявки','заявок')+')',
+      'Новых заявок сегодня: '+d.created,
+      'Продажи за месяц: '+money(d.sumMonth)+' '+CFG.ВАЛЮТА,
+      'Долг клиентов: '+money(d.debt),'Просрочено: '+money(d.over)];
+    if(d.plan)L.push('','План месяца: '+money(d.sumMonth)+' из '+money(d.plan)+' ('+Math.round(d.sumMonth/d.plan*100)+'%)');
+    return L.join('\n');
+  }
+  function repReports(){
+    var d=repDayData(), pct=d.plan?Math.round(d.sumMonth/d.plan*100):0, col=pct>=100?'var(--ok)':(pct>=70?'var(--acc)':'var(--warn)');
+    $('#view').innerHTML='<div class="ta22-pagehead"><div><h2>Мои продажи</h2><p>Сегодня, месяц, план и итог дня</p></div></div>'
+      +'<div class="kpis"><div class="kpi"><u>Сегодня</u><b>'+money(d.sumDay)+'</b><i>'+d.day.length+' '+plural(d.day.length,'заявка','заявки','заявок')+'</i></div>'
+      +'<div class="kpi"><u>Месяц</u><b>'+money(d.sumMonth)+'</b><i>'+d.month.length+' '+plural(d.month.length,'заявка','заявки','заявок')+'</i></div></div>'
+      +'<div class="sec">План месяца</div><div class="card pad trp-plan">'+(d.plan?('<div class="sums"><span>Сделано</span><b>'+money(d.sumMonth)+'</b></div><div class="sums"><span>План</span><b>'+money(d.plan)+'</b></div>'
+          +'<div style="height:8px;border-radius:5px;background:var(--soft);overflow:hidden;margin-top:8px"><div style="height:100%;width:'+Math.min(100,pct)+'%;background:'+col+'"></div></div>'
+          +'<div style="display:flex;justify-content:flex-end;font-size:12px;color:'+col+';font-weight:700;margin-top:4px">'+pct+'%</div>')
+        :'<div style="font-size:13px;color:var(--mut)">План на этот месяц не задан.</div>')+'</div>'
+      +'<div class="sec">Итог дня</div><div class="card pad trp-day"><div class="sums"><span>Продажи за день</span><b>'+money(d.sumDay)+'</b></div>'
+      +'<div class="sums"><span>Новых заявок сегодня</span><b>'+d.created+'</b></div><div class="sums"><span>Долг клиентов</span><b>'+money(d.debt)+'</b></div>'
+      +'<div class="sums"><span>Просрочено</span><b style="color:'+(d.over?'var(--red)':'var(--ok)')+'">'+money(d.over)+'</b></div>'
+      +'<div class="btns" style="margin-top:10px"><button class="btn" id="dayCopy" type="button">Скопировать текстом</button></div></div>';
+    var b=document.getElementById('dayCopy'); if(b)b.addEventListener('click',async function(){ try{ await navigator.clipboard.writeText(repDayText()); toast('Итог дня скопирован'); }catch(e){ toast('Не удалось скопировать'); } });
+  }
+  wrap('vReports22',function(base){ return function(){ return rep()?repReports():base.apply(this,arguments); }; });
+
+  /* ---------------------------------------------------------------
+     12. Уведомления представителя (колокольчик)
+     --------------------------------------------------------------- */
+  function nKey(){ return 'trp.notes.'+String(ME&&ME.id||''); }
+  /* Копия в памяти: если localStorage переполнен, снимок всё равно не теряется и уведомления не повторяются */
+  var NMEM={};
+  function loadN(){ var k=nKey(); var s=NMEM[k]||lsGet(k,null); if(!s||typeof s!=='object')s={}; if(!Array.isArray(s.list))s.list=[]; NMEM[k]=s; return s; }
+  function saveN(s){ s.list=(s.list||[]).slice(0,80); NMEM[nKey()]=s; lsSet(nKey(),s); }
+  function unread(){ if(!rep())return 0; return loadN().list.filter(function(x){return !x.read}).length; }
+  function snapNow(){
+    var r=repTd(); if(!r)return null;
+    var s={o:{},p:{},q:{},pr:{},has:{o:Array.isArray(r.orders),p:Array.isArray(r.payments),q:Array.isArray(r.requests)}}, cnt={};
+    (r.orders||[]).forEach(function(x){ if(x&&x.id)s.o[String(x.id)]={st:String(x.st||'new'),why:String(x.why||''),no:String(x.no||'')}; });
+    (r.payments||[]).forEach(function(p){ if(!p)return; var k=[p.no,p.s,p.d].join('|'); cnt[k]=(cnt[k]||0)+1; s.p[k+'#'+cnt[k]]={st:String(p.st||''),no:String(p.no||''),s:num(p.s),why:String(p.why||'')}; });
+    (r.requests||[]).forEach(function(q){ if(q&&q.id)s.q[q.kind+':'+q.id]={st:String(q.st||'new'),why:String(q.why||''),title:String(q.title||q.customer||''),kind:String(q.kind||''),orderId:String(q.orderId||'')}; });
+    if(window.tdHasDesktopData&&window.tdHasDesktopData())(CATALOG.prods||[]).forEach(function(p){ s.pr[String(p.a)]=num(p.p); });
+    return s;
+  }
+  var RANK={'new':0,accepted:1,assembling:2,assembled:3,shipped:4};
+  function orderNo(id,fallback){ var o=(DB.orders||[]).find(function(x){return String(x.id)===String(id)}); return (o&&o.no)||fallback||'заявка'; }
+  /* раздел, которого не было в прежнем снимке (Desktop начал его публиковать), — это базовая линия, а не новости */
+  function hadSection(a,k){ if(a.has&&typeof a.has[k]==='boolean')return a.has[k]; return !!(a[k]&&Object.keys(a[k]).length); }
+  function diffNotes(a,b){
+    var out=[];
+    if(!hadSection(a,'o'))b=Object.assign({},b,{o:{}});
+    if(!hadSection(a,'p'))b=Object.assign({},b,{p:{}});
+    if(!hadSection(a,'q'))b=Object.assign({},b,{q:{}});
+    Object.keys(b.o).forEach(function(id){ var n=b.o[id], p=a.o[id]||{st:'new',why:''}, no=orderNo(id,n.no);
+      if(n.st==='cancelled'&&p.st!=='cancelled')out.push('Заявка '+no+' отменена'+(n.why?' ('+n.why+')':''));
+      else if(n.st==='shipped'&&p.st!=='shipped')out.push('Заявка '+no+' отгружена');
+      else if((RANK[n.st]||0)>=1&&n.st!=='shipped'&&(RANK[p.st]||0)<1&&p.st!=='cancelled')out.push('Заявка '+no+' принята');
+      if(n.why&&n.why!==p.why&&n.st!=='cancelled'){ var o=(DB.orders||[]).find(function(x){return String(x.id)===String(id)}); if(o&&o.status==='Отменён')out.push('Заявка '+no+': '+n.why); }
+    });
+    Object.keys(b.p).forEach(function(k){ var n=b.p[k], p=a.p[k]; if(p&&p.st===n.st)return;
+      if(n.st==='confirmed')out.push('Оплата по '+(n.no||'заявке')+' подтверждена · '+money(n.s)+' ₸');
+      else if(n.st==='rejected')out.push('Оплата по '+(n.no||'заявке')+' отклонена · '+money(n.s)+' ₸'+(n.why?' ('+n.why+')':''));
+    });
+    Object.keys(b.q).forEach(function(k){ var n=b.q[k], p=a.q[k]; if(p&&p.st===n.st)return; if(n.st!=='approved'&&n.st!=='rejected')return;
+      if(n.kind==='return'){ var no=n.orderId?orderNo(n.orderId,''):''; out.push('Возврат'+(no?' по '+no:'')+(n.st==='approved'?' принят':' отклонён'+(n.why?' ('+n.why+')':''))); }
+      else if(n.kind==='client')out.push('Клиент «'+(n.title||'')+'» '+(n.st==='approved'?'одобрен':'отклонён'+(n.why?' ('+n.why+')':'')));
+    });
+    var changed=0; Object.keys(b.pr).forEach(function(k){ if(a.pr&&a.pr[k]!=null&&a.pr[k]!==b.pr[k])changed++; });
+    if(changed)out.push('Изменились цены: '+changed+' '+plural(changed,'товар','товара','товаров'));
+    return out;
+  }
+  function notifyDiff(){
+    if(!rep())return [];
+    var cur=snapNow(); if(!cur)return [];
+    var st=loadN();
+    if(!st.base){ st.base=cur; saveN(st); return []; }
+    if(!Object.keys(cur.pr).length&&st.base.pr)cur.pr=st.base.pr;            /* каталог ещё не пришёл — цены не сравниваем */
+    var msgs=(st.base.pr&&Object.keys(st.base.pr).length)?diffNotes(st.base,cur):diffNotes(st.base,Object.assign({},cur,{pr:{}}));
+    st.base=cur;
+    var now=Date.now();
+    msgs.forEach(function(t,i){ st.list.unshift({id:now.toString(36)+i,at:now,text:t,read:false}); });
+    saveN(st);
+    if(msgs.length){ toast(msgs[0]+(msgs.length>1?' · ещё '+(msgs.length-1):'')); }
+    paintBell();
+    return msgs;
+  }
+  var NT=0; function scheduleNotes(){ clearTimeout(NT); NT=setTimeout(function(){ try{notifyDiff()}catch(e){console.warn('rep notes',e)} },60); }
+  wrap('tdApplyCatalog',function(base){ return function(){ var r=base.apply(this,arguments); try{ mark(); if(rep())scheduleNotes(); }catch(_){} return r; }; });
+  function paintBell(){
+    var b=document.getElementById('ta22Bell'); if(!b)return;
+    if(!rep()){ if(b.dataset.trp){ delete b.dataset.trp; b.onclick=vAttention; b.setAttribute('aria-label','Центр внимания'); } return; }
+    b.dataset.trp='1'; b.onclick=openNotes; b.setAttribute('aria-label','Уведомления'); b.title='Уведомления';
+    var i=b.querySelector('i'), n=unread(); if(i){ i.textContent=n>99?'99+':String(n); i.hidden=!n; }
+  }
+  function openNotes(){
+    var st=loadN(), list=st.list.slice(0,60);
+    sheet('Уведомления','<div class="btns two" style="margin-top:0"><button class="btn" id="trpNotesAtt" type="button">Центр внимания</button><button class="btn" id="trpNotesRead" type="button">Прочитать все</button></div>'
+      +'<div class="card pad" style="margin-top:10px">'+(list.length?list.map(function(x){ return '<div class="trp-note-row'+(x.read?'':' unread')+'"><i></i><div><b>'+esc(x.text)+'</b><time>'+esc(dt(x.at))+'</time></div></div>'; }).join('')
+        :'<div style="font-size:13px;color:var(--mut)">Здесь появятся новости от оператора: заявка принята или отгружена, оплата подтверждена, решение по возврату и новому клиенту, изменение цен.</div>')+'</div>',
+      function(el){
+        el.querySelector('#trpNotesAtt').onclick=function(){ closeSheet(); setTimeout(vAttention,80); };
+        el.querySelector('#trpNotesRead').onclick=function(){ var s=loadN(); s.list.forEach(function(x){x.read=true}); saveN(s); el.querySelectorAll('.trp-note-row.unread').forEach(function(x){x.classList.remove('unread')}); paintBell(); };
+      });
+    /* открыли список — значит, увидели: счётчик обнуляется */
+    var s2=loadN(); s2.list.forEach(function(x){x.read=true}); saveN(s2); paintBell();
+  }
+  wrap('ensureChrome22',function(base){ return function(){ var r=base.apply(this,arguments); try{paintBell()}catch(_){} return r; }; });
+
+  /* ---------------------------------------------------------------
+     13. Данные: склады (state/stockByWh) и свои заявки (requests)
+     --------------------------------------------------------------- */
+  var WH_SIG='';
+  function setWh(v){
+    if(v&&v.value&&Array.isArray(v.value.whs))v=v.value;
+    var x=(v&&Array.isArray(v.whs))?{at:v.at||'',whs:v.whs,map:v.map||{}}:null;
+    var sig; try{sig=JSON.stringify(x)}catch(_){sig=String(Date.now())}
+    if(sig===WH_SIG)return; WH_SIG=sig;
+    if(!DB.td||typeof DB.td!=='object')DB.td={}; DB.td.stockByWh=x; try{persist()}catch(_){}
+    if(VIEW==='price')try{ta23PaintProducts()}catch(_){}
+  }
+  function setMyReq(arr){ if(!DB.td||typeof DB.td!=='object')DB.td={}; DB.td.myReq=arr; try{persist()}catch(_){} if(VIEW==='clients'&&safeToRender())render(); }
+  wrap('fbListen',function(base){ return function(){
+    patchFB(); if(rep()&&DB)DB.clientBook=[];
+    var r=base.apply(this,arguments);
+    try{
+      if(typeof FBDB!=='undefined'&&FBDB&&ME){
+        try{ FB_UNSUB.push(FBDB.collection('state').doc('stockByWh').onSnapshot(function(d){ setWh(d.exists?d.data():null); },function(){})); }catch(_){}
+        if(rep())try{ FB_UNSUB.push(FBDB.collection('requests').where('appId','==',String(ME.id)).onSnapshot(function(q){ var a=[]; q.forEach(function(d){a.push(d.data()||{})}); setMyReq(a); },function(){})); }catch(_){}
+        setTimeout(retryRequests,400);
+      }
+    }catch(_){}
+    return r; }; });
+  wrap('fbPullAll',function(base){ return async function(){
+    patchFB(); if(rep()&&DB)DB.clientBook=[];
+    var r=await base.apply(this,arguments);
+    try{
+      if(typeof FBDB!=='undefined'&&FBDB&&ME){
+        try{ var w=await FBDB.collection('state').doc('stockByWh').get(); setWh(w.exists?w.data():null); }catch(_){}
+        if(rep())try{ var q=await FBDB.collection('requests').where('appId','==',String(ME.id)).get(); var a=[]; q.forEach(function(d){a.push(d.data()||{})}); DB.td=DB.td||{}; DB.td.myReq=a; }catch(_){}
+      }
+    }catch(_){}
+    return r; }; });
+
+  /* ---------------------------------------------------------------
+     14. Поиск по системе: без товаров с нулевым остатком; справка
+     --------------------------------------------------------------- */
+  wrap('ta252GlobalSearch',function(base){ return function(){
+    var r=base.apply(this,arguments);
+    if(rep())try{ var q=document.getElementById('ta252GlobalQ'); if(q)q.addEventListener('input',function(){
+      document.querySelectorAll('#ta252GlobalRes [data-sprod252]').forEach(function(b){ if(stockOf(b.dataset.sprod252)<=0){ var row=b.closest('.ta252-srow'); if(row)row.remove(); } });
+      document.querySelectorAll('#ta252GlobalRes .ta252-search-group').forEach(function(g){ if(!g.querySelector('.ta252-srow'))g.remove(); });
+    }); }catch(_){}
+    return r; }; });
+  wrap('vHelp26',function(base){ return function(){
+    if(!rep())return base.apply(this,arguments);
+    var cards=[['Главная','Продажи за сегодня и месяц, долг ваших клиентов, план месяца и последние заявки с кнопкой «Повторить».'],
+      ['Каталог','Поиск, категории, фильтры «В наличии / Мало / Нет», точный остаток и остаток по складам. Цена — ваша. «Прайс-лист PDF» — для клиента.'],
+      ['Заказ','Клиент — только из вашего списка. Тип и срок оплаты — по условиям клиента в Desktop. Желаемую дату отгрузки подтверждает оператор.'],
+      ['Новый клиент','«＋ Новый клиент» отправляет заявку оператору. Заказ на клиента — после одобрения.'],
+      ['Заявки','Статус от оператора: отправлена → принята → собирается → отгружена → оплачена. Изменить или отменить — пока оператор не принял.'],
+      ['Долги','Документы, сроки и просрочка из Trade Agent Desktop. Оплаты вносит и подтверждает оператор.'],
+      ['Возвраты','Из отгруженной заявки → «Оформить возврат». Решение оператора видно в заявке и в «Возвратах».'],
+      ['Уведомления','Колокольчик вверху: решения оператора, оплаты, возвраты, новые клиенты и изменение цен.']];
+    sheet('Справка','<div class="ta26-help-intro">Trade Agent Manager '+esc(VERSION)+' · режим представителя.</div><div class="ta26-help-grid">'+cards.map(function(c){return '<div class="ta26-help-card"><b>'+c[0]+'</b><span>'+c[1]+'</span></div>'}).join('')+'</div>');
+  }; });
+
+  /* ---------------------------------------------------------------
+     15. Главный render: метка режима, колокольчик
+     --------------------------------------------------------------- */
+  var renderBase=render;
+  render=function(){ mark(); var r=renderBase.apply(this,arguments); try{ paintBell(); }catch(_){} return r; };
+  try{ window.render=render; }catch(_){}
+  window.addEventListener('online',function(){ setTimeout(retryRequests,800); });
+
+  window.taRepPolicy={version:VER,isRep:rep,canChange:canChange,effState:effState,chipOf:chipOf,retView:retView,repClients:repClients,allowedClient:allowedClient,
+    pendingClient:pendingClient,myClientRequests:myClientRequests,openClientRequest:openClientRequest,termsFor:termsFor,
+    buildPriceListPdf:buildPriceListPdf,savePriceListPdf:savePriceListPdf,openPriceListSheet:openPriceListSheet,
+    notifyDiff:notifyDiff,retryRequests:retryRequests,retryFailed:retryFailed,notes:function(){return loadN().list},unread:unread,openNotes:openNotes,dayText:repDayText,lastRequest:null};
 })();
 </script>
 
