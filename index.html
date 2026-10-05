@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="33.0.0" name="app-version"/>
+<meta content="33.0.1" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=33.0.0" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=33.0.0" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=33.0.0" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=33.0.0" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=33.0.1" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=33.0.1" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=33.0.1" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=33.0.1" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3405,7 +3405,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <style id="ta32-preload">@media screen{html:not(.ta32-login-ready) #login{visibility:hidden;animation:ta32vis 0s 2.4s forwards}@keyframes ta32vis{to{visibility:visible}}}</style>
 </head>
 <body>
-<!-- v33.0.0 — заставка при запуске: только оформление, ничего не блокирует (pointer-events: none), убирается сама -->
+<!-- v33.0.1 — заставка при запуске: только оформление, ничего не блокирует (pointer-events: none), убирается сама -->
 <div id="ta32Splash" aria-hidden="true"><style>#ta32Splash{position:fixed;inset:0;z-index:2147480000;pointer-events:none;display:grid;place-items:center;background:radial-gradient(60vmax 50vmax at 50% 42%,rgba(200,227,106,.10),rgba(200,227,106,0) 60%),#0F120D;transition:opacity .55s cubic-bezier(.2,.8,.2,1),visibility 0s .55s;animation:ta32spgone .5s 3.4s forwards}@keyframes ta32spgone{to{opacity:0;visibility:hidden}}#ta32Splash.out{opacity:0;visibility:hidden}#ta32Splash .sp-in{display:flex;flex-direction:column;align-items:center;gap:6px;transform:translateY(-4%)}#ta32Splash .sp-mark{width:min(46vw,220px);height:min(46vw,220px);display:grid;place-items:center}#ta32Splash .sp-word{font:600 clamp(26px,6.4vw,38px)/1.1 'Unbounded','Golos Text',system-ui,sans-serif;color:#EEF1E2;letter-spacing:-.01em;margin-top:6px}#ta32Splash .sp-sub{font:500 13px/1.4 'Golos Text',system-ui,sans-serif;color:#9AA08E}#ta32Splash .sp-bar{width:180px;height:3px;border-radius:3px;background:#232920;overflow:hidden;margin-top:18px}#ta32Splash .sp-bar i{display:block;height:100%;width:40%;border-radius:3px;background:linear-gradient(90deg,#9DBD45,#C8E36A,#EEF8B8);animation:ta32spbar 1.3s cubic-bezier(.4,0,.2,1) infinite}@keyframes ta32spbar{from{transform:translateX(-100%)}to{transform:translateX(250%)}}@media (prefers-reduced-motion:reduce){#ta32Splash{display:none}}@media print{#ta32Splash{display:none}}</style><div class="sp-in"><div class="sp-mark" id="ta32SplashMark"></div><div class="sp-word">Trade Agent</div><div class="sp-sub">Manager</div><div class="sp-bar"><i></i></div></div></div>
 <script>try{if(sessionStorage.getItem('ta32.splash')==='1')document.getElementById('ta32Splash').remove();else sessionStorage.setItem('ta32.splash','1')}catch(_){}</script>
 <!-- v29.1.3: stable 28.0.3 geometry restored; premium materials/icons refined without layout overrides. -->
@@ -3415,7 +3415,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v33.0.0</i>
+<i id="loginVersion">v33.0.1</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -3440,7 +3440,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v33.0.0</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v33.0.1</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -3537,7 +3537,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'33.0.0';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'33.0.1';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -14145,7 +14145,7 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='33.0.0';
+  var VER='33.0.1';
   var HINT_LOCKED='Заявка принята оператором — изменить или отменить можно только через оператора';
   var NEW_RET_REASONS=['Брак','Истёк срок годности','Короткий срок годности','Повреждена упаковка','Ошибка в заказе / пересорт','Клиент отказался'];
 
@@ -16853,5 +16853,100 @@ html.ta33-readonly #save,html.ta33-readonly #pOk,html.ta33-readonly #newClientSa
 /* ==== /v33 lic ==== */
 
 </script>
+<style id="ta3301-fit">
+/* ==== v33.0.1 fit ==== phones: nothing cut, covered or squeezed (Android 320–412, iPhone with notch / home indicator,
+   landscape). Presentation only, last style block of the page; the v33 look is kept. */
+
+/* 1. Bottom bar (Android): the 68 px buttons of the bar were cut by its fixed 62 px height — the bar now takes the
+      height of its buttons, as it already did on iPhone. */
+@media (max-width:699px){
+  html.ta32 #tabs{height:auto!important;min-height:0!important}
+}
+/* 2. Landscape with a notch: header, page, bar and sheets keep out of the side safe areas (portrait is unchanged) */
+@media (max-width:1023.98px) and (orientation:landscape){
+  html.ta32 #top{padding-left:max(12px,env(safe-area-inset-left))!important;padding-right:max(12px,env(safe-area-inset-right))!important}
+  html.ta32 #view{padding-left:max(16px,env(safe-area-inset-left))!important;padding-right:max(16px,env(safe-area-inset-right))!important}
+  html.ta32 #tabs{left:max(10px,env(safe-area-inset-left))!important;right:max(10px,env(safe-area-inset-right))!important}
+  html.ta32 .sheet{left:max(4vw,env(safe-area-inset-left))!important;right:max(4vw,env(safe-area-inset-right))!important}
+}
+/* phone held sideways (≈360 px high): a lower bottom bar, order actions scroll with the order instead of covering it */
+@media (max-width:1023.98px) and (max-height:500px) and (orientation:landscape){
+  html.ta32 #tabs{bottom:max(6px,env(safe-area-inset-bottom))!important;padding:4px!important}
+  html.ta32 #tabs>button{height:44px!important;min-height:44px!important}
+  html.ta32 #shBody .order-actions-primary{position:static!important}
+  /* cart «К оплате» bar: no empty 32 px under it, so the order lines keep room between the header and the bars */
+  html.ta32 #view .actbar.ref-order-act{padding:6px 12px!important}
+  html.ta32 #view .actbar.ref-order-act #save{min-height:40px!important;height:40px!important;padding-top:0!important;padding-bottom:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+}
+/* 3. Inputs at 16 px on touch screens: iPhone does not zoom the page when a field gets focus */
+@media (max-width:1023.98px) and (pointer:coarse){
+  html.ta32:not(#ta3301a):not(#ta3301b) body:not(#ta3301c) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=color]),select,textarea){font-size:16px!important}
+}
+
+/* 0. Login: the user list opened as an empty 14 px strip on phones (an old v31 «open upwards» rule set bottom while v32
+      sets top — both at once squeezed the list to nothing). The list opens downwards, as designed in v32. */
+html.ta32 #ta32Login .login-user-menu{bottom:auto!important;height:auto!important}
+html.ta32 #ta32Login .login-select-wrap.open{z-index:10040!important}  /* the open list lies above «Войти» (z 10020) */
+/* 100vh on phones is the height with the browser bars hidden: pop-ups use the visible height (dvh) where supported */
+@supports (height:1dvh){
+  html.ta32 .order-action-sheet{max-height:min(74dvh,700px)!important}
+  html.ta32 #ta32Login .login-user-menu{max-height:min(52dvh,360px)!important}
+}
+/* 4. Amounts never break, never get cut: they shrink with their card on small phones (container units, iOS 16+) */
+@supports (font-size:1cqi){
+  html.ta32 #view .kpi,html.ta32 #view .ta253-kpi,html.ta32 #view .actsum{container-type:inline-size}
+  html.ta32 #view .kpi>b{white-space:nowrap!important;font-size:clamp(13px,14cqi,20px)!important}
+  html.ta32 #view .ta253-kpi>b{white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(13px,12.5cqi,26px)!important}
+  html.ta32 #view .actsum>b,html.ta32 #view #actTot{overflow:visible!important;text-overflow:clip!important;font-size:clamp(13px,12.5cqi,19px)!important}
+}
+html.ta32 #view .actbar #save{flex:0 0 auto!important;padding-left:16px!important;padding-right:16px!important;white-space:nowrap!important}
+/* order / debt cards: number, status and sum wrap to a second line instead of pushing the sum out of the card */
+html.ta32 #view .item .h{flex-wrap:wrap!important;row-gap:5px!important}
+html.ta32 #view .item .h>.sum{margin-left:auto!important}
+html.ta32 #view .item .h>.no{min-width:0!important;overflow-wrap:anywhere}
+html.ta32 #view .item .h>.cl{flex:1 1 8em!important;min-width:0!important}
+/* payment history and similar «label … amount» rows */
+html.ta32 #shBody .sums>b,html.ta32 #view .sums>b{white-space:nowrap!important;flex:0 0 auto!important}
+html.ta32 #shBody .sums>span:first-child,html.ta32 #view .sums>span:first-child{min-width:0!important;flex:1 1 auto!important}
+html.ta32 .sums>.ta33-chip{flex:0 0 auto!important;white-space:nowrap!important}
+html.ta32 #trpWarn .note b,html.ta32 .note b{white-space:nowrap}
+/* reports: ranking names end with «…» instead of running under the amount */
+html.ta32 .ta22-rank>b{overflow:hidden!important;text-overflow:ellipsis!important}
+html.ta32 .ta22-rank>span{flex:0 0 auto!important;white-space:nowrap!important}
+
+/* 5. Order lines in the order sheet: the three numbers share the row (were 5 narrow columns) */
+@media (max-width:767px){
+  html.ta32 #shBody .order-detail table.t tbody tr{grid-template-columns:repeat(auto-fill,minmax(76px,1fr))!important}
+}
+
+/* 6. Catalog cards: the article wraps inside the card, steppers and layout buttons fit their frame */
+html.ta32 .ref-metarow{flex-wrap:wrap!important;row-gap:3px!important}
+html.ta32 .ref-metarow>.ref-sku{max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;height:auto!important}
+html.ta32 .ref-step>button,html.ta32 .ref-step>input{height:auto!important;min-height:0!important;align-self:stretch!important}
+html.ta32 #view .ref-toolbar .ref-layout>button{min-height:0!important;height:100%!important}
+
+/* 7. Sheets: return lines keep their text column (the quantity field took the whole row and covered the text) */
+html.ta32 #shBody input[data-ret]{width:76px!important;flex:0 0 76px!important}
+/* client picker: the «N заказ.» counter stays on one line next to the name */
+html.ta32 #shBody .client-pick-row>span{min-width:0!important;flex:1 1 auto!important}
+html.ta32 #shBody .client-pick-row>span>b{white-space:normal!important;overflow-wrap:anywhere}
+html.ta32 #shBody .client-pick-row>em{flex:0 0 auto!important;white-space:nowrap!important}
+/* menu cards: long titles («Пользователи») fit the card */
+@media (max-width:430px){
+  html.ta32 .ta26-menu-card{grid-template-columns:38px minmax(0,1fr)!important;column-gap:9px!important;padding-left:10px!important;padding-right:10px!important}
+}
+/* order bar buttons on 320 px: words are not broken («контрагент») */
+@media (max-width:359.98px){
+  html.ta32 #view .ref-order-bar .ref-order-btn{padding-left:5px!important;padding-right:5px!important;font-size:12px!important;overflow-wrap:normal!important;word-break:normal!important}
+}
+/* «Сегодня связаться»: «Позвонить» and «WhatsApp» side by side, «Отметить: связался» under them (words were broken) */
+@media (max-width:480px){
+  html.ta32 #shBody .cli33-acts{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html.ta32 #shBody .cli33-acts .cli33-mark{grid-column:1/-1!important}
+}
+html.ta32 #shBody .cli33-acts .btn{white-space:nowrap!important;padding-left:8px!important;padding-right:8px!important}
+/* ==== /v33.0.1 fit ==== */
+
+</style>
 </body>
 </html>
