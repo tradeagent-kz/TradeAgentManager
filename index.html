@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="34.0.1" name="app-version"/>
+<meta content="34.0.2" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=34.0.1" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=34.0.1" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=34.0.1" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=34.0.1" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=34.0.2" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=34.0.2" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=34.0.2" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=34.0.2" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3415,7 +3415,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v34.0.1</i>
+<i id="loginVersion">v34.0.2</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -3440,7 +3440,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.0.1</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.0.2</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -3537,7 +3537,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.0.1';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.0.2';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -7189,7 +7189,7 @@ function ta22DecorateCart(){const v=$('#view');if(!v)return;/* legacy toolbar in
 function ta22ImportOrder(){const inp=document.createElement('input');inp.type='file';inp.accept='.xlsx,.xls,.csv,.txt';inp.onchange=async()=>{const f=inp.files&&inp.files[0];if(!f)return;try{toast('Читаю файл…');let rows;if(/\.csv$|\.txt$/i.test(f.name)){rows=splitRows(await f.text())}else{await loadXLSX();const wb=XLSX.read(await f.arrayBuffer(),{type:'array',codepage:1251});rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:false,defval:''})}let hi=-1,ai=0,qi=1;for(let r=0;r<Math.min(20,rows.length);r++){const a=rows[r].map(x=>norm(x));const xa=a.findIndex(x=>/артик|sku|код/.test(x)),xq=a.findIndex(x=>/кол|qty|quantity/.test(x));if(xa>=0&&xq>=0){hi=r;ai=xa;qi=xq;break}}let ok=0,miss=0;for(let r=hi+1;r<rows.length;r++){const art=String(rows[r][ai]||'').trim(),q=Math.max(0,Math.floor(num(rows[r][qi])||0));if(!art||!q)continue;const p=PROD[art];if(!p){miss++;continue}const can=stockOf(art),take=Math.min(can,q);if(take>0){setQty(art,Math.min(can,(draft().items[art]||0)+take));ok++}}save();auditEvent23('импортировал заказ','заказ','черновик',ok+' позиций'+(miss?' · не найдено '+miss:''));closeSheet();render();toast('Импортировано '+ok+' поз.'+(miss?' · не найдено '+miss:''))}catch(e){toast('Ошибка импорта: '+String(e.message||e).slice(0,60))}};inp.click()}
 function ta22FindCode(code){code=String(code||'').trim();if(!code)return null;if(PROD[code])return PROD[code];const d=code.replace(/\D/g,'');if(PROD[d])return PROD[d];if(/^\d{13}$/.test(d)){const tail=d.slice(7,13);if(PROD[tail])return PROD[tail];const t2=tail.replace(/^0+/,'');if(t2&&PROD[t2])return PROD[t2]}const low=code.toLowerCase();return CATALOG.prods.find(p=>String(p.a).toLowerCase()===low)||null}
 function ta22LoadZxing(){return new Promise((res,rej)=>{if(window.ZXing&&window.ZXing.BrowserMultiFormatReader)return res(window.ZXing);const s=document.createElement('script');s.src='./vendor/zxing.min.js?v='+(typeof VER!=='undefined'?VER:'1');s.async=true;s.onload=()=>window.ZXing?res(window.ZXing):rej(new Error('ZXing'));s.onerror=()=>rej(new Error('Сканер камеры не загрузился'));document.head.appendChild(s)})}
-function ta22Scan(){sheet('Сканер товара',`<div class="note" id="scanNote22">Наведите камеру на штрихкод — товар добавится сам. Можно ввести артикул вручную.</div><video id="scanVideo22" playsinline muted autoplay style="width:100%;max-height:300px;border-radius:14px;background:#000;margin:9px 0" hidden></video><label class="f"><span>Артикул / штрихкод</span><input class="inp" id="scanManual22" inputmode="text" placeholder="Например 84004"></label><button class="btn pri" id="scanFind22">Найти и добавить</button>`);let stream=null,reader=null,done=false,lastCode='',lastAt=0;const note=t=>{const n=$('#scanNote22');if(n)n.textContent=t};const stopCam=()=>{done=true;try{reader&&reader.reset()}catch(_){}try{stream&&stream.getTracks().forEach(t=>t.stop())}catch(_){}};const add=code=>{const p=ta22FindCode(code);if(!p){toast('Товар не найден: '+String(code).trim());return false}if(stockOf(p.a)<=0){toast('Товара нет в наличии');return false}stopCam();setQty(p.a,(draft().items[p.a]||0)+1);save();auditEvent23('использовал сканер','товар',p.a,p.n);closeSheet();render();toast('Добавлено: '+p.n);return true};const onCode=code=>{const now=Date.now();if(done||(code===lastCode&&now-lastAt<1800))return;lastCode=code;lastAt=now;add(code)};$('#scanFind22').onclick=()=>add($('#scanManual22').value);const video=$('#scanVideo22');const watch=()=>{if(!document.body.contains(video)){stopCam();return true}return false};if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){note('Камера недоступна в этом браузере — введите артикул вручную.');return}navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false}).then(async s=>{stream=s;if(!document.body.contains(video)){stopCam();return}video.hidden=false;video.srcObject=s;try{await video.play()}catch(_){}if('BarcodeDetector'in window){let det;try{det=new BarcodeDetector({formats:['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','qr_code']})}catch(_){det=new BarcodeDetector()}const tick=async()=>{if(done||watch())return;try{if(video.readyState>=2){const r=await det.detect(video);if(r&&r[0]&&r[0].rawValue)onCode(r[0].rawValue)}}catch(_){}setTimeout(tick,150)};tick()}else{try{const Z=await ta22LoadZxing();if(done||watch())return;const hints=new Map();hints.set(Z.DecodeHintType.POSSIBLE_FORMATS,[Z.BarcodeFormat.EAN_13,Z.BarcodeFormat.EAN_8,Z.BarcodeFormat.CODE_128,Z.BarcodeFormat.CODE_39,Z.BarcodeFormat.UPC_A,Z.BarcodeFormat.ITF,Z.BarcodeFormat.QR_CODE]);reader=new Z.BrowserMultiFormatReader(hints,150);reader.decodeFromStream(s,video,res=>{if(watch())return;if(res)onCode(res.getText())})}catch(e){note('Сканер камеры не загрузился — обновите страницу или введите артикул вручную.')}}const guard=setInterval(()=>{if(watch()||done)clearInterval(guard)},500)}).catch(err=>{note('Камера не включилась: разрешите доступ к камере в настройках браузера (на iPhone: Настройки → Safari → Камера → Разрешить).')})}
+function ta22Scan(){sheet('Сканер товара',`<div class="note" id="scanNote22">Поднесите штрихкод близко (10–15 см), чтобы он занял почти всю ширину кадра, и держите 1–2 секунды — товар добавится сам. Можно ввести артикул вручную.</div><video id="scanVideo22" playsinline muted autoplay style="width:100%;max-height:300px;border-radius:14px;background:#000;margin:9px 0" hidden></video><label class="f"><span>Артикул / штрихкод</span><input class="inp" id="scanManual22" inputmode="text" placeholder="Например 84004"></label><button class="btn pri" id="scanFind22">Найти и добавить</button>`);let stream=null,reader=null,done=false,lastCode='',lastAt=0;const note=t=>{const n=$('#scanNote22');if(n)n.textContent=t};const stopCam=()=>{done=true;try{reader&&reader.reset()}catch(_){}try{stream&&stream.getTracks().forEach(t=>t.stop())}catch(_){}};const add=code=>{const p=ta22FindCode(code);if(!p){toast('Товар не найден: '+String(code).trim());return false}if(stockOf(p.a)<=0){toast('Товара нет в наличии');return false}stopCam();setQty(p.a,(draft().items[p.a]||0)+1);save();auditEvent23('использовал сканер','товар',p.a,p.n);closeSheet();render();toast('Добавлено: '+p.n);return true};const onCode=code=>{const now=Date.now();if(done||(code===lastCode&&now-lastAt<1800))return;lastCode=code;lastAt=now;add(code)};$('#scanFind22').onclick=()=>add($('#scanManual22').value);const video=$('#scanVideo22');const watch=()=>{if(!document.body.contains(video)){stopCam();return true}return false};if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){note('Камера недоступна в этом браузере — введите артикул вручную.');return}navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false}).then(async s=>{stream=s;if(!document.body.contains(video)){stopCam();return}video.hidden=false;video.srcObject=s;try{await video.play()}catch(_){}if('BarcodeDetector'in window){let det;try{det=new BarcodeDetector({formats:['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','qr_code']})}catch(_){det=new BarcodeDetector()}const tick=async()=>{if(done||watch())return;try{if(video.readyState>=2){const r=await det.detect(video);if(r&&r[0]&&r[0].rawValue)onCode(r[0].rawValue)}}catch(_){}setTimeout(tick,150)};tick()}else{try{const Z=await ta22LoadZxing();if(done||watch())return;const hints=new Map();hints.set(Z.DecodeHintType.TRY_HARDER,true);hints.set(Z.DecodeHintType.POSSIBLE_FORMATS,[Z.BarcodeFormat.EAN_13,Z.BarcodeFormat.EAN_8,Z.BarcodeFormat.CODE_128,Z.BarcodeFormat.CODE_39,Z.BarcodeFormat.UPC_A,Z.BarcodeFormat.UPC_E,Z.BarcodeFormat.ITF,Z.BarcodeFormat.QR_CODE]);const mr=new Z.MultiFormatReader();mr.setHints(hints);const cv=document.createElement('canvas');const cx=cv.getContext('2d',{willReadFrequently:true});let flip=0;const grab=()=>{if(done||watch())return;try{const vw=video.videoWidth,vh=video.videoHeight;if(vw&&vh){const cw=Math.round(vw*0.9),ch=Math.round(vh*(vw>vh?0.6:0.4));const sx=Math.round((vw-cw)/2),sy=Math.round((vh-ch)/2);const k=Math.min(1,1400/cw);cv.width=Math.round(cw*k);cv.height=Math.round(ch*k);cx.drawImage(video,sx,sy,cw,ch,0,0,cv.width,cv.height);const src=new Z.HTMLCanvasElementLuminanceSource(cv);const bin=(flip++%2)?new Z.GlobalHistogramBinarizer(src):new Z.HybridBinarizer(src);try{const res=mr.decodeWithState(new Z.BinaryBitmap(bin));if(res){onCode(res.getText())}}catch(_){}finally{mr.reset()}}}catch(_){}if(!done)setTimeout(grab,180)};grab()}catch(e){note('Сканер камеры не загрузился — обновите страницу или введите артикул вручную.')}}const guard=setInterval(()=>{if(watch()||done)clearInterval(guard)},500)}).catch(err=>{note('Камера не включилась: разрешите доступ к камере в настройках браузера (на iPhone: Настройки → Safari → Камера → Разрешить).')})}
 function ta22ApplyDiscount(){const pct=Math.max(0,Math.min(95,Number(prompt('Скидка на текущий заказ, %','10'))||0));if(!pct)return;const d=draft();cartLines().forEach(i=>{const p=PROD[i.a];if(p)d.prices[i.a]=Math.round(viewPriceBase(p)*(1-pct/100))});save();render();toast('Скидка '+pct+'% применена к заказу')}
 const _vCart22Legacy=vCart;vCart=function(){_vCart22Legacy();ta22DecorateCart()};
 
@@ -14147,7 +14147,7 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.0.1';
+  var VER='34.0.2';
   var HINT_LOCKED='Заявка принята оператором — изменить или отменить можно только через оператора';
   var NEW_RET_REASONS=['Брак','Истёк срок годности','Короткий срок годности','Повреждена упаковка','Ошибка в заказе / пересорт','Клиент отказался'];
 
@@ -17223,7 +17223,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.0.1';
+  var VER='34.0.2';
   var ROLE='warehouse';
 
   function isWh(){ try{ return !!ME&&String(ME.role||'').toLowerCase()===ROLE; }catch(_){ return false; } }
