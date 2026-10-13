@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="34.0.2" name="app-version"/>
+<meta content="34.0.3" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=34.0.2" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=34.0.2" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=34.0.2" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=34.0.2" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=34.0.3" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=34.0.3" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=34.0.3" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=34.0.3" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3415,7 +3415,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v34.0.2</i>
+<i id="loginVersion">v34.0.3</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -3440,7 +3440,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.0.2</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.0.3</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -3537,7 +3537,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.0.2';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.0.3';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -7189,7 +7189,31 @@ function ta22DecorateCart(){const v=$('#view');if(!v)return;/* legacy toolbar in
 function ta22ImportOrder(){const inp=document.createElement('input');inp.type='file';inp.accept='.xlsx,.xls,.csv,.txt';inp.onchange=async()=>{const f=inp.files&&inp.files[0];if(!f)return;try{toast('Читаю файл…');let rows;if(/\.csv$|\.txt$/i.test(f.name)){rows=splitRows(await f.text())}else{await loadXLSX();const wb=XLSX.read(await f.arrayBuffer(),{type:'array',codepage:1251});rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:false,defval:''})}let hi=-1,ai=0,qi=1;for(let r=0;r<Math.min(20,rows.length);r++){const a=rows[r].map(x=>norm(x));const xa=a.findIndex(x=>/артик|sku|код/.test(x)),xq=a.findIndex(x=>/кол|qty|quantity/.test(x));if(xa>=0&&xq>=0){hi=r;ai=xa;qi=xq;break}}let ok=0,miss=0;for(let r=hi+1;r<rows.length;r++){const art=String(rows[r][ai]||'').trim(),q=Math.max(0,Math.floor(num(rows[r][qi])||0));if(!art||!q)continue;const p=PROD[art];if(!p){miss++;continue}const can=stockOf(art),take=Math.min(can,q);if(take>0){setQty(art,Math.min(can,(draft().items[art]||0)+take));ok++}}save();auditEvent23('импортировал заказ','заказ','черновик',ok+' позиций'+(miss?' · не найдено '+miss:''));closeSheet();render();toast('Импортировано '+ok+' поз.'+(miss?' · не найдено '+miss:''))}catch(e){toast('Ошибка импорта: '+String(e.message||e).slice(0,60))}};inp.click()}
 function ta22FindCode(code){code=String(code||'').trim();if(!code)return null;if(PROD[code])return PROD[code];const d=code.replace(/\D/g,'');if(PROD[d])return PROD[d];if(/^\d{13}$/.test(d)){const tail=d.slice(7,13);if(PROD[tail])return PROD[tail];const t2=tail.replace(/^0+/,'');if(t2&&PROD[t2])return PROD[t2]}const low=code.toLowerCase();return CATALOG.prods.find(p=>String(p.a).toLowerCase()===low)||null}
 function ta22LoadZxing(){return new Promise((res,rej)=>{if(window.ZXing&&window.ZXing.BrowserMultiFormatReader)return res(window.ZXing);const s=document.createElement('script');s.src='./vendor/zxing.min.js?v='+(typeof VER!=='undefined'?VER:'1');s.async=true;s.onload=()=>window.ZXing?res(window.ZXing):rej(new Error('ZXing'));s.onerror=()=>rej(new Error('Сканер камеры не загрузился'));document.head.appendChild(s)})}
-function ta22Scan(){sheet('Сканер товара',`<div class="note" id="scanNote22">Поднесите штрихкод близко (10–15 см), чтобы он занял почти всю ширину кадра, и держите 1–2 секунды — товар добавится сам. Можно ввести артикул вручную.</div><video id="scanVideo22" playsinline muted autoplay style="width:100%;max-height:300px;border-radius:14px;background:#000;margin:9px 0" hidden></video><label class="f"><span>Артикул / штрихкод</span><input class="inp" id="scanManual22" inputmode="text" placeholder="Например 84004"></label><button class="btn pri" id="scanFind22">Найти и добавить</button>`);let stream=null,reader=null,done=false,lastCode='',lastAt=0;const note=t=>{const n=$('#scanNote22');if(n)n.textContent=t};const stopCam=()=>{done=true;try{reader&&reader.reset()}catch(_){}try{stream&&stream.getTracks().forEach(t=>t.stop())}catch(_){}};const add=code=>{const p=ta22FindCode(code);if(!p){toast('Товар не найден: '+String(code).trim());return false}if(stockOf(p.a)<=0){toast('Товара нет в наличии');return false}stopCam();setQty(p.a,(draft().items[p.a]||0)+1);save();auditEvent23('использовал сканер','товар',p.a,p.n);closeSheet();render();toast('Добавлено: '+p.n);return true};const onCode=code=>{const now=Date.now();if(done||(code===lastCode&&now-lastAt<1800))return;lastCode=code;lastAt=now;add(code)};$('#scanFind22').onclick=()=>add($('#scanManual22').value);const video=$('#scanVideo22');const watch=()=>{if(!document.body.contains(video)){stopCam();return true}return false};if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){note('Камера недоступна в этом браузере — введите артикул вручную.');return}navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false}).then(async s=>{stream=s;if(!document.body.contains(video)){stopCam();return}video.hidden=false;video.srcObject=s;try{await video.play()}catch(_){}if('BarcodeDetector'in window){let det;try{det=new BarcodeDetector({formats:['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','qr_code']})}catch(_){det=new BarcodeDetector()}const tick=async()=>{if(done||watch())return;try{if(video.readyState>=2){const r=await det.detect(video);if(r&&r[0]&&r[0].rawValue)onCode(r[0].rawValue)}}catch(_){}setTimeout(tick,150)};tick()}else{try{const Z=await ta22LoadZxing();if(done||watch())return;const hints=new Map();hints.set(Z.DecodeHintType.TRY_HARDER,true);hints.set(Z.DecodeHintType.POSSIBLE_FORMATS,[Z.BarcodeFormat.EAN_13,Z.BarcodeFormat.EAN_8,Z.BarcodeFormat.CODE_128,Z.BarcodeFormat.CODE_39,Z.BarcodeFormat.UPC_A,Z.BarcodeFormat.UPC_E,Z.BarcodeFormat.ITF,Z.BarcodeFormat.QR_CODE]);const mr=new Z.MultiFormatReader();mr.setHints(hints);const cv=document.createElement('canvas');const cx=cv.getContext('2d',{willReadFrequently:true});let flip=0;const grab=()=>{if(done||watch())return;try{const vw=video.videoWidth,vh=video.videoHeight;if(vw&&vh){const cw=Math.round(vw*0.9),ch=Math.round(vh*(vw>vh?0.6:0.4));const sx=Math.round((vw-cw)/2),sy=Math.round((vh-ch)/2);const k=Math.min(1,1400/cw);cv.width=Math.round(cw*k);cv.height=Math.round(ch*k);cx.drawImage(video,sx,sy,cw,ch,0,0,cv.width,cv.height);const src=new Z.HTMLCanvasElementLuminanceSource(cv);const bin=(flip++%2)?new Z.GlobalHistogramBinarizer(src):new Z.HybridBinarizer(src);try{const res=mr.decodeWithState(new Z.BinaryBitmap(bin));if(res){onCode(res.getText())}}catch(_){}finally{mr.reset()}}}catch(_){}if(!done)setTimeout(grab,180)};grab()}catch(e){note('Сканер камеры не загрузился — обновите страницу или введите артикул вручную.')}}const guard=setInterval(()=>{if(watch()||done)clearInterval(guard)},500)}).catch(err=>{note('Камера не включилась: разрешите доступ к камере в настройках браузера (на iPhone: Настройки → Safari → Камера → Разрешить).')})}
+function ta22Scan(){/* 34.0.3: камера не закрывается после товара — сканируйте подряд, «Готово» закрывает; общий сканер window.taScan */
+sheet('Сканер товара',`<div class="ta3403-cam" id="scanBox22" hidden><video id="scanVideo22" playsinline muted autoplay></video><div class="fr"></div><div class="ok" id="scanOk22"></div><div class="hint">Держите телефон на 20–30 см, штрихкод — в рамке; если размыто — отодвиньте чуть дальше</div><button type="button" class="tb" id="scanTorch22" hidden>Фонарик</button><button type="button" class="tb zb" id="scanZoom22" hidden>2×</button></div><div class="ta3403-msg" id="scanNote22">Держите телефон на 20–30 см, штрихкод — в рамке; если размыто — отодвиньте чуть дальше. Товар добавится сам. Сканируйте товары подряд, камера остаётся открытой. Можно ввести артикул вручную.</div><div class="ta3403-cnt"><b id="scanCnt22">Добавлено: 0</b><button type="button" class="btn pri" id="scanDone22">Готово</button></div><label class="f"><span>Артикул / штрихкод</span><input class="inp" id="scanManual22" inputmode="text" enterkeyhint="done" autocomplete="off" placeholder="Например 84004"></label><button type="button" class="btn" id="scanFind22">Найти и добавить</button>`);
+let h=null,stream=null,done=false,added=0,dirty=false,lastManual='',lastManualAt=0;
+const msg=(kind,t,sub)=>{const n=$('#scanNote22');if(!n)return;n.className='ta3403-msg '+(kind||'');n.innerHTML=esc(t)+(sub?'<small>'+esc(sub)+'</small>':'')};
+const stopCam=()=>{if(done)return;done=true;try{h&&h.stop()}catch(_){}try{stream&&stream.getTracks().forEach(t=>t.stop())}catch(_){}if(dirty){dirty=false;try{render()}catch(_){}}};
+const flash=()=>{const f=$('#scanOk22');if(!f)return;f.classList.remove('on');void f.offsetWidth;f.classList.add('on')};
+const add=raw=>{const code=String(raw||'').trim();if(!code)return false;const p=ta22FindCode(code);
+  if(!p){msg('warn','Код '+code+' не найден в каталоге','Проверьте товар или введите артикул вручную');window.taScan&&taScan.feedback('warn');return false}
+  const have=Number(draft().items[p.a]||0),st=stockOf(p.a);
+  if(st<=0){msg('err','Нет в наличии: '+p.n,'Товар не добавлен');window.taScan&&taScan.feedback(false);return false}
+  if(have>=st){msg('err','Больше нет на складе: '+p.n,'В заказе уже '+have+' из '+st+' шт.');window.taScan&&taScan.feedback(false);return false}
+  setQty(p.a,have+1);save();dirty=true;added++;auditEvent23('использовал сканер','товар',p.a,p.n);
+  const c=$('#scanCnt22');if(c)c.textContent='Добавлено: '+added;
+  msg('ok','✓ '+p.n,'В заказе: '+(have+1)+' шт. Сканируйте следующий товар.');flash();window.taScan&&taScan.feedback(true);return true};
+$('#scanDone22').onclick=()=>{stopCam();closeSheet();try{render()}catch(_){}if(added)toast('Добавлено товаров: '+added)};
+const manual=()=>{const i=$('#scanManual22');if(!i)return;const v=i.value;if(add(v))i.value='';else{try{i.select()}catch(_){}}};
+$('#scanFind22').onclick=manual;$('#scanManual22').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();manual()}};
+const box=$('#scanBox22'),video=$('#scanVideo22');
+const watch=()=>{if(!document.body.contains(video)||!$('#sheet').classList.contains('on')){stopCam();return true}return false};
+if(!window.taScan){msg('warn','Камера недоступна — введите артикул вручную.');return}
+taScan.camera().then(s=>{stream=s;if(done||watch()){stopCam();return}box.hidden=false;video.srcObject=s;const pl=video.play();if(pl&&pl.catch)pl.catch(()=>{});
+  h=taScan.start({video,stream:s,onCode:code=>{if(!done)add(code)},onFail:t=>msg('warn',t)});
+  const tb=$('#scanTorch22');if(h.hasTorch&&tb){tb.hidden=false;let on=false;tb.onclick=()=>{on=!on;h.torch(on);tb.classList.toggle('on',on)}}
+  const zb=$('#scanZoom22');if(h.zoomLevels&&zb){zb.hidden=false;const zt=()=>{zb.textContent=(Math.round(h.zoom*10)/10)+'×'};zt();zb.onclick=()=>{h.nextZoom();zt()}}
+  const guard=setInterval(()=>{if(watch()||done)clearInterval(guard)},500)}).catch(err=>{msg('warn',taScan.cameraError(err),'Артикул можно ввести вручную ниже.')})}
 function ta22ApplyDiscount(){const pct=Math.max(0,Math.min(95,Number(prompt('Скидка на текущий заказ, %','10'))||0));if(!pct)return;const d=draft();cartLines().forEach(i=>{const p=PROD[i.a];if(p)d.prices[i.a]=Math.round(viewPriceBase(p)*(1-pct/100))});save();render();toast('Скидка '+pct+'% применена к заказу')}
 const _vCart22Legacy=vCart;vCart=function(){_vCart22Legacy();ta22DecorateCart()};
 
@@ -14147,7 +14171,7 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.0.2';
+  var VER='34.0.3';
   var HINT_LOCKED='Заявка принята оператором — изменить или отменить можно только через оператора';
   var NEW_RET_REASONS=['Брак','Истёк срок годности','Короткий срок годности','Повреждена упаковка','Ошибка в заказе / пересорт','Клиент отказался'];
 
@@ -16950,6 +16974,204 @@ html.ta32 #shBody .cli33-acts .btn{white-space:nowrap!important;padding-left:8px
 /* ==== /v33.0.1 fit ==== */
 
 </style>
+<style id="ta3403-scan-style">
+/* 34.0.3 — сканер камерой в корзине администратора: рамка, подсказка, результат, счётчик «Добавлено» */
+.ta3403-cam{position:relative;border-radius:16px;overflow:hidden;background:#000;margin:6px 0 10px;height:min(46vh,300px)}
+.ta3403-cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ta3403-cam .fr{position:absolute;left:5%;right:5%;top:38%;height:30%;border:3px solid #DDF28A;border-radius:16px;box-shadow:0 0 0 200vmax rgba(0,0,0,.38);pointer-events:none}
+.ta3403-cam .hint{position:absolute;left:10px;right:10px;top:8px;text-align:center;font:600 13px/1.3 'Golos Text',sans-serif;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8);pointer-events:none}
+.ta3403-cam .tb{position:absolute;right:8px;bottom:8px;height:40px;padding:0 12px;border-radius:12px;background:rgba(20,24,16,.75);border:1px solid rgba(255,255,255,.2);color:#fff;font:600 13px/1 'Golos Text',sans-serif}
+.ta3403-cam .tb.zb{right:auto;left:8px;min-width:48px}
+.ta3403-cam .tb.on{background:#DDF28A;color:#141810}
+.ta3403-cam .ok{position:absolute;inset:0;pointer-events:none;opacity:0;box-shadow:inset 0 0 0 6px #7ED66B;background:rgba(126,214,107,.18)}
+.ta3403-cam .ok.on{animation:ta3403Flash .55s ease-out}
+@keyframes ta3403Flash{0%{opacity:1}100%{opacity:0}}
+.ta3403-msg{min-height:48px;border-radius:14px;padding:10px 12px;margin:0 0 10px;font:600 14px/1.35 'Golos Text',sans-serif;background:rgba(127,127,127,.12);border:1px solid rgba(127,127,127,.25);overflow-wrap:anywhere}
+.ta3403-msg small{display:block;font-weight:500;opacity:.8;margin-top:2px}
+.ta3403-msg.ok{background:rgba(126,214,107,.16);border-color:#7ED66B}
+.ta3403-msg.warn{background:rgba(240,170,60,.16);border-color:#E9A23B}
+.ta3403-msg.err{background:rgba(240,110,90,.16);border-color:#E86F5A}
+.ta3403-cnt{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.ta3403-cnt b{flex:1;font:700 16px/1.2 'Golos Text',sans-serif}
+.ta3403-cnt .btn{flex:0 0 132px;width:132px!important;min-width:0;margin:0}
+.ta3403-cnt b{white-space:nowrap}
+</style>
+<script id="ta3403-scan">
+/* =====================================================================
+   Trade Agent Manager 34.0.3 — один сканер камерой для всего приложения (window.taScan).
+   Android (Chrome): BarcodeDetector. iPhone (Safari, BarcodeDetector нет): свой цикл ZXing —
+   центральная полоса кадра каждые 180 мс, TRY_HARDER, по очереди HybridBinarizer / GlobalHistogram,
+   каждый 3-й кадр — повернутый на 90° (вертикальный штрихкод). Один и тот же код не чаще раза
+   в 1,5 с и не повторяется, пока его держат перед камерой. Звук + вибрация общие (настройка
+   «Звук сканера» склада). Используют: сканер корзины (ta22Scan) и склад (кладовщик).
+   ===================================================================== */
+(function(){
+  'use strict';
+  var VER='34.0.3';
+  var FORMATS=['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','qr_code','data_matrix'];
+  function soundOn(){ try{ var v=localStorage.getItem('ta34.wms.sound'); return v?JSON.parse(v)!==false:true; }catch(_){ return true; } }
+  var AC=null;
+  function audio(){ try{ if(!AC){ var C=window.AudioContext||window.webkitAudioContext; if(!C)return null; AC=new C(); } if(AC.state==='suspended')AC.resume(); return AC; }catch(_){ return null; } }
+  function tone(freq,dur,type,vol,delay){
+    var a=audio(); if(!a)return;
+    try{ var t=a.currentTime+(delay||0), o=a.createOscillator(), g=a.createGain(); o.type=type||'sine'; o.frequency.setValueAtTime(freq,t);
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.16,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.02); }catch(_){}
+  }
+  /* ok: true — товар найден; 'warn' — код прочитан, но товара нет; false — ошибка */
+  function beep(ok){ if(!soundOn())return; if(ok===true){ tone(1568,0.07,'sine',0.14); tone(2093,0.09,'sine',0.11,0.06); } else if(ok==='warn'){ tone(523,0.12,'triangle',0.12); tone(392,0.16,'triangle',0.1,0.12); } else { tone(196,0.22,'square',0.07); tone(147,0.2,'square',0.06,0.16); } }
+  function vibe(ok){ try{ if(navigator.vibrate)navigator.vibrate(ok===true?40:ok==='warn'?[60,50,60]:[90,60,110]); }catch(_){} }
+  function feedback(ok){ beep(ok); vibe(ok); }
+  function loadZxing(){
+    return new Promise(function(res,rej){
+      if(window.ZXing&&window.ZXing.MultiFormatReader)return res(window.ZXing);
+      var s=document.createElement('script'); s.src='./vendor/zxing.min.js?v='+VER; s.async=true;
+      s.onload=function(){ window.ZXing?res(window.ZXing):rej(new Error('ZXing')); }; s.onerror=function(){ rej(new Error('Сканер камеры не загрузился')); };
+      document.head.appendChild(s);
+    });
+  }
+  var HINT='Держите телефон на 20–30 см, штрихкод — в рамке; если размыто — отодвиньте чуть дальше';
+  var ZKEY='ta3403.scan.zoom';
+  function zoomWanted(){ try{ var v=Number(JSON.parse(localStorage.getItem(ZKEY)||'2')); return v>=1&&v<=10?v:2; }catch(_){ return 2; } }
+  function isIOS(){ var u=navigator.userAgent||''; return /iPhone|iPad|iPod/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1); }
+  /* iPhone: several back cameras — never the ultra-wide (cannot focus close); the virtual «Dual Wide / Triple» camera
+     (iOS 17+) switches to macro by itself, so it is preferred. Labels are known only after the camera was allowed once. */
+  function pickBack(list){
+    var back=list.filter(function(d){ return /back|rear|environment|задн|тыл/i.test(d.label||''); });
+    if(back.length<2)return null;
+    var ok=back.filter(function(d){ return !/ultra|сверхшир/i.test(d.label); });
+    var virt=ok.filter(function(d){ return /dual wide|triple|двойн.*широк|тройн/i.test(d.label); })[0];
+    if(virt)return virt.deviceId;
+    var plain=ok.filter(function(d){ return !/telephoto|теле/i.test(d.label); })[0]||ok[0];
+    return plain?plain.deviceId:null;
+  }
+  async function camera(){
+    var md=navigator.mediaDevices;
+    if(!md||!md.getUserMedia)throw new Error('Камера недоступна в этом браузере');
+    var base={facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}, c=Object.assign({},base), id=null;
+    try{ if(isIOS()&&md.enumerateDevices){ id=pickBack((await md.enumerateDevices()).filter(function(d){ return d.kind==='videoinput'; })); } }catch(_){}
+    if(id){ c.deviceId={exact:id}; delete c.facingMode; }
+    try{ var sc=md.getSupportedConstraints&&md.getSupportedConstraints(); if(sc&&sc.zoom)c.advanced=[{zoom:zoomWanted()}]; }catch(_){}
+    try{ return await md.getUserMedia({video:c,audio:false}); }
+    catch(e){ if(/NotAllowed|Security/.test(String(e&&e.name||''))||c===base)throw e; return md.getUserMedia({video:base,audio:false}); }
+  }
+  /* focus / exposure / white balance continuous, focus point in the centre, zoom ≈ 2× — each on its own, never breaks the scan */
+  function tune(h){
+    var t=h.track, caps={}, sc={}; h.applied=[];
+    try{ caps=(t&&t.getCapabilities&&t.getCapabilities())||{}; }catch(_){ caps={}; }
+    try{ sc=(navigator.mediaDevices.getSupportedConstraints&&navigator.mediaDevices.getSupportedConstraints())||{}; }catch(_){}
+    function has(list,v){ return !!(list&&list.indexOf&&list.indexOf(v)>=0); }
+    function put(x){ try{ var p=t.applyConstraints({advanced:[x]}); h.applied.push(x); if(p&&p.catch)p.catch(function(){}); }catch(_){} }
+    h.hasTorch=!!caps.torch;
+    if(!t||!t.applyConstraints)return;
+    if(has(caps.focusMode,'continuous'))put({focusMode:'continuous'});
+    if(has(caps.exposureMode,'continuous'))put({exposureMode:'continuous'});
+    if(has(caps.whiteBalanceMode,'continuous'))put({whiteBalanceMode:'continuous'});
+    if('pointsOfInterest' in caps||sc.pointsOfInterest)put({pointsOfInterest:[{x:0.5,y:0.5}]});
+    var z=caps.zoom;
+    if(z&&typeof z==='object'&&isFinite(z.max)&&z.max>(z.min||1)){
+      var mn=isFinite(z.min)?z.min:1, mx=z.max;
+      h.zoomCaps={min:mn,max:mx};
+      h.zoomLevels=[1,2,3].filter(function(v){ return v>=mn-0.01&&v<=mx+0.01; });
+      if(h.zoomLevels.length<2)h.zoomLevels=null;
+      h.setZoom(zoomWanted(),true);
+    }
+  }
+  function cameraError(err){
+    var n=String(err&&err.name||''), ios=/iPhone|iPad|iPod/.test(navigator.userAgent||'');
+    if(/NotAllowed|Security/.test(n))return 'Нет доступа к камере. Разрешите камеру для этого сайта'+(ios?' (Настройки → Safari → Камера → Разрешить)':' (значок замка в адресной строке → Камера)')+' и откройте сканер снова.';
+    if(/NotFound|Overconstrained/.test(n))return 'Камера не найдена на этом устройстве.';
+    if(/NotReadable|Abort/.test(n))return 'Камера занята другим приложением. Закройте его и откройте сканер снова.';
+    return String(err&&err.message||err||'Камера не включилась').slice(0,120);
+  }
+  /* d.video, d.stream — уже открытые; d.onCode(code) — для каждого НОВОГО кода; d.onFail(msg) */
+  function start(d){
+    var h={stopped:false,timer:null,track:null,engine:'',lastCode:'',lastOk:0,lastSeen:0,ticks:0,hits:0,
+      stop:function(){ h.stopped=true; clearTimeout(h.timer); try{ if(d.stream)d.stream.getTracks().forEach(function(t){ t.stop(); }); }catch(_){} },
+      hasTorch:false,
+      torch:function(on){ try{ return h.track.applyConstraints({advanced:[{torch:!!on}]}); }catch(_){ return Promise.resolve(); } }};
+    var video=d.video;
+    try{ h.track=d.stream.getVideoTracks()[0]; }catch(_){}
+    h.zoom=1; h.zoomCaps=null; h.zoomLevels=null;
+    h.setZoom=function(v,initial){
+      if(!h.zoomCaps)return h.zoom;
+      v=Math.min(h.zoomCaps.max,Math.max(h.zoomCaps.min,Number(v)||1));
+      try{ var p=h.track.applyConstraints({advanced:[{zoom:v}]}); if(p&&p.catch)p.catch(function(){}); h.zoom=v; if(initial)h.applied.push({zoom:v}); }catch(_){}
+      if(!initial){ try{ localStorage.setItem(ZKEY,JSON.stringify(v)); }catch(_){} }
+      return h.zoom;
+    };
+    h.nextZoom=function(){ var L=h.zoomLevels; if(!L)return h.zoom; var i=L.findIndex(function(x){ return Math.abs(x-h.zoom)<0.05; }); return h.setZoom(L[(i+1)%L.length]); };
+    try{ tune(h); }catch(_){}
+    function seen(code){
+      code=String(code||'').trim(); if(!code||h.stopped)return;
+      var now=Date.now();
+      h.hits++;
+      /* тот же код: не чаще раза в 1,5 с и не повторно, пока его держат перед камерой (ZXing на iPhone читает не каждый кадр — окно шире) */
+      var hold=h.engine==='zxing'?1500:900;
+      if(code===h.lastCode&&(now-h.lastOk<1500||now-h.lastSeen<hold)){ h.lastSeen=now; return; }
+      h.lastCode=code; h.lastOk=now; h.lastSeen=now;
+      try{ d.onCode(code); }catch(e){ try{console.error('scan',e)}catch(_){} }
+    }
+    h.seen=seen;
+    audio(); var unlock=function(){ audio(); document.removeEventListener('pointerdown',unlock,true); }; document.addEventListener('pointerdown',unlock,true);   /* iPhone: sound only after a tap */
+    async function viaDetector(){
+      var formats=FORMATS.slice();
+      try{ var sup=await window.BarcodeDetector.getSupportedFormats(); if(Array.isArray(sup)){ formats=formats.filter(function(f){ return sup.indexOf(f)>=0; }); if(!formats.length)return false; } }catch(_){}
+      var det; try{ det=new window.BarcodeDetector({formats:formats}); }catch(_){ try{ det=new window.BarcodeDetector(); }catch(__){ return false; } }
+      h.engine='detector';
+      var tick=async function(){
+        if(h.stopped)return;
+        try{ if(video.readyState>=2){ var r=await det.detect(video); h.ticks++; if(r&&r[0]&&r[0].rawValue)seen(r[0].rawValue); } }catch(_){}
+        if(!h.stopped)h.timer=setTimeout(tick,110);
+      };
+      tick(); return true;
+    }
+    async function viaZxing(){
+      var Z=await loadZxing(); if(h.stopped)return;
+      var hints=new Map(); hints.set(Z.DecodeHintType.TRY_HARDER,true);
+      hints.set(Z.DecodeHintType.POSSIBLE_FORMATS,[Z.BarcodeFormat.EAN_13,Z.BarcodeFormat.EAN_8,Z.BarcodeFormat.CODE_128,Z.BarcodeFormat.CODE_39,Z.BarcodeFormat.UPC_A,Z.BarcodeFormat.UPC_E,Z.BarcodeFormat.ITF,Z.BarcodeFormat.QR_CODE]);
+      var mr=new Z.MultiFormatReader(); mr.setHints(hints);
+      var cv=document.createElement('canvas'), cx=cv.getContext('2d',{willReadFrequently:true}), n=0;
+      h.engine='zxing';
+      var grab=function(){
+        if(h.stopped)return;
+        try{
+          var vw=video.videoWidth, vh=video.videoHeight;
+          if(vw&&vh&&video.readyState>=2){
+            var i=n++, full=(i%4===3), rot=!full&&(i%3===2), k, sx, sy, sw, sh;
+            cx.setTransform(1,0,0,1,0,0);
+            if(full){   /* весь кадр (с зумом штрихкод может не уместиться в полосу) */
+              k=Math.min(1,1400/Math.max(vw,vh)); cv.width=Math.round(vw*k); cv.height=Math.round(vh*k); cx.drawImage(video,0,0,vw,vh,0,0,cv.width,cv.height);
+            }else if(!rot){   /* центральная полоса: 90 % ширины */
+              sw=Math.round(vw*0.9); sh=Math.round(vh*(vw>vh?0.6:0.4)); sx=Math.round((vw-sw)/2); sy=Math.round((vh-sh)/2); k=Math.min(1,1400/sw);
+              cv.width=Math.round(sw*k); cv.height=Math.round(sh*k); cx.drawImage(video,sx,sy,sw,sh,0,0,cv.width,cv.height);
+            }else{      /* вертикальный штрихкод: высокая полоса в центре, поворот на 90° */
+              sw=Math.round(Math.min(vw,vh)*0.6); sh=Math.round(vh*0.9); sx=Math.round((vw-sw)/2); sy=Math.round((vh-sh)/2); k=Math.min(1,1400/sh);
+              cv.width=Math.round(sh*k); cv.height=Math.round(sw*k);
+              cx.translate(cv.width/2,cv.height/2); cx.rotate(-Math.PI/2); cx.drawImage(video,sx,sy,sw,sh,-sw*k/2,-sh*k/2,sw*k,sh*k); cx.setTransform(1,0,0,1,0,0);
+            }
+            var src=new Z.HTMLCanvasElementLuminanceSource(cv);
+            var bin=(i%2)?new Z.GlobalHistogramBinarizer(src):new Z.HybridBinarizer(src);
+            h.ticks++;
+            try{ var res=mr.decodeWithState(new Z.BinaryBitmap(bin)); if(res)seen(res.getText()); }catch(_){} finally{ try{ mr.reset(); }catch(_){} }
+          }
+        }catch(_){}
+        if(!h.stopped)h.timer=setTimeout(grab,180);
+      };
+      grab();
+    }
+    (async function(){
+      try{
+        var ok=false;
+        if('BarcodeDetector' in window&&window.BarcodeDetector)ok=await viaDetector();
+        if(!ok&&!h.stopped)await viaZxing();
+      }catch(e){ if(d.onFail)d.onFail('Сканер камеры не загрузился — обновите страницу или введите код вручную.'); }
+    })();
+    return h;
+  }
+  window.taScan={hint:HINT,zoomWanted:zoomWanted,pickBack:pickBack,version:VER,start:start,camera:camera,cameraError:cameraError,loadZxing:loadZxing,beep:beep,vibe:vibe,feedback:feedback,audio:audio,soundOn:soundOn};
+})();
+</script>
 <style id="ta34-wms-style">
 /* =====================================================================
    Trade Agent Manager 34.0.0 — «Склад»: режим кладовщика на телефоне (роль users/{uid}.role = 'warehouse').
@@ -17183,14 +17405,15 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 .wms-cam{position:absolute;inset:0;z-index:75;background:#000;display:flex;flex-direction:column;animation:wmsFade .2s}
 .wms-cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .wms-cam .shade{display:none}
-.wms-cam .frame{position:absolute;left:12%;right:12%;top:31%;height:24%;border-radius:22px;pointer-events:none;box-shadow:0 0 0 2px rgba(221,242,138,.28),0 0 0 200vmax rgba(0,0,0,.42)}
+.wms-cam .frame{position:absolute;left:5%;right:5%;top:36%;height:15%;border-radius:22px;pointer-events:none;box-shadow:0 0 0 2px rgba(221,242,138,.28),0 0 0 200vmax rgba(0,0,0,.42)}
 .wms-cam .frame:before,.wms-cam .frame:after{content:'';position:absolute;inset:-2px;border-radius:22px;border:3px solid #DDF28A;
   -webkit-mask:linear-gradient(#000 0 0) top/100% 26px no-repeat,linear-gradient(#000 0 0) bottom/100% 26px no-repeat;mask:linear-gradient(#000 0 0) top/100% 26px no-repeat,linear-gradient(#000 0 0) bottom/100% 26px no-repeat;clip-path:polygon(0 0,22% 0,22% 100%,0 100%,0 0,100% 0,100% 100%,78% 100%,78% 0)}
-.wms-cam .laser{position:absolute;left:14%;right:14%;top:43%;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#DDF28A,transparent);box-shadow:0 0 14px #C8E36A;animation:wmsLaser 1.8s ease-in-out infinite}
-@keyframes wmsLaser{0%,100%{transform:translateY(-44px);opacity:.4}50%{transform:translateY(44px);opacity:1}}
+.wms-cam .laser{position:absolute;left:8%;right:8%;top:43.5%;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#DDF28A,transparent);box-shadow:0 0 14px #C8E36A;animation:wmsLaser 1.8s ease-in-out infinite}
+@keyframes wmsLaser{0%,100%{transform:translateY(-36px);opacity:.4}50%{transform:translateY(36px);opacity:1}}
 .wms-cam .bar{position:relative;z-index:2;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;background:linear-gradient(180deg,rgba(0,0,0,.6),transparent)}
 .wms-cam .bar b{flex:1;font:600 16px/1.2 'Unbounded','Golos Text',sans-serif;color:#fff}
 .wms-cam .rb{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:rgba(20,24,16,.7);border:1px solid rgba(255,255,255,.14);color:#fff}
+.wms-cam .rb.zb{width:auto;min-width:48px;padding:0 10px;font:700 15px/1 'Golos Text',sans-serif}
 .wms-cam .rb.on{background:#DDF28A;color:#141810}
 .wms-cam .rb svg{width:24px;height:24px}
 .wms-cam .res{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:2;border-radius:22px;padding:14px 16px;
@@ -17201,6 +17424,28 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 .wms-cam .res span{flex:1;min-width:0;font:600 14.5px/1.35 'Golos Text',sans-serif;color:#EEF1E2}
 .wms-cam .res small{display:block;font-weight:500;color:#9AA08E;font-size:12.5px;margin-top:2px}
 .wms-cam .manual{position:absolute;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 104px);z-index:2;height:42px;padding:0 14px;border-radius:14px;background:rgba(20,24,16,.75);border:1px solid rgba(255,255,255,.14);color:#fff;font:600 13px/1 'Golos Text',sans-serif}
+/* ---- 34.0.3: orange «code not found», quantity sheet, camera hint and «Готово», bigger buttons ---- */
+.wms-flash.wwarn{background:rgba(233,162,59,.14);box-shadow:inset 0 0 0 8px rgba(233,162,59,.95);animation:wmsFlash .7s ease-out}
+.wms-toast.wwarn{border-color:#6A4F1E}.wms-toast.wwarn i{background:#2C2516;color:#F2C97E}
+.wms-cam .res.wwarn{border-color:#E9A23B}.wms-cam .res.wwarn i{background:#2C2516;color:#F2C97E}
+.wms-cam .res.wpop{animation:wmsPop .3s cubic-bezier(.22,.8,.24,1)}
+@keyframes wmsPop{0%{transform:scale(.96)}60%{transform:scale(1.02)}100%{transform:none}}
+.wms-cam .tip{position:absolute;left:16px;right:16px;bottom:calc(64% + 10px);z-index:2;text-align:center;font:700 15px/1.3 'Golos Text',sans-serif;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.85);pointer-events:none}
+.wms-cam .cacts{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 104px);z-index:2;display:flex;gap:10px}
+.wms-cam .cacts button{flex:1 1 0;min-width:0;height:52px;border-radius:16px;font:700 15px/1 'Golos Text',sans-serif;white-space:nowrap}
+.wms-cam .cacts .manual{position:static;background:rgba(20,24,16,.8);border:1px solid rgba(255,255,255,.18);color:#fff;height:52px;font-size:15px}
+.wms-cam .cacts .cdone{background:linear-gradient(180deg,#DDF28A,#B4CE57);color:#141810;border:1px solid #C8E36A}
+#wms.has-cam .wms-shade{z-index:76}#wms.has-cam .wms-sheet{z-index:77}
+.wms-more button{height:46px;padding:0 16px;border-radius:14px;font-size:14px}
+.wms-more button.wbox{background:#1A2630;border-color:#26394A;color:#A9D2EA}
+.wms-more button.wall{background:#2A3318;border-color:#4A5A2A;color:#DDF28A}
+.wms-qs-after{margin:-4px 2px 12px;text-align:center;font:600 14px/1.3 'Golos Text',sans-serif;color:#9AA08E}
+.wms-qs-after b{color:#EEF1E2}.wms-qs-after em{font-style:normal;color:#F2C97E;margin-left:6px}.wms-qs-after em.ok{color:#9BD37F}
+.wms-sheet.wms-qs .wms-kp .wkok{font-size:16px}
+.wms-kp .wpk{font:700 14px/1.1 'Golos Text',sans-serif;color:#A9D2EA;background:#1A2630;border-color:#26394A}
+.wms-kp button[disabled]{opacity:.35}
+.wms-kp-disp b.wms-bump{animation:wmsPop .3s}
+@media (max-width:370px){.wms-kp button{height:56px}.wms-kp-disp{height:72px}.wms-kp-disp b{font-size:38px;line-height:72px}.wms-sheet.wms-qs .wms-kp .wkok{font-size:14.5px}}
 @media (prefers-reduced-motion:reduce){#wms *{animation:none!important;transition:none!important}}
 @media (min-width:720px){.wms-main{padding-left:max(16px,calc(50% - 330px));padding-right:max(16px,calc(50% - 330px))}.wms-bar{padding-left:max(16px,calc(50% - 330px));padding-right:max(16px,calc(50% - 330px))}.wms-grid{grid-template-columns:1fr 1fr 1fr}.wms-tile.whero{grid-column:1/-1}}
 @media (max-width:359px){.wms-tile .wn{font-size:28px}.wms-tile.whero .wn{font-size:36px}.wms-cur .qq b{font-size:40px}.wms-chip{padding:0 8px}}
@@ -17223,7 +17468,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.0.2';
+  var VER='34.0.3';
   var ROLE='warehouse';
 
   function isWh(){ try{ return !!ME&&String(ME.role||'').toLowerCase()===ROLE; }catch(_){ return false; } }
@@ -17293,20 +17538,22 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.16,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
       o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.02); }catch(_){}
   }
-  function beep(ok){ if(!soundOn())return; if(ok){ tone(1568,0.07,'sine',0.14); tone(2093,0.09,'sine',0.11,0.06); } else { tone(196,0.22,'square',0.07); tone(147,0.2,'square',0.06,0.16); } }
-  function vibe(ok){ try{ if(navigator.vibrate)navigator.vibrate(ok?30:[90,60,110]); }catch(_){} }
-  function flash(ok){ var f=byId('wmsFlash'); if(!f)return; f.className='wms-flash'; void f.offsetWidth; f.className='wms-flash '+(ok?'wok':'werr'); }
+  function beep(ok){ if(window.taScan)return window.taScan.beep(ok); if(!soundOn())return; if(ok===true){ tone(1568,0.07,'sine',0.14); tone(2093,0.09,'sine',0.11,0.06); } else { tone(196,0.22,'square',0.07); tone(147,0.2,'square',0.06,0.16); } }
+  function vibe(ok){ if(window.taScan)return window.taScan.vibe(ok); try{ if(navigator.vibrate)navigator.vibrate(ok===true?30:[90,60,110]); }catch(_){} }
+  function flash(ok){ var f=byId('wmsFlash'); if(!f)return; f.className='wms-flash'; void f.offsetWidth; f.className='wms-flash '+(ok===true?'wok':ok==='warn'?'wwarn':'werr'); }
   function good(){ beep(true); vibe(true); flash(true); }
-  function bad(msg,sub){ beep(false); vibe(false); flash(false); if(msg)toast(msg,sub,'err'); var c=document.querySelector('#wms .wms-cur'); if(c){ c.classList.remove('wms-miss'); void c.offsetWidth; c.classList.add('wms-miss'); } camResult(false,msg,sub); }
+  /* 34.0.3: warn — код прочитан, но такого товара нет (оранжевым, с самим кодом); иначе — ошибка (красным) */
+  function bad(msg,sub,warn){ var k=warn?'warn':false; beep(k); vibe(k); flash(k); if(msg&&!S.camera)toast(msg,sub,warn?'warn':'err');   /* camera open: the message is in its result card (no double message) */ var c=document.querySelector('#wms .wms-cur'); if(c){ c.classList.remove('wms-miss'); void c.offsetWidth; c.classList.add('wms-miss'); } camResult(k,msg,sub); }
+  function unknown(code,sub){ return bad('Код '+code+' не найден в каталоге',sub||'Проверьте товар или введите код вручную',true); }
   function toast(msg,sub,kind,action){
     var box=byId('wmsToasts'); if(!box)return;
     while(box.children.length>=2)box.removeChild(box.firstChild);
-    var t=document.createElement('div'); t.className='wms-toast '+(kind==='err'?'werr':kind==='ok'?'wok':'');
-    t.innerHTML='<i>'+(kind==='err'?'!':kind==='ok'?'✓':'i')+'</i><span>'+E(msg)+(sub?'<small>'+E(sub)+'</small>':'')+'</span>'+(action?'<button type="button">'+E(action.text)+'</button>':'');
+    var t=document.createElement('div'); t.className='wms-toast '+(kind==='err'?'werr':kind==='ok'?'wok':kind==='warn'?'wwarn':'');
+    t.innerHTML='<i>'+(kind==='err'||kind==='warn'?'!':kind==='ok'?'✓':'i')+'</i><span>'+E(msg)+(sub?'<small>'+E(sub)+'</small>':'')+'</span>'+(action?'<button type="button">'+E(action.text)+'</button>':'');
     if(action){ t.querySelector('button').onclick=function(e){ e.stopPropagation(); try{action.run()}catch(_){} t.remove(); }; }
     t.onclick=function(){ t.remove(); };
     box.appendChild(t);
-    setTimeout(function(){ t.classList.add('out'); setTimeout(function(){ t.remove(); },220); },action?9000:kind==='err'?5200:3000);
+    setTimeout(function(){ t.classList.add('out'); setTimeout(function(){ t.remove(); },220); },action?9000:kind==='err'||kind==='warn'?5200:3000);
   }
 
   /* ---------------------------------------------------------------- queue (IndexedDB, fallback localStorage) */
@@ -17470,7 +17717,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       +'<input id="wmsHid" type="text" inputmode="none" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="-1" aria-hidden="true">';
     document.body.appendChild(root);
     byId('wmsFab').onclick=function(){ openCamera(); };
-    root.addEventListener('pointerdown',function(){ audio(); },{passive:true});
+    root.addEventListener('pointerdown',function(){ if(window.taScan)window.taScan.audio(); else audio(); },{passive:true});
     root.addEventListener('click',onClick);
     root.addEventListener('pointerup',function(e){ if(!e.target.closest('input,textarea,select,.wms-sheet,.wms-cam'))focusHid(); });
     S.tasks=lsGet(key('tasks'),null); S.stock=lsGet(key('stock'),null);
@@ -17492,8 +17739,9 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   function focusHid(){ try{ var h=byId('wmsHid'); if(h&&!S.camera&&!document.querySelector('#wms .wms-sheet')&&document.activeElement!==h)h.focus({preventScroll:true}); }catch(_){} }
 
   /* ---------------------------------------------------------------- navigation */
+  function dropSheet(){ if(document.querySelector('#wms .wms-sheet')){ S.qs=null; closeSheet2(); } }
   function nav(view,id){
-    flushPick();
+    flushPick(); dropSheet();
     S.view=view; S.id=id||null; S.sel=null; S.showDone=false;
     try{ history.pushState({wms:view,id:id||null},''); }catch(_){}
     if(/^(order|po|count|move)$/.test(view))keepAwake(); else releaseWake();
@@ -17501,7 +17749,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   }
   function back(){ try{ if(history.state&&history.state.wms&&history.state.wms!=='home'){ history.back(); return; } }catch(_){} goUp(); }
   function goUp(){
-    flushPick();
+    flushPick(); dropSheet();
     var up={order:'pick',po:'recv',count:'inv'}[S.view]||'home';
     S.view=up; S.id=null; S.sel=null; if(up==='home'||up==='pick'||up==='recv'||up==='inv')releaseWake(); repaint(true);
   }
@@ -17513,8 +17761,8 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     else { try{ history.pushState({wms:S.view,id:S.id},''); }catch(_){} }
   });
   function closeTop(){
+    var sh=document.querySelector('#wms .wms-sheet'); if(sh){ S.qs=null; closeSheet2(); return true; }
     if(S.camera){ closeCamera(); return true; }
-    var sh=document.querySelector('#wms .wms-sheet'); if(sh){ closeSheet2(); return true; }
     return false;
   }
 
@@ -17537,7 +17785,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   window.addEventListener('keydown',function(e){
     if(!S.mounted)return;
     var t=e.target;
-    if(t&&t.id!=='wmsHid'&&t.closest&&t.closest('input,textarea,select,[contenteditable="true"]'))return;   /* a real text field: normal typing */
+    if(t&&t.id!=='wmsHid'&&t.closest&&t.closest('input:not([type="date"]),textarea,select,[contenteditable="true"]'))return;   /* a real text field: normal typing (34.0.3: not the date field — a scanner there must still scan) */
     if(e.ctrlKey||e.metaKey||e.altKey)return;
     var now=Date.now();
     if(e.key==='Enter'||e.key==='Tab'){
@@ -17610,8 +17858,10 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   function scan(code,src){
     code=String(code||'').trim(); if(!code)return;
     var now=Date.now();
-    if(src==='cam'&&code===S.lastCode&&now-S.lastAt<1600)return;       /* the camera sees the same code many times */
-    S.lastCode=code; S.lastAt=now;
+    if(src==='cam'&&code===S.lastCode&&now-S.lastAt<1500)return;       /* the camera sees the same code many times (the engine filters too) */
+    if(src==='cam'&&S.qs&&document.querySelector('#wms .wms-sheet'))return;   /* 34.0.3: the quantity sheet is open — the camera waits */
+    var osh=document.querySelector('#wms .wms-sheet'); if(osh&&!osh.classList.contains('wms-qs')&&/^(order|move|stock|home)$/.test(S.view))closeSheet2();   /* a stale keypad / menu would hide the result */
+    S.lastCode=code; S.lastAt=now; S.unit=null;
     var v=S.view;
     if(v==='order')return scanPick(code);
     if(v==='po')return scanRecv(code);
@@ -17623,30 +17873,87 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     var o=findOrder(S.id); if(!o)return bad('Заказ уже не в сборке');
     if(orderSent(o))return bad('Заказ уже отправлен как собранный');
     var m=match(code,o.lines||[]);
-    if(!m){ var p=catalogFind(code); return p?bad('Нет в заказе: '+p.n,'Отложите этот товар'):bad('Штрихкод '+code+' не найден','Проверьте товар или введите код вручную'); }
+    if(!m){ var p=catalogFind(code); return p?bad('Нет в заказе: '+p.n,'Отложите этот товар — он не из этого заказа'):unknown(code); }
     var l=m.it, have=scanned(o,l), need=num(l.q);
-    if(have+m.qty>need){ S.sel=l.p; repaint(); return bad(have>=need?'Уже собрано: '+q(need)+' из '+q(need):'Больше, чем в заказе: нужно ещё '+q(need-have),l.n); }
+    if(have+m.qty>need){ S.sel=l.p; repaint(); return bad(have>=need?'Уже собрано: '+q(need)+' из '+q(need)+' — лишний, отложите':'Больше, чем в заказе: нужно ещё '+q(need-have)+(m.pack?' (в упаковке '+q(m.qty)+')':''),l.n); }
+    if(!m.pack&&num(l.pq)>1)S.unit=l.p;   /* 34.0.3: one unit of a line packed in boxes — the card offers «Это коробка» */
     addPick(o,l,m.qty); S.sel=l.p; good(); repaint(); hit(l.p);
     camResult(true,l.n,(m.pack?'Упаковка +'+q(m.qty)+' · ':'')+q(have+m.qty)+' из '+q(need));
   }
+  /* 34.0.3 (правило владельца): приём и пересчёт — отсканировал товар → ввёл количество → «Сохранить позицию» → следующий */
   function scanRecv(code){
     var po=findPo(S.id); if(!po)return bad('Заказ поставщику уже закрыт');
     if(po.wait||recvSent(po))return bad('Этот приход уже отправлен');
     var m=match(code,po.lines||[]);
-    if(!m){ var p=catalogFind(code); return p?bad('Нет в заказе поставщику: '+p.n,'Отложите — оператор оформит отдельно'):bad('Штрихкод '+code+' не найден'); }
-    var l=m.it, got=recvGot(po,l)+m.qty; setRecv(po,l,got); S.sel=l.p; good(); repaint(); hit(l.p);
-    if(got>num(l.q))toast('Сверх заказа: '+q(got)+' из '+q(l.q),l.n);
-    camResult(true,l.n,(m.pack?'Упаковка +'+q(m.qty)+' · ':'')+'принято '+q(got)+' из '+q(l.q));
+    if(!m){ var p=catalogFind(code); return p?bad('Нет в заказе поставщику: '+p.n,'Отложите — оператор оформит отдельно'):unknown(code); }
+    qtyScan('recv',po,m);
   }
   function scanInv(code){
     var d=findInv(S.id); if(!d)return bad('Пересчёт уже закрыт');
     var m=match(code,d.lines||[]);
-    if(!m){ var p=catalogFind(code); return p?bad('Товара нет в этом пересчёте: '+p.n):bad('Штрихкод '+code+' не найден'); }
-    var l=m.it, c=(invCount(d,l)||0)+m.qty; setInv(d,l,c); S.sel=l.p; good(); repaint(); hit(l.p);
-    camResult(true,l.n,(m.pack?'Упаковка +'+q(m.qty)+' · ':'')+'посчитано '+q(c));
+    if(!m){ var p=catalogFind(code); return p?bad('Товара нет в этом пересчёте: '+p.n,'Отложите его в сторону'):unknown(code); }
+    qtyScan('inv',d,m);
+  }
+  function qsOpen(){ return S.qs&&document.querySelector('#wms .wms-sheet.wms-qs')?S.qs:null; }
+  function qtyScan(mode,doc,m){
+    var open=qsOpen();
+    if(open&&open.doc.id===doc.id&&open.l.p===m.it.p){ open.bump(m.qty,m.pack); good(); return; }   /* the same product again: + one (or a pack) */
+    if(open)open.save(true);                                                                       /* another product: the open one is saved */
+    S.sel=m.it.p; repaint(); hit(m.it.p); good();
+    qtySheet(mode,doc,m.it,m.qty,m.pack);
+    camResult(true,m.it.n,'Введите количество и нажмите «Сохранить позицию»');
+  }
+  function qtySheet(mode,doc,l,first,pack){
+    var recv=mode==='recv', blind=!!T().blind, pq=num(l.pq)>1?num(l.pq):0;
+    var have=recv?recvGot(doc,l):(invCount(doc,l)||0), need=recv?num(l.q):null, left=recv?Math.max(0,need-have):0;
+    var val=String(first||1), fresh=true, pd=recv?recvDate(doc,l):'';
+    var st={mode:mode,doc:doc,l:l};
+    var sh=sheet('<h3>'+E(l.n||'Товар')+'</h3><p>'+E(codeOf(l))+'<br>'+(recv?'Уже принято: <b>'+q(have)+'</b> из '+q(need):(have?'Уже посчитано: <b>'+q(have)+'</b>':'Ещё не считали'))+(pq?' · в коробке '+q(pq)+' шт':'')+'</p>'
+      +'<div class="wms-lbl">'+(recv?'Сколько штук пришло':'Сколько штук насчитали')+'</div>'
+      +'<div class="wms-kp-disp"><b id="qsV">'+E(val)+'</b><span>шт</span></div><div class="wms-qs-after" id="qsAfter"></div>'
+      +'<div class="wms-kp">'
+      +['1','2','3','⌫','4','5','6','+1','7','8','9','pack'].map(function(k){ return k==='pack'?'<button type="button" class="fn wpk" data-k="pack"'+(pq?'':' disabled')+'>'+(pq?'+ коробка<br>'+q(pq):'коробка —')+'</button>':'<button type="button" class="'+('⌫+1'.indexOf(k)>=0?'fn':'')+'" data-k="'+k+'">'+k+'</button>'; }).join('')
+      +(recv?'<button type="button" class="fn all" data-k="left"'+(left?'':' disabled')+'>'+(left?'Всё · '+q(left):'Всё')+'</button>':'<button type="button" class="fn" data-k="clr">Сброс</button>')
+      +'<button type="button" data-k="0">0</button><button type="button" class="wkok" data-k="ok">Сохранить позицию</button></div>'
+      +(recv?'<label class="wf"><span>Дата производства (если есть на упаковке)</span><input class="in" id="qsPd" type="date" max="'+isoToday()+'" value="'+E(pd||'')+'"></label>':'')
+      +'<div class="acts"><button type="button" class="wms-btn" id="qsNo">Отмена</button></div>',function(el){ el.classList.add('wms-qs'); });
+    var disp=sh.querySelector('#qsV'), after=sh.querySelector('#qsAfter'), pdi=sh.querySelector('#qsPd');
+    if(pdi)pdi.onchange=function(){ try{ pdi.blur(); }catch(_){} };   /* the date is picked — the scanner works again */
+    function cur(){ return val===''?0:Number(val); }
+    function show(){ disp.textContent=q(cur()); var t=have+cur();
+      after.innerHTML='Станет: <b>'+q(t)+'</b>'+(recv?' из '+q(need)+(t>need?' <em>сверх заказа '+q(t-need)+'</em>':t===need?' <em class="ok">как в заказе</em>':''):' шт');
+    }
+    st.bump=function(n){ val=String(cur()+num(n)); fresh=true; st.bumped=true; show(); disp.classList.remove('wms-bump'); void disp.offsetWidth; disp.classList.add('wms-bump'); };
+    st.save=function(silent){
+      var add=cur(); S.qs=null;
+      var pdv=recv&&sh.querySelector('#qsPd')?sh.querySelector('#qsPd').value:'';
+      if(pdv&&pdv>isoToday()){ toast('Дата производства не может быть в будущем','', 'err'); if(!silent){ S.qs=st; return; } pdv=''; }
+      closeSheet2();
+      if(add>0||(recv&&pdv!==(pd||''))){
+        if(recv)setRecv(doc,l,have+add,pdv||(pd||'')); else setInv(doc,l,have+add);
+        if(!silent)good();
+        toast((recv?'Сохранено: принято ':'Сохранено: посчитано ')+q(have+add)+' шт'+(recv&&have+add>need?' — сверх заказа '+q(have+add-need):''),l.n,'ok');
+      }
+      S.sel=l.p; repaint(); hit(l.p);
+    };
+    S.qs=st;
+    sh.querySelectorAll('[data-k]').forEach(function(btn){ btn.onclick=function(){
+      var k=btn.getAttribute('data-k');
+      if(/^\d$/.test(k)){ val=(fresh||val==='0'?'':val)+k; fresh=false; if(val.length>6)val=val.slice(0,6); }
+      else if(k==='⌫'){ val=fresh?'':String(val).slice(0,-1); fresh=false; }
+      else if(k==='+1'){ val=String(cur()+1); fresh=false; }
+      else if(k==='pack'){ if(pq){ val=String((fresh&&!pack&&!st.bumped?0:cur())+pq); fresh=false; } }   /* one unit scanned on a box → the box */
+      else if(k==='left'){ val=String(left); fresh=false; }
+      else if(k==='clr'){ val=''; fresh=false; }
+      else if(k==='ok'){ st.save(false); return; }
+      show();
+    }; });
+    sh.querySelector('#qsNo').onclick=function(){ S.qs=null; closeSheet2(); };
+    show();
+    return st;
   }
   function scanMove(code){
-    var it=catalogFind(code); if(!it)return bad('Штрихкод '+code+' не найден',S.stock?'':'Остатки ещё загружаются');
+    var it=catalogFind(code); if(!it)return unknown(code,S.stock?'':'Остатки ещё загружаются');
     var mv=W().move; if(!mv.from)return bad('Сначала выберите склад «Откуда»');
     var m=match(code,[it]), add=m?m.qty:1, cur=num(mv.lines[it.p]), av=avail(it,mv.from);
     if(av!=null&&cur+add>av)return bad('На складе «'+whName(mv.from)+'» есть только '+q(av),it.n);
@@ -17655,7 +17962,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   }
   function scanStock(code){
     var it=catalogFind(code);
-    if(!it){ if(S.view!=='stock'){ S.view='stock'; try{history.pushState({wms:'stock'},'')}catch(_){} } S.stockPick=null; S.stockQuery=code; repaint(true); return bad('Штрихкод '+code+' не найден',S.stock?'':'Остатки ещё загружаются'); }
+    if(!it){ if(S.view!=='stock'){ S.view='stock'; try{history.pushState({wms:'stock'},'')}catch(_){} } S.stockPick=null; S.stockQuery=code; repaint(true); return unknown(code,S.stock?'':'Остатки ещё загружаются'); }
     good(); S.stockPick=it.p; S.stockQuery=''; var r=W().recent.filter(function(x){return x!==it.p}); r.unshift(it.p); W().recent=r.slice(0,12); saveWork();
     if(S.view!=='stock'){ S.view='stock'; try{history.pushState({wms:'stock'},'')}catch(_){} }
     repaint(true); camResult(true,it.n,stockLine(it));
@@ -17685,7 +17992,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     var box=byId('wmsChips'); if(!box)return;
     var off=navigator.onLine===false||!S.netOk, n=pending(), s=waiting(), h='';
     if(n>0)h+='<span class="wms-chip q" title="Операции сохранены на телефоне и уйдут сами, когда будет сеть"><i></i>В очереди: '+n+'</span>';
-    else if(s>0)h+='<span class="wms-chip s" title="Отправлено, ждём ответ сервера: '+s+'">'+ic('share')+s+'</span>';
+    else if(s>0)h+='<span class="wms-chip s" title="Отправлено, ждём ответ сервера: '+s+'">'+ic('share')+'ждёт '+s+'</span>';
     if(off&&n===0)h+='<span class="wms-chip off" title="Нет сети — работа сохраняется на телефоне"><i></i>Нет сети</span>';
     else if(off)h=h.replace('class="wms-chip q"','class="wms-chip q off"');
     if(box.innerHTML!==h)box.innerHTML=h;
@@ -17788,7 +18095,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       +'<div class="big">'+q(s.got)+'<small>из '+q(s.need)+' шт · '+s.done+'/'+s.lines+' строк</small></div></div></div>';
     if(shipBadge(o))h=h.replace('<div class="tx">','<div class="tx"><div style="margin-bottom:6px">'+shipBadge(o)+'</div>');
     if(sent)h+='<div class="wms-note" style="margin-bottom:12px"><b>Отправлено как собранный</b>Ждём подтверждение сервера — заказ исчезнет из списка.</div>';
-    h+=curCard(cur?{k:'Сейчас',n:cur.n,cd:codeOf(cur),got:scanned(o,cur),need:num(cur.q),unit:cur.u,life:cur.life,mode:'pick'}:null,'Сканируйте товар заказа','Bluetooth-сканер работает сразу. Или камера — кнопка внизу справа.');
+    h+=curCard(cur?{k:'Сейчас',n:cur.n,cd:codeOf(cur),got:scanned(o,cur),need:num(cur.q),unit:cur.u,life:cur.life,mode:'pick',pq:cur.pq}:null,'Сканируйте товар заказа','Bluetooth-сканер работает сразу. Или нажмите кнопку с камерой внизу слева.');
     h+='<div class="wms-h">Собрать <em>'+todo.length+'</em></div>';
     if(!todo.length)h+='<div class="wms-note" style="border-color:#3A4A2A"><b>Всё отсканировано ✓</b>Нажмите «Готово» — заказ уйдёт на отгрузку.</div>';
     todo.forEach(function(l){ h+=lineRow(l,scanned(o,l),num(l.q),'pick'); });
@@ -17806,7 +18113,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     var qty=mode==='inv'?(got==null?'<span class="qty"><small>—</small></span>':'<span class="qty">'+q(got)+(need!=null?'<small> / '+q(need)+'</small>':'')+'</span>')
       :need==null?'<span class="qty">'+q(got)+'<small> шт</small></span>'
       :'<span class="qty'+(over?' wover':ok?' wok':'')+'">'+q(got)+'<small> / '+q(need)+'</small></span>';
-    var tags=(l.life?lifeBadge(l.life):'')+(mode==='recv'&&l._pd?'<span class="wms-badge bb">'+ic('cal').replace('<svg','<svg style="width:12px;height:12px;margin-right:4px"')+ddmmyyyy(l._pd)+'</span>':'')+(num(l.pq)>1?'<span class="wms-badge bm">упак. '+q(l.pq)+'</span>':'');
+    var tags=(l.life?lifeBadge(l.life):'')+(mode==='recv'&&l._pd?'<span class="wms-badge bb">'+ic('cal').replace('<svg','<svg style="width:12px;height:12px;margin-right:4px"')+ddmmyyyy(l._pd)+'</span>':'')+(num(l.pq)>1?'<span class="wms-badge bm">в коробке '+q(l.pq)+'</span>':'');
     return '<button type="button" class="wms-line'+(S.sel===l.p?' cur':'')+(ok&&mode!=='inv'&&mode!=='move'?' done':'')+'" data-line="'+E(l.p)+'" data-a="sel:'+E(l.p)+'">'
       +'<span><span class="nm">'+E(l.n||'Товар')+'</span><span class="cd">'+E(codeOf(l))+'</span>'+(tags?'<span class="tags">'+tags+'</span>':'')+'</span>'+qty
       +(mode==='inv'||mode==='move'?'':'<span class="bar"><i class="'+(ok?'wok':'')+'" style="width:'+pct+'%"></i></span>')+'</button>';
@@ -17820,9 +18127,10 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       +(c.life?'<div style="margin-top:6px">'+lifeBadge(c.life)+'</div>':'')
       +'<div class="qq"><b>'+q(c.got)+'</b>'+(c.need!=null&&c.mode!=='inv'&&c.mode!=='move'?'<span>/ '+q(c.need)+'</span>':'<span>шт</span>')+right+'</div>'
       +'<div class="wms-pad"><button type="button" data-a="minus" aria-label="Минус один" title="−1">−</button>'
-      +'<button type="button" class="wnum" data-a="keypad" title="Ввести число"><b>'+q(c.got)+'</b>ввести число</button>'
+      +'<button type="button" class="wnum" data-a="keypad" title="Ввести число"><b>'+q(c.got)+'</b>'+(c.mode==='pick'?'ввести число':'исправить число')+'</button>'
       +'<button type="button" data-a="plus" aria-label="Плюс один" title="+1">+</button></div>'
-      +'<div class="wms-more">'+(c.need!=null&&c.mode!=='inv'?'<button type="button" data-a="all">Все · '+q(c.need)+'</button>':'')
+      +'<div class="wms-more">'+(c.need!=null&&c.mode!=='inv'?'<button type="button" class="wall" data-a="all">Все · '+q(c.need)+' шт</button>':'')
+      +(num(c.pq)>1?(S.unit&&S.unit===S.sel&&c.mode==='pick'&&c.got>0?'<button type="button" class="wbox" data-a="box1">Это была коробка · '+q(c.pq)+' шт</button>':'<button type="button" class="wbox" data-a="pack">+ коробка · '+q(c.pq)+' шт</button>'):'')
       +(c.mode==='recv'?'<button type="button" data-a="pdate">'+(c.pd?'Произведён '+ddmmyyyy(c.pd):'Дата производства')+'</button>':'')
       +(c.mode==='move'?'<button type="button" data-a="rm">Убрать</button>':'')+'</div></div>';
     return h;
@@ -17851,7 +18159,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       +'<div class="big">'+q(got+more)+'<small>из '+q(need)+' шт'+(more?' · сверх '+q(more):'')+'</small></div></div></div>';
     if(po.wait)h+='<div class="wms-note" style="margin-bottom:12px"><b>Приход '+E(po.wait)+' ждёт проведения</b>Оператор проведёт его в Trade Agent Desktop. Повторно принимать не нужно.</div>';
     else if(sent)h+='<div class="wms-note" style="margin-bottom:12px"><b>Приход отправлен</b>Ждём подтверждение сервера.</div>';
-    h+=curCard(cur?{k:'Сейчас',n:cur.n,cd:codeOf(cur),got:recvGot(po,cur),need:num(cur.q),mode:'recv',pd:cur._pd}:null,'Сканируйте поступивший товар','Каждое сканирование +1, штрихкод упаковки — вся упаковка.');
+    h+=curCard(cur?{k:'Сейчас',n:cur.n,cd:codeOf(cur),got:recvGot(po,cur),need:num(cur.q),mode:'recv',pd:cur._pd,pq:cur.pq}:null,'Сканируйте поступивший товар','Потом введите, сколько штук пришло, и нажмите «Сохранить позицию». Камера — кнопка внизу слева.');
     var todo=lines.filter(function(l){ return recvGot(po,l)<num(l.q); }), done=lines.filter(function(l){ return recvGot(po,l)>=num(l.q); });
     h+='<div class="wms-h">Ждём <em>'+todo.length+'</em></div>';
     todo.forEach(function(l){ h+=lineRow(l,recvGot(po,l),num(l.q),'recv'); });
@@ -17880,7 +18188,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     var cnt=lines.filter(function(l){ return invCount(d,l)!=null; }).length;
     var h='<div class="wms-head"><span>'+ring(cnt,lines.length,64)+'</span><div class="tx"><b>'+E(d.whName||'')+'</b><span>'+E(d.no)+(blind?' · вслепую':'')+'</span>'
       +'<div class="big">'+cnt+'<small>из '+lines.length+' товаров посчитано</small></div></div></div>';
-    h+=curCard(cur?{k:'Считаю',n:cur.n,cd:codeOf(cur),got:invCount(d,cur)||0,need:blind?null:(cur.e!=null?num(cur.e):null),mode:'inv'}:null,'Сканируйте каждую единицу','Сканер прибавляет по одной. Число можно ввести кнопкой на карточке.');
+    h+=curCard(cur?{k:'Считаю',n:cur.n,cd:codeOf(cur),got:invCount(d,cur)||0,need:blind?null:(cur.e!=null?num(cur.e):null),mode:'inv',pq:cur.pq}:null,'Сканируйте товар','Потом введите, сколько штук насчитали, и нажмите «Сохранить позицию». Камера — кнопка внизу слева.');
     var todo=lines.filter(function(l){ return invCount(d,l)==null; }), done=lines.filter(function(l){ return invCount(d,l)!=null; });
     h+='<div class="wms-h">Не посчитано <em>'+todo.length+'</em></div>';
     if(!todo.length)h+='<div class="wms-note">Все товары посчитаны.'+(ch.length?' Отправьте результат.':'')+'</div>';
@@ -17901,7 +18209,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     h+='<div class="wms-lbl">Куда</div><div class="wms-seg">'+to.map(function(w){ return '<button type="button" class="'+(mv.to===w.id?'on':'')+'" data-a="to:'+w.id+'">'+E(w.n)+'</button>'; }).join('')+'</div>';
     var ids=Object.keys(mv.lines).filter(function(p){ return num(mv.lines[p])>0; }), all=prods(), items=ids.map(function(p){ return all.find(function(x){return x.p===p}); }).filter(Boolean);
     var cur=items.find(function(x){return x.p===S.sel})||null, total=ids.reduce(function(s,p){ return s+num(mv.lines[p]); },0);
-    h+='<div style="height:6px"></div>'+curCard(cur?{k:'Перемещаю',n:cur.n,cd:codeOf(cur),got:num(mv.lines[cur.p]),need:null,mode:'move',av:avail(cur,mv.from)}:null,'Сканируйте товар','Товар добавится в перемещение. Повторное сканирование +1.');
+    h+='<div style="height:6px"></div>'+curCard(cur?{k:'Перемещаю',n:cur.n,cd:codeOf(cur),got:num(mv.lines[cur.p]),need:null,mode:'move',av:avail(cur,mv.from),pq:cur.pq}:null,'Сканируйте товар','Товар добавится в перемещение. Повторное сканирование +1.');
     h+='<div class="wms-h">В перемещении <em>'+items.length+'</em></div>';
     if(!items.length)h+='<div class="wms-note">Пока пусто.</div>';
     items.forEach(function(it){ h+=lineRow(it,num(mv.lines[it.p]),null,'move'); });
@@ -17960,11 +18268,13 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       case 'menu': openMenu(); break;
       case 'go': nav(arg); break;
       case 'open': var p=arg.indexOf(':'); nav(arg.slice(0,p),arg.slice(p+1)); break;
-      case 'sel': S.sel=S.sel===arg?null:arg; repaint(); break;
+      case 'sel': S.unit=null; S.sel=S.sel===arg?null:arg; repaint(); break;
       case 'fold': S.showDone=!S.showDone; repaint(); break;
       case 'plus': step(1); break;
       case 'minus': step(-1); break;
       case 'all': setAll(); break;
+      case 'pack': var cc=current(), pk=cc&&num((cc.l||cc.it||{}).pq); S.unit=null; if(pk>1)setTo(cc,cc.got+pk); break;
+      case 'box1': var cb=current(), pb=cb&&num((cb.l||cb.it||{}).pq); S.unit=null; if(pb>1&&cb.got>0)setTo(cb,cb.got-1+pb); break;   /* the scanned «1» was a whole box */
       case 'keypad': keypad(); break;
       case 'pdate': pickDate(); break;
       case 'rm': if(S.view==='move'&&S.sel){ delete W().move.lines[S.sel]; S.sel=null; saveWork(); repaint(); } break;
@@ -17997,8 +18307,8 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     else if(c.it){ var mv=W().move, av=avail(c.it,mv.from); if(av!=null&&v>av)return bad('На складе есть только '+q(av),c.it.n); if(v>0)mv.lines[c.it.p]=v; else { delete mv.lines[c.it.p]; S.sel=null; } saveWork(); good(); }
     repaint(); if(S.sel)hit(S.sel);
   }
-  function step(d){ var c=current(); if(!c)return; if(c.got+d<0)return; setTo(c,c.got+d); }
-  function setAll(){ var c=current(); if(!c||c.need==null)return; setTo(c,c.need); }
+  function step(d){ S.unit=null; var c=current(); if(!c)return; if(c.got+d<0)return; setTo(c,c.got+d); }
+  function setAll(){ S.unit=null; var c=current(); if(!c||c.need==null)return; setTo(c,c.need); }
 
   /* ---------------------------------------------------------------- sheets */
   function sheet(html,onMount){
@@ -18013,7 +18323,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   function keypad(){
     var c=current(); if(!c)return;
     var val='', name=(c.l||c.it).n;
-    var sh=sheet('<h3>'+E(name)+'</h3><p>'+(c.need!=null?'Нужно '+q(c.need)+' · сейчас '+q(c.got):'Сейчас '+q(c.got))+'</p>'
+    var sh=sheet('<h3>'+E(name)+'</h3><p>'+(c.need!=null?'Нужно '+q(c.need)+' · сейчас '+q(c.got):'Сейчас '+q(c.got))+'<br>Наберите, сколько <b>всего</b>, и нажмите «Готово».</p>'
       +'<div class="wms-kp-disp"><b id="kpV">'+q(c.got)+'</b><span>шт</span></div><div class="wms-kp">'
       +['1','2','3','−','4','5','6','+','7','8','9','⌫'].map(function(k){ return '<button type="button" class="'+('−+⌫'.indexOf(k)>=0?'fn':'')+'" data-k="'+k+'">'+k+'</button>'; }).join('')
       +'<button type="button" class="fn all" data-k="all"'+(c.need==null?' disabled style="opacity:.35"':'')+'>Все</button><button type="button" data-k="0">0</button><button type="button" class="wkok" data-k="ok">Готово</button></div>');
@@ -18026,7 +18336,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       else if(k==='+'){ val=String(v+1); }
       else if(k==='−'){ val=String(Math.max(0,v-1)); }
       else if(k==='all'){ if(c.need!=null)val=String(c.need); }
-      else if(k==='ok'){ closeSheet2(); setTo(c,val===''?cur:Number(val)); return; }
+      else if(k==='ok'){ S.unit=null; closeSheet2(); setTo(c,val===''?cur:Number(val)); return; }
       show();
     }; });
   }
@@ -18146,68 +18456,50 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   /* ---------------------------------------------------------------- camera */
   function camResult(ok,title,sub){
     var r=document.querySelector('#wms .wms-cam .res'); if(!r)return;
-    r.className='res '+(ok?'wok':'werr'); r.innerHTML='<i>'+(ok?'✓':'!')+'</i><span>'+E(title||'')+(sub?'<small>'+E(sub)+'</small>':'')+'</span>';
+    r.className='res '+(ok===true?'wok':ok==='warn'?'wwarn':'werr'); r.innerHTML='<i>'+(ok===true?'✓':'!')+'</i><span>'+E(title||'')+(sub?'<small>'+E(sub)+'</small>':'')+'</span>';
+    r.classList.remove('wpop'); void r.offsetWidth; r.classList.add('wpop');
   }
-  function loadZxing(){
-    return new Promise(function(res,rej){
-      if(window.ZXing&&window.ZXing.BrowserMultiFormatReader)return res(window.ZXing);
-      var s=document.createElement('script'); s.src='./vendor/zxing.min.js?v='+VER; s.async=true;
-      s.onload=function(){ window.ZXing?res(window.ZXing):rej(new Error('ZXing')); }; s.onerror=function(){ rej(new Error('Сканер камеры не загрузился')); };
-      document.head.appendChild(s);
-    });
-  }
+  /* 34.0.3: one shared camera scanner (window.taScan): BarcodeDetector on Android, the robust ZXing loop on iPhone */
   async function openCamera(){
     if(S.camera)return;
     flushPick();
     var root=byId('wms'), box=document.createElement('div');
     box.className='wms-cam'; box.setAttribute('role','dialog'); box.setAttribute('aria-label','Сканер камерой');
-    box.innerHTML='<video playsinline muted autoplay></video><div class="shade"></div><div class="frame"></div><div class="laser"></div>'
+    box.innerHTML='<video playsinline muted autoplay></video><div class="shade"></div><div class="tip">Держите телефон на 20–30 см, штрихкод — в рамке; если размыто — отодвиньте чуть дальше</div><div class="frame"></div><div class="laser"></div>'
       +'<div class="bar"><button type="button" class="rb" data-c="x" aria-label="Закрыть" title="Закрыть">'+ic('x')+'</button><b>'+({order:'Сборка',po:'Приём',count:'Пересчёт',move:'Перемещение'}[S.view]||'Остатки')+'</b>'
+      +'<button type="button" class="rb zb" data-c="zoom" aria-label="Приближение" title="Приближение" hidden>2×</button>'
       +'<button type="button" class="rb" data-c="torch" aria-label="Фонарик" title="Фонарик" hidden>'+ic('torch')+'</button></div>'
-      +'<button type="button" class="manual" data-c="manual">'+ic('kbd').replace('<svg','<svg style="width:16px;height:16px;margin-right:6px;vertical-align:-3px"')+'Ввести код</button>'
-      +'<div class="res"><i>'+ic('scan').replace('<svg','<svg style="width:22px;height:22px"')+'</i><span>Наведите камеру на штрихкод<small>Сканирую непрерывно — можно по очереди</small></span></div>';
+      +'<div class="cacts"><button type="button" class="manual" data-c="manual">'+ic('kbd').replace('<svg','<svg style="width:18px;height:18px;margin-right:6px;vertical-align:-4px"')+'Ввести код</button>'
+      +'<button type="button" class="cdone" data-c="x">'+ic('check').replace('<svg','<svg style="width:18px;height:18px;margin-right:6px;vertical-align:-4px"')+'Готово</button></div>'
+      +'<div class="res"><i>'+ic('scan').replace('<svg','<svg style="width:22px;height:22px"')+'</i><span>Жду штрихкод…<small>Товары можно показывать по очереди — камера не закрывается</small></span></div>';
     root.appendChild(box); root.classList.add('has-cam');
-    var cam={box:box,stream:null,timer:null,reader:null,track:null,torch:false,stop:false};
+    var cam={box:box,stream:null,h:null,track:null,torch:false,stop:false};
     S.camera=cam;
     try{ history.pushState({wms:S.view,id:S.id,cam:1},''); }catch(_){}
     box.addEventListener('click',function(e){
       var b=e.target.closest('[data-c]'); if(!b)return; var c=b.getAttribute('data-c');
       if(c==='x')closeCamera();
-      else if(c==='torch'){ cam.torch=!cam.torch; try{ cam.track.applyConstraints({advanced:[{torch:cam.torch}]}); b.classList.toggle('on',cam.torch); }catch(_){ } }
+      else if(c==='torch'){ cam.torch=!cam.torch; try{ if(cam.h)cam.h.torch(cam.torch); b.classList.toggle('on',cam.torch); }catch(_){ } }
+      else if(c==='zoom'){ if(cam.h){ cam.h.nextZoom(); b.textContent=(Math.round(cam.h.zoom*10)/10)+'×'; } }
       else if(c==='manual'){ var v=prompt('Штрихкод или код товара'); if(v&&v.trim())scan(v.trim(),'manual'); }
     });
     var video=box.querySelector('video');
     try{
-      if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('Камера недоступна в этом браузере');
-      cam.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
+      if(!window.taScan)throw new Error('Камера недоступна в этом браузере');
+      cam.stream=await window.taScan.camera();
       if(cam.stop){ cam.stream.getTracks().forEach(function(t){t.stop()}); return; }
       video.srcObject=cam.stream; try{ await video.play(); }catch(_){}
-      cam.track=cam.stream.getVideoTracks()[0];
-      try{ var caps=cam.track.getCapabilities&&cam.track.getCapabilities(); if(caps&&caps.torch)box.querySelector('[data-c="torch"]').hidden=false; }catch(_){}
-      if('BarcodeDetector' in window){
-        var formats=['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','qr_code','data_matrix'];
-        try{ var sup=await window.BarcodeDetector.getSupportedFormats(); formats=formats.filter(function(f){return sup.indexOf(f)>=0}); }catch(_){}
-        var det=new window.BarcodeDetector(formats.length?{formats:formats}:undefined);
-        var tick=async function(){
-          if(cam.stop)return;
-          try{ if(video.readyState>=2){ var r=await det.detect(video); if(r&&r[0]&&r[0].rawValue)scan(r[0].rawValue,'cam'); } }catch(_){}
-          cam.timer=setTimeout(tick,110);
-        };
-        tick();
-      }else{
-        var Z=await loadZxing(); if(cam.stop)return;
-        var hints=new Map(); hints.set(Z.DecodeHintType.POSSIBLE_FORMATS,[Z.BarcodeFormat.EAN_13,Z.BarcodeFormat.EAN_8,Z.BarcodeFormat.CODE_128,Z.BarcodeFormat.CODE_39,Z.BarcodeFormat.UPC_A,Z.BarcodeFormat.ITF,Z.BarcodeFormat.QR_CODE]);
-        cam.reader=new Z.BrowserMultiFormatReader(hints,150);
-        cam.reader.decodeFromStream(cam.stream,video,function(result){ if(result&&!cam.stop)scan(result.getText(),'cam'); });
-      }
+      cam.h=window.taScan.start({video:video,stream:cam.stream,onCode:function(code){ if(!cam.stop)scan(code,'cam'); },onFail:function(m){ camResult('warn','Сканер камеры не загрузился',m); }});
+      cam.track=cam.h.track;
+      if(cam.h.hasTorch)box.querySelector('[data-c="torch"]').hidden=false;
+      if(cam.h.zoomLevels){ var zb=box.querySelector('[data-c="zoom"]'); zb.hidden=false; zb.textContent=(Math.round(cam.h.zoom*10)/10)+'×'; }
     }catch(err){
-      camResult(false,'Камера не включилась',String(err&&err.message||err).slice(0,120)+'. Разрешите доступ к камере в настройках браузера.');
+      camResult(false,'Камера не включилась',window.taScan?window.taScan.cameraError(err):String(err&&err.message||err).slice(0,120));
     }
   }
   function closeCamera(){
     var cam=S.camera; if(!cam)return; cam.stop=true; S.camera=null;
-    clearTimeout(cam.timer);
-    try{ if(cam.reader)cam.reader.reset(); }catch(_){}
+    try{ if(cam.h)cam.h.stop(); }catch(_){}
     try{ if(cam.stream)cam.stream.getTracks().forEach(function(t){ t.stop(); }); }catch(_){}
     try{ cam.box.remove(); }catch(_){} try{ byId('wms').classList.remove('has-cam'); }catch(_){}
     repaint(); setTimeout(focusHid,50);
