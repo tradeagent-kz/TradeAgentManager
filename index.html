@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="33.0.1" name="app-version"/>
+<meta content="34.0.0" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=33.0.1" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=33.0.1" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=33.0.1" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=33.0.1" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=34.0.0" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=34.0.0" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=34.0.0" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=34.0.0" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3415,7 +3415,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v33.0.1</i>
+<i id="loginVersion">v34.0.0</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -3440,7 +3440,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v33.0.1</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.0.0</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -3537,7 +3537,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'33.0.1';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.0.0';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -14145,11 +14145,11 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='33.0.1';
+  var VER='34.0.0';
   var HINT_LOCKED='Заявка принята оператором — изменить или отменить можно только через оператора';
   var NEW_RET_REASONS=['Брак','Истёк срок годности','Короткий срок годности','Повреждена упаковка','Ошибка в заказе / пересорт','Клиент отказался'];
 
-  function rep(){ try{ return !!ME&&!isAdmin(); }catch(_){ return false; } }
+  function rep(){ try{ return !!ME&&!isAdmin()&&!(window.taIsWarehouse&&window.taIsWarehouse()); }catch(_){ return false; } }   /* v34 wms: кладовщик — не представитель */
   function num(v){ v=Number(v); return isFinite(v)?v:0; }
   function repTd(){ var r=DB&&DB.td&&DB.td.rep; return (r&&ME&&String(r.appId)===String(ME.id))?r:null; }
   function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(_){ return d; } }
@@ -16172,7 +16172,7 @@ html.ta32 #view.ta32-first :is(.item,.ta253-kpi,.ref-product,.ta22-tr,.trp-recen
   'use strict';
   var VER = '33.0.0-cli';
 
-  function rep(){ try{ return !!ME && !isAdmin(); }catch(_){ return false; } }
+  function rep(){ try{ return !!ME && !isAdmin() && !(window.taIsWarehouse&&window.taIsWarehouse()); }catch(_){ return false; } }   /* v34 wms */
   function td(){ var r=DB&&DB.td&&DB.td.rep; return (r&&ME&&String(r.appId)===String(ME.id))?r:null; }
   function n(v){ v=Number(v); return isFinite(v)?v:0; }
   function digits(s){ return String(s||'').replace(/\D/g,''); }
@@ -16948,5 +16948,1341 @@ html.ta32 #shBody .cli33-acts .btn{white-space:nowrap!important;padding-left:8px
 /* ==== /v33.0.1 fit ==== */
 
 </style>
+<style id="ta34-wms-style">
+/* =====================================================================
+   Trade Agent Manager 34.0.0 — «Склад»: режим кладовщика на телефоне (роль users/{uid}.role = 'warehouse').
+   Свой экран поверх приложения (#wms); у представителя и администратора ничего не меняется.
+   Палитра «Пульт» (ta32-pult), шрифты Golos Text + Unbounded.
+   ===================================================================== */
+html.ta34-wh,html.ta34-wh body{background:#0F120D!important;overscroll-behavior:none;overflow:hidden!important;height:100%}
+html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,html.ta34-wh #fab,html.ta34-wh #tabs{display:none!important}
+#wms{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;color:#EEF1E2;
+  background:radial-gradient(520px 300px at 85% -8%,rgba(200,227,106,.09),transparent 64%),linear-gradient(180deg,#11140F 0,#0F120D 260px);
+  font:400 15px/1.4 'Golos Text',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-feature-settings:'tnum' 1,'lnum' 1;
+  -webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+:where(#wms) *{box-sizing:border-box}
+:where(#wms) button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;text-transform:none;letter-spacing:normal;min-height:0;min-width:0;box-shadow:none}
+#wms button:focus-visible{outline:2px solid #C8E36A;outline-offset:2px}
+:where(#wms) input,:where(#wms) textarea{font:inherit;user-select:text;-webkit-user-select:text}
+#wms .u{font-family:'Unbounded','Golos Text',-apple-system,'Segoe UI',sans-serif;letter-spacing:-.01em}
+#wmsHid{position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:0;border:0;padding:0;margin:0;pointer-events:none;caret-color:transparent;font-size:16px}
+
+/* ---- top bar ---- */
+.wms-top{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;
+  background:rgba(17,20,15,.94);border-bottom:1px solid #232920;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:relative;z-index:3}
+.wms-mark{width:40px;height:40px;flex:0 0 40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(150deg,#262F1C,#161B12);border:1px solid #39412F}
+.wms-mark svg{width:24px;height:24px}
+.wms-back{width:44px;height:44px;flex:0 0 44px;border-radius:14px;display:grid;place-items:center;background:#1C2118;border:1px solid #2A3124;transition:transform .12s,background .15s}
+.wms-back:active{transform:scale(.94);background:#232920}
+.wms-back svg{width:22px;height:22px}
+.wms-ttl{flex:1 1 auto;min-width:0}
+.wms-ttl b{display:block;font:600 17px/1.2 'Unbounded','Golos Text',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em}
+.wms-ttl span{display:block;margin-top:2px;font:500 12.5px/1.3 'Golos Text',sans-serif;color:#9AA08E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wms-chips{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.wms-chip{height:30px;padding:0 10px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;font:600 12px/1 'Golos Text',sans-serif;white-space:nowrap;
+  background:#1C2118;border:1px solid #2A3124;color:#CDD2C1}
+.wms-chip i{width:8px;height:8px;border-radius:50%;background:#9BD37F;box-shadow:0 0 0 3px rgba(155,211,127,.16)}
+.wms-chip.off i{background:#F0896F;box-shadow:0 0 0 3px rgba(240,137,111,.18)}
+.wms-chip.q{background:#2C2516;border-color:#4A3D20;color:#F2C97E}
+.wms-chip.q.off i{background:#F0896F;box-shadow:0 0 0 3px rgba(240,137,111,.2)}
+.wms-chip.s svg{width:14px;height:14px}
+.wms-chip.q i{background:#E9B968;box-shadow:0 0 0 3px rgba(233,185,104,.2);animation:wmsPulse 1.6s infinite}
+.wms-chip.s{background:#1A2630;border-color:#26394A;color:#A9D2EA}
+.wms-chip.s i{background:#7FB8D8;box-shadow:0 0 0 3px rgba(127,184,216,.2)}
+.wms-ava{width:40px;height:40px;flex:0 0 40px;border-radius:50%;display:grid;place-items:center;font:700 13px/1 'Golos Text',sans-serif;color:#141810;
+  background:linear-gradient(150deg,#DDF28A,#B4CE57)}
+@keyframes wmsPulse{50%{box-shadow:0 0 0 6px rgba(233,185,104,0)}}
+
+/* ---- content ---- */
+.wms-main{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:14px 16px calc(env(safe-area-inset-bottom,0px) + 112px)}
+.wms-main.has-bar{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 168px)}
+.wms-h{margin:18px 2px 10px;font:700 12px/1 'Golos Text',sans-serif;color:#9AA08E;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.wms-h em{font-style:normal;color:#6F7665;letter-spacing:0;text-transform:none;font-weight:600}
+.wms-hello{margin:2px 2px 14px}
+.wms-hello b{display:block;font:600 22px/1.2 'Unbounded','Golos Text',sans-serif;letter-spacing:-.015em}
+.wms-hello span{display:block;margin-top:5px;color:#9AA08E;font-size:13.5px}
+.wms-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wms-tile{position:relative;min-height:124px;border-radius:24px;padding:14px 14px 13px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(160deg,#1D2318 0,#161A13 100%);border:1px solid #2A3124;overflow:hidden;transition:transform .14s cubic-bezier(.22,.8,.24,1),border-color .2s}
+.wms-tile:active{transform:scale(.975)}
+.wms-tile.whero{grid-column:1/-1;min-height:136px;background:radial-gradient(260px 160px at 100% 0,rgba(200,227,106,.16),transparent 70%),linear-gradient(160deg,#222A1B,#171B14);border-color:#3A4330}
+.wms-tile .ic{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:#262F1C;color:#C8E36A}
+.wms-tile .ic svg{width:23px;height:23px}
+.wms-tile.c2 .ic{background:#1A2630;color:#7FB8D8}.wms-tile.c3 .ic{background:#2C2516;color:#E9B968}.wms-tile.c4 .ic{background:#24202E;color:#B9AEEA}.wms-tile.c5 .ic{background:#1F2A1C;color:#9BD37F}
+.wms-tile .wrow{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-top:12px}
+.wms-tile .wt{display:block;font:600 15.5px/1.2 'Golos Text',sans-serif}
+.wms-tile .ws{display:block;margin-top:3px;font:500 12px/1.3 'Golos Text',sans-serif;color:#9AA08E}
+.wms-tile .wn{font:600 34px/1 'Unbounded','Golos Text',sans-serif;letter-spacing:-.02em}
+.wms-tile.whero .wn{font-size:44px;color:#DDF28A}
+.wms-tile .wn.z{color:#6F7665}
+.wms-tile[disabled]{opacity:.45}
+.wms-tile .flag{position:absolute;top:14px;right:14px}
+.wms-badge{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;font:700 11.5px/1 'Golos Text',sans-serif;white-space:nowrap;background:#262F1C;color:#C8E36A}
+.wms-badge.ba{background:#2C2516;color:#F2C97E}.wms-badge.br{background:#2A1B16;color:#F5A994}.wms-badge.bb{background:#1A2630;color:#A9D2EA}.wms-badge.bg{background:#1F2A1C;color:#B6E29C}.wms-badge.bm{background:#23271F;color:#A3A99A}
+.wms-note{border-radius:20px;padding:14px 16px;background:#1A1F17;border:1px solid #2A3124;color:#CDD2C1;font-size:14px;line-height:1.45}
+.wms-note b{display:block;color:#EEF1E2;font-size:15px;margin-bottom:4px}
+.wms-note.wwarn{background:#241F14;border-color:#4A3D20}
+.wms-note.werr{background:#241612;border-color:#55302A}
+.wms-scanhint{margin-top:14px;display:flex;align-items:center;gap:12px;border-radius:20px;padding:14px 16px;border:1px dashed #39412F;color:#9AA08E;font-size:13.5px;line-height:1.35}
+.wms-scanhint svg{width:26px;height:26px;flex:0 0 26px;color:#C8E36A}
+
+/* ---- cards and lists ---- */
+.wms-card{display:block;width:100%;text-align:left;border-radius:20px;padding:14px 14px 13px;margin-bottom:8px;background:#1A1F17;border:1px solid #232920;transition:transform .12s,border-color .2s;position:relative}
+.wms-card:active{transform:scale(.985)}
+.wms-card .wl1{display:flex;align-items:center;gap:8px}
+.wms-card .wno{font:600 15.5px/1.2 'Unbounded','Golos Text',sans-serif;white-space:nowrap}
+.wms-card .wwho{margin-top:6px;font:600 14.5px/1.3 'Golos Text',sans-serif;color:#EEF1E2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wms-card .wm{margin-top:3px;font:500 12.5px/1.35 'Golos Text',sans-serif;color:#9AA08E;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wms-card .wsp{flex:1}
+.wms-card.dim{opacity:.62}
+.wms-ringw{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:52px;height:52px}
+.wms-card.wring{padding-right:78px}
+.wms-ring{display:block}
+.wms-ring circle{fill:none;stroke-width:6}
+.wms-ring .bg{stroke:#262C21}
+.wms-ring .fg{stroke:#C8E36A;stroke-linecap:round;transition:stroke-dashoffset .35s cubic-bezier(.22,.8,.24,1)}
+.wms-ring text{font:700 13px 'Golos Text',sans-serif;fill:#EEF1E2}
+.wms-empty{text-align:center;padding:42px 18px;color:#9AA08E;font-size:14px;line-height:1.45}
+.wms-empty b{display:block;color:#EEF1E2;font:600 17px/1.3 'Unbounded','Golos Text',sans-serif;margin:12px 0 6px}
+.wms-empty svg{width:46px;height:46px;color:#3A4330}
+
+/* ---- task screen ---- */
+.wms-head{display:flex;align-items:center;gap:14px;margin:0 0 12px;padding:14px 16px;border-radius:24px;background:linear-gradient(160deg,#1F2619,#161A13);border:1px solid #2A3124}
+.wms-head .tx{flex:1;min-width:0}
+.wms-head .tx b{display:block;font:600 15.5px/1.25 'Golos Text',sans-serif;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.wms-head .tx > span{display:block;margin-top:4px;font:500 12.5px/1.35 'Golos Text',sans-serif;color:#9AA08E}
+.wms-head .big{font:600 22px/1.05 'Unbounded','Golos Text',sans-serif;margin-top:6px;letter-spacing:-.01em}
+.wms-head .big small{font:600 13px 'Golos Text',sans-serif;color:#9AA08E;margin-left:4px;letter-spacing:0}
+.wms-cur{border-radius:24px;padding:16px;margin:0 0 12px;background:linear-gradient(160deg,#232B1C,#181D14);border:1px solid #3A4330;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+.wms-cur.idle{background:#161A13;border-style:dashed;border-color:#39412F;box-shadow:none;text-align:center;padding:22px 16px;color:#9AA08E}
+.wms-cur.idle svg{width:34px;height:34px;color:#C8E36A;display:block;margin:0 auto 8px}
+.wms-cur.idle b{display:block;color:#EEF1E2;font:600 16px/1.3 'Golos Text',sans-serif;margin-bottom:3px}
+.wms-cur .k{font:700 11px/1 'Golos Text',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9DBD45}
+.wms-cur .nm{margin-top:6px;font:600 17px/1.3 'Golos Text',sans-serif;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.wms-cur .cd{margin-top:4px;font:500 12.5px/1.35 'Golos Text',sans-serif;color:#9AA08E;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wms-cur .qq{display:flex;align-items:baseline;gap:6px;margin-top:10px}
+.wms-cur .qq b{font:600 46px/1 'Unbounded','Golos Text',sans-serif;letter-spacing:-.03em;color:#EEF1E2}
+.wms-cur .qq span{font:600 18px/1 'Unbounded','Golos Text',sans-serif;color:#9AA08E}
+.wms-cur .qq em{margin-left:auto;font-style:normal}
+.wms-cur.wok{border-color:#9BD37F}
+.wms-cur.wover{border-color:#E9B968}
+.wms-pad{display:grid;grid-template-columns:62px 1fr 62px;gap:8px;margin-top:14px}
+.wms-pad button{height:60px;border-radius:18px;font:600 26px/1 'Golos Text',sans-serif;background:#262C21;border:1px solid #39412F;color:#EEF1E2;transition:transform .1s,background .15s}
+.wms-pad button:active{transform:scale(.95);background:#2F3628}
+.wms-pad .all{font:700 16px/1 'Golos Text',sans-serif;background:#2A3318;border-color:#4A5A2A;color:#DDF28A}
+.wms-pad .wnum{font:600 15px/1.2 'Golos Text',sans-serif;color:#CDD2C1}
+.wms-pad .wnum b{display:block;font:700 18px/1 'Golos Text',sans-serif;color:#DDF28A;margin-bottom:3px}
+.wms-more{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.wms-more button{height:40px;padding:0 14px;border-radius:13px;background:#1C2118;border:1px solid #2A3124;font:600 13px/1 'Golos Text',sans-serif;color:#CDD2C1}
+.wms-line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;text-align:left;padding:12px 14px;margin-bottom:8px;min-height:68px;
+  border-radius:18px;background:#1A1F17;border:1.5px solid transparent;transition:border-color .2s,background .2s,opacity .2s}
+.wms-line.cur{border-color:#C8E36A;background:#1E2419}
+.wms-line.done{opacity:.55}
+.wms-line .nm{font:600 14.5px/1.28 'Golos Text',sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.wms-line .cd{margin-top:3px;font:500 12px/1.3 'Golos Text',sans-serif;color:#9AA08E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wms-line .qty{text-align:right;white-space:nowrap;font:600 18px/1 'Unbounded','Golos Text',sans-serif;letter-spacing:-.02em}
+.wms-line .qty small{font:600 13px 'Golos Text',sans-serif;color:#9AA08E;letter-spacing:0}
+.wms-line .qty.wok{color:#9BD37F}.wms-line .qty.wover{color:#F2C97E}
+.wms-line .bar{grid-column:1/-1;height:4px;border-radius:2px;background:#232920;overflow:hidden;margin-top:-2px}
+.wms-line .bar i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,#9DBD45,#C8E36A);transition:width .3s cubic-bezier(.22,.8,.24,1)}
+.wms-line .bar i.wok{background:#9BD37F}
+.wms-line .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.wms-fold{width:100%;margin:6px 0 8px;height:44px;border-radius:14px;border:1px dashed #39412F;color:#9AA08E;font:600 13px/1 'Golos Text',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px}
+.wms-search{display:flex;align-items:center;gap:10px;height:54px;padding:0 14px;border-radius:18px;background:#10130E;border:1px solid #2A3124;margin-bottom:12px}
+.wms-search svg{width:20px;height:20px;color:#9AA08E;flex:0 0 20px}
+.wms-search input{flex:1;min-width:0;height:100%;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;outline:0;color:#EEF1E2;font-size:16px}
+.wms-seg{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:10px;scrollbar-width:none}
+.wms-seg::-webkit-scrollbar{display:none}
+.wms-seg button{flex:0 0 auto;height:42px;padding:0 14px;border-radius:14px;background:#1A1F17;border:1px solid #2A3124;font:600 13.5px/1 'Golos Text',sans-serif;color:#CDD2C1;white-space:nowrap}
+.wms-seg button.on{background:#C8E36A;border-color:#C8E36A;color:#141810}
+.wms-lbl{font:700 11.5px/1 'Golos Text',sans-serif;color:#9AA08E;letter-spacing:.06em;text-transform:uppercase;margin:4px 2px 8px}
+.wms-wh{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:6px}
+.wms-wh div{border-radius:16px;padding:10px 12px;background:#161A13;border:1px solid #232920;min-width:0}
+.wms-wh div b{display:block;font:600 22px/1.05 'Unbounded','Golos Text',sans-serif}
+.wms-wh div span{display:block;margin-top:4px;font:500 12px/1.3 'Golos Text',sans-serif;color:#9AA08E;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wms-wh div.zero b{color:#6F7665}
+.wms-wh.one{grid-template-columns:1fr}
+.wms-wh div em{display:block;margin-top:2px;font:600 12px/1.3 'Golos Text',sans-serif;font-style:normal;color:#B6E29C}
+
+/* ---- bottom bar, buttons, camera button ---- */
+.wms-bar{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;gap:10px;
+  background:linear-gradient(180deg,rgba(15,18,13,0) 0,rgba(15,18,13,.92) 28%,#0F120D 60%)}
+.wms-btn{flex:1 1 0;min-width:0;height:58px;border-radius:19px;padding:0 14px;font:700 16px/1.1 'Golos Text',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:#1C2118;border:1px solid #39412F;color:#EEF1E2;transition:transform .1s,filter .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wms-btn:active{transform:scale(.97)}
+.wms-btn.wpri{background:linear-gradient(180deg,#DDF28A,#B4CE57);border-color:#C8E36A;color:#141810;box-shadow:0 10px 28px rgba(200,227,106,.22)}
+.wms-btn.wpri[disabled]{background:#262C21;border-color:#2A3124;color:#6F7665;box-shadow:none}
+.wms-btn.dng{background:#2A1B16;border-color:#55302A;color:#F5A994}
+.wms-btn svg{width:20px;height:20px;flex:0 0 20px}
+.wms-btn small{font-weight:600;opacity:.75}
+.wms-bar .wms-btn.cam{flex:0 0 58px;padding:0;background:#262F1C;border-color:#4A5A2A;color:#DDF28A}
+.wms-bar .wms-btn.cam svg{width:26px;height:26px;flex-basis:26px}
+.wms-fab{position:absolute;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);z-index:5;width:64px;height:64px;border-radius:22px;display:grid;place-items:center;
+  background:linear-gradient(160deg,#DDF28A,#A9C752);color:#141810;box-shadow:0 14px 34px rgba(0,0,0,.45),0 0 0 6px rgba(200,227,106,.10);transition:transform .12s}
+.wms-fab:active{transform:scale(.93)}
+.wms-fab svg{width:28px;height:28px}
+.wms-main.has-bar ~ .wms-fab{bottom:calc(env(safe-area-inset-bottom,0px) + 94px)}
+
+/* ---- feedback ---- */
+.wms-flash{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:0}
+.wms-flash.wok{box-shadow:inset 0 0 0 5px rgba(155,211,127,.85);animation:wmsFlash .45s ease-out}
+.wms-flash.werr{background:rgba(240,137,111,.16);box-shadow:inset 0 0 0 8px rgba(240,137,111,.95);animation:wmsFlash .7s ease-out}
+@keyframes wmsFlash{0%{opacity:1}100%{opacity:0}}
+.wms-hit{animation:wmsHit .7s cubic-bezier(.22,.8,.24,1)}
+@keyframes wmsHit{0%{background:#3A4A1F;border-color:#DDF28A}100%{}}
+.wms-miss{animation:wmsMiss .5s}
+@keyframes wmsMiss{20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.wms-toasts{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 98px);z-index:80;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+#wms.has-sheet .wms-toasts,#wms.has-cam .wms-toasts{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 74px)}
+.wms-toast{pointer-events:auto;border-radius:18px;padding:11px 13px;display:flex;align-items:flex-start;gap:10px;background:rgba(28,33,24,.97);border:1px solid #39412F;
+  box-shadow:0 16px 40px rgba(0,0,0,.45);font:600 14px/1.35 'Golos Text',sans-serif;animation:wmsIn .22s cubic-bezier(.22,.8,.24,1)}
+.wms-toast i{flex:0 0 26px;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;font-style:normal;font-weight:800;background:#262F1C;color:#C8E36A}
+.wms-toast.wok i{background:#1F2A1C;color:#9BD37F}.wms-toast.werr{border-color:#55302A}.wms-toast.werr i{background:#2A1B16;color:#F5A994}
+.wms-toast span{flex:1;min-width:0}
+.wms-toast small{display:block;font-weight:500;color:#9AA08E;font-size:12.5px;margin-top:2px}
+.wms-toast button{flex:0 0 auto;height:34px;padding:0 12px;border-radius:11px;background:#C8E36A;color:#141810;font:700 13px/1 'Golos Text',sans-serif;align-self:center}
+.wms-toast.out{opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s}
+@keyframes wmsIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+
+/* ---- bottom sheet, keypad ---- */
+.wms-shade{position:absolute;inset:0;z-index:70;background:rgba(3,6,3,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:wmsFade .18s}
+.wms-sheet{position:absolute;left:0;right:0;bottom:0;z-index:71;max-height:88%;overflow-y:auto;border-radius:28px 28px 0 0;padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 16px);
+  background:#151912;border-top:1px solid #39412F;box-shadow:0 -20px 60px rgba(0,0,0,.5);animation:wmsUp .26s cubic-bezier(.22,.8,.24,1)}
+.wms-sheet .grab{width:44px;height:5px;border-radius:3px;background:#39412F;margin:0 auto 12px}
+.wms-sheet h3{margin:0 0 4px;font:600 18px/1.25 'Unbounded','Golos Text',sans-serif;letter-spacing:-.01em}
+.wms-sheet p{margin:0 0 12px;color:#9AA08E;font-size:13.5px;line-height:1.45}
+.wms-sheet .acts{display:flex;gap:10px;margin-top:14px}
+.wms-sheet label.wf{display:block;margin:10px 0}
+.wms-sheet label.wf span{display:block;font:700 11.5px/1 'Golos Text',sans-serif;color:#9AA08E;letter-spacing:.06em;text-transform:uppercase;margin:0 2px 7px}
+.wms-sheet input.in,.wms-sheet textarea.in{width:100%;height:54px;border-radius:16px;background:#10130E;border:1px solid #2A3124;color:#EEF1E2;padding:0 14px;font-size:16px;outline:0}
+.wms-sheet textarea.in{height:84px;padding:12px 14px;resize:none}
+.wms-sheet input.in:focus,.wms-sheet textarea.in:focus{border-color:#C8E36A}
+.wms-opt{display:flex;flex-wrap:wrap;gap:8px}
+.wms-opt button{height:44px;padding:0 14px;border-radius:14px;background:#1C2118;border:1px solid #2A3124;font:600 14px/1 'Golos Text',sans-serif;color:#CDD2C1}
+.wms-opt button.on{background:#C8E36A;color:#141810;border-color:#C8E36A}
+.wms-miss-list{border-radius:18px;background:#10130E;border:1px solid #232920;padding:4px 12px;margin:4px 0 10px}
+.wms-miss-list div{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #1C2118;font-size:13.5px}
+.wms-miss-list div:last-child{border-bottom:0}
+.wms-miss-list div span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wms-miss-list div b{white-space:nowrap;color:#F2C97E}
+.wms-kp-disp{display:flex;align-items:baseline;justify-content:center;gap:8px;height:84px;border-radius:20px;background:#10130E;border:1px solid #2A3124;margin:6px 0 12px}
+.wms-kp-disp b{font:600 44px/84px 'Unbounded','Golos Text',sans-serif;letter-spacing:-.02em}
+.wms-kp-disp span{font:600 16px 'Golos Text',sans-serif;color:#9AA08E}
+.wms-kp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.wms-kp button{height:62px;border-radius:18px;background:#1C2118;border:1px solid #2A3124;font:600 24px/1 'Golos Text',sans-serif;transition:transform .08s,background .12s}
+.wms-kp button:active{transform:scale(.94);background:#262C21}
+.wms-kp .fn{font:600 26px/1 'Golos Text',sans-serif;color:#CDD2C1;background:#20261B}
+.wms-kp .all{font:700 16px/1 'Golos Text',sans-serif;color:#DDF28A;background:#2A3318;border-color:#4A5A2A}
+.wms-kp .wkok{grid-column:span 2;background:linear-gradient(180deg,#DDF28A,#B4CE57);color:#141810;border-color:#C8E36A;font:800 17px/1 'Golos Text',sans-serif}
+@keyframes wmsUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes wmsFade{from{opacity:0}to{opacity:1}}
+
+/* ---- camera ---- */
+.wms-cam{position:absolute;inset:0;z-index:75;background:#000;display:flex;flex-direction:column;animation:wmsFade .2s}
+.wms-cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wms-cam .shade{display:none}
+.wms-cam .frame{position:absolute;left:12%;right:12%;top:31%;height:24%;border-radius:22px;pointer-events:none;box-shadow:0 0 0 2px rgba(221,242,138,.28),0 0 0 200vmax rgba(0,0,0,.42)}
+.wms-cam .frame:before,.wms-cam .frame:after{content:'';position:absolute;inset:-2px;border-radius:22px;border:3px solid #DDF28A;
+  -webkit-mask:linear-gradient(#000 0 0) top/100% 26px no-repeat,linear-gradient(#000 0 0) bottom/100% 26px no-repeat;mask:linear-gradient(#000 0 0) top/100% 26px no-repeat,linear-gradient(#000 0 0) bottom/100% 26px no-repeat;clip-path:polygon(0 0,22% 0,22% 100%,0 100%,0 0,100% 0,100% 100%,78% 100%,78% 0)}
+.wms-cam .laser{position:absolute;left:14%;right:14%;top:43%;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#DDF28A,transparent);box-shadow:0 0 14px #C8E36A;animation:wmsLaser 1.8s ease-in-out infinite}
+@keyframes wmsLaser{0%,100%{transform:translateY(-44px);opacity:.4}50%{transform:translateY(44px);opacity:1}}
+.wms-cam .bar{position:relative;z-index:2;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;background:linear-gradient(180deg,rgba(0,0,0,.6),transparent)}
+.wms-cam .bar b{flex:1;font:600 16px/1.2 'Unbounded','Golos Text',sans-serif;color:#fff}
+.wms-cam .rb{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:rgba(20,24,16,.7);border:1px solid rgba(255,255,255,.14);color:#fff}
+.wms-cam .rb.on{background:#DDF28A;color:#141810}
+.wms-cam .rb svg{width:24px;height:24px}
+.wms-cam .res{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:2;border-radius:22px;padding:14px 16px;
+  background:rgba(21,25,18,.94);border:1px solid #39412F;min-height:76px;display:flex;align-items:center;gap:12px}
+.wms-cam .res i{flex:0 0 40px;width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:18px;background:#262F1C;color:#C8E36A}
+.wms-cam .res.wok{border-color:#9BD37F}.wms-cam .res.wok i{background:#1F2A1C;color:#9BD37F}
+.wms-cam .res.werr{border-color:#F0896F}.wms-cam .res.werr i{background:#2A1B16;color:#F5A994}
+.wms-cam .res span{flex:1;min-width:0;font:600 14.5px/1.35 'Golos Text',sans-serif;color:#EEF1E2}
+.wms-cam .res small{display:block;font-weight:500;color:#9AA08E;font-size:12.5px;margin-top:2px}
+.wms-cam .manual{position:absolute;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 104px);z-index:2;height:42px;padding:0 14px;border-radius:14px;background:rgba(20,24,16,.75);border:1px solid rgba(255,255,255,.14);color:#fff;font:600 13px/1 'Golos Text',sans-serif}
+@media (prefers-reduced-motion:reduce){#wms *{animation:none!important;transition:none!important}}
+@media (min-width:720px){.wms-main{padding-left:max(16px,calc(50% - 330px));padding-right:max(16px,calc(50% - 330px))}.wms-bar{padding-left:max(16px,calc(50% - 330px));padding-right:max(16px,calc(50% - 330px))}.wms-grid{grid-template-columns:1fr 1fr 1fr}.wms-tile.whero{grid-column:1/-1}}
+@media (max-width:359px){.wms-tile .wn{font-size:28px}.wms-tile.whero .wn{font-size:36px}.wms-cur .qq b{font-size:40px}.wms-chip{padding:0 8px}}
+@media print{#wms{display:none}}
+</style>
+<script id="ta34-wms-runtime">
+/* =====================================================================
+   Trade Agent Manager 34.0.0 — «Склад»: режим кладовщика (роль users/{uid}.role = 'warehouse').
+   Кладовщик входит по тому же адресу и видит ТОЛЬКО склад: собрать / принять / пересчитать /
+   переместить / остатки. Без цен, себестоимости, клиентов, долгов, корзины.
+   Данные (Firestore, пишет только сервер Trade Agent Desktop):
+     whTasks/{appId}        задания этого кладовщика (заказы, приходы, пересчёты, склады)
+     whTasks/{appId}.stock  товары со штрихкодами и остатки его складов
+   Результат работы: whOps/{opId} — телефон создаёт операцию (pend: 1), сервер применяет её
+   от имени связанного сотрудника и пишет result {ok, msg}. Очередь — IndexedDB: работает без
+   сети, отправляет сама, повтор той же операции сервер не применяет дважды.
+   Сканер: Bluetooth (клавиатура) — без нажатий; камера — непрерывно (BarcodeDetector, на iPhone
+   — vendor/zxing.min.js). Представитель и администратор работают как раньше.
+   ===================================================================== */
+(function(){
+  'use strict';
+  if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
+  var VER='34.0.0';
+  var ROLE='warehouse';
+
+  function isWh(){ try{ return !!ME&&String(ME.role||'').toLowerCase()===ROLE; }catch(_){ return false; } }
+  window.taIsWarehouse=isWh;
+  function wrap(name,make){
+    try{ var base=window[name]; if(typeof base!=='function')return; var w=make(base); if(typeof w==='function')window[name]=w; }
+    catch(e){ try{console.warn('wms: '+name,e)}catch(_){} }
+  }
+  function E(s){ return (typeof esc==='function')?esc(s):String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}); }
+  function num(v){ v=Number(v); return isFinite(v)?v:0; }
+  function q(v){ v=Math.round(num(v)*1000)/1000; var s=String(Math.abs(v)).split('.'); s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,' '); return (v<0?'−':'')+s.join(','); }
+  function plural(n,a,b,c){ n=Math.abs(n)%100; var m=n%10; return n>10&&n<20?c:m>1&&m<5?b:m===1?a:c; }
+  function byId(id){ return document.getElementById(id); }
+  function appId(){ return ME?String(ME.id):''; }
+  function fbUid(){ try{ return FBAUTH&&FBAUTH.currentUser?String(FBAUTH.currentUser.uid):''; }catch(_){ return ''; } }
+  function safeId(x){ try{ return fbSafeId(x); }catch(_){ return String(x||'').replace(/[^a-zA-Z0-9_.-]/g,'_'); } }
+  function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(_){ return d; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(_){} }
+  function key(s){ return 'ta34.wms.'+appId()+'.'+s; }
+  function isoToday(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function ddmm(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso||'')); return m?m[3]+'.'+m[2]:''; }
+  function ddmmyyyy(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso||'')); return m?m[3]+'.'+m[2]+'.'+m[1]:''; }
+  function dayDiff(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso||'')); if(!m)return null; var a=new Date(+m[1],+m[2]-1,+m[3]),t=new Date(); t.setHours(0,0,0,0); return Math.round((a-t)/864e5); }
+
+  /* ---------------------------------------------------------------- icons (24×24, stroke) */
+  var I={
+    back:'<path d="M15 5l-7 7 7 7"/>',
+    pick:'<path d="M4 8.5 12 4l8 4.5v7L12 20l-8-4.5z"/><path d="M4 8.5 12 13l8-4.5M12 13v7"/>',
+    recv:'<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17.5" cy="17.5" r="1.7"/>',
+    inv:'<path d="M9 4h6v3H9z"/><path d="M8 5.5H6.5A1.5 1.5 0 0 0 5 7v12.5A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V7a1.5 1.5 0 0 0-1.5-1.5H16"/><path d="m9 13 2 2 4-4"/>',
+    move:'<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+    stock:'<circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2"/>',
+    cam:'<path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.5" r="3.5"/>',
+    scan:'<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 9v6M10 9v6M13 9v6M17 9v6"/>',
+    torch:'<path d="M8 3h8l-1 5H9zM9 8h6l-1 13h-4z"/><path d="M12 12v3"/>',
+    x:'<path d="M6 6l12 12M18 6 6 18"/>',
+    more:'<circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/>',
+    share:'<path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 12v6.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V12"/>',
+    check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+    cal:'<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M8 3.5v4M16 3.5v4M4 10h16"/>',
+    kbd:'<rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/>',
+    box:'<path d="M4 7.5 12 4l8 3.5v9L12 20l-8-3.5z"/><path d="M4 7.5 12 11l8-3.5M12 11v9"/>'
+  };
+  function ic(n,cls){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"'+(cls?' class="'+cls+'"':'')+' aria-hidden="true">'+(I[n]||'')+'</svg>'; }
+  function ring(done,total,size){
+    size=size||52; var r=(size-8)/2, c=2*Math.PI*r, p=total>0?Math.min(1,done/total):0, pct=Math.round(p*100);
+    return '<svg class="wms-ring" width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" aria-label="'+pct+'%"><circle class="bg" cx="'+size/2+'" cy="'+size/2+'" r="'+r+'"/>'
+      +'<circle class="fg" cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" stroke-dasharray="'+c.toFixed(2)+'" stroke-dashoffset="'+(c*(1-p)).toFixed(2)+'" transform="rotate(-90 '+size/2+' '+size/2+')"'+(p>=1?' style="stroke:#9BD37F"':'')+'/>'
+      +'<text x="50%" y="50%" text-anchor="middle" dominant-baseline="central">'+pct+'%</text></svg>';
+  }
+
+  /* ---------------------------------------------------------------- state */
+  var S={tasks:null,stock:null,view:'home',id:null,sel:null,showDone:false,unsub:[],mounted:false,netOk:true,camera:null,wake:null,lastCode:'',lastAt:0,
+         stockQuery:'',stockPick:null,pdf:{},timers:{}};
+  var Q={db:null,ops:[],inflight:{},subs:{},ready:false};
+  function T(){ return S.tasks||{}; }
+  function W(){ if(!S.work)S.work=lsGet(key('work'),{})||{}; var w=S.work; w.pick=w.pick||{}; w.recv=w.recv||{}; w.inv=w.inv||{}; w.move=w.move||{lines:{}}; w.move.lines=w.move.lines||{}; w.recent=w.recent||[]; return w; }
+  function saveWork(){ lsSet(key('work'),W()); }
+  function soundOn(){ return lsGet('ta34.wms.sound',true)!==false; }
+
+  /* ---------------------------------------------------------------- feedback: sound, vibration, flash, toasts */
+  var AC=null;
+  function audio(){ try{ if(!AC){ var C=window.AudioContext||window.webkitAudioContext; if(!C)return null; AC=new C(); } if(AC.state==='suspended')AC.resume(); return AC; }catch(_){ return null; } }
+  function tone(freq,dur,type,vol,delay){
+    var a=audio(); if(!a)return;
+    try{ var t=a.currentTime+(delay||0), o=a.createOscillator(), g=a.createGain(); o.type=type||'sine'; o.frequency.setValueAtTime(freq,t);
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.16,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.02); }catch(_){}
+  }
+  function beep(ok){ if(!soundOn())return; if(ok){ tone(1568,0.07,'sine',0.14); tone(2093,0.09,'sine',0.11,0.06); } else { tone(196,0.22,'square',0.07); tone(147,0.2,'square',0.06,0.16); } }
+  function vibe(ok){ try{ if(navigator.vibrate)navigator.vibrate(ok?30:[90,60,110]); }catch(_){} }
+  function flash(ok){ var f=byId('wmsFlash'); if(!f)return; f.className='wms-flash'; void f.offsetWidth; f.className='wms-flash '+(ok?'wok':'werr'); }
+  function good(){ beep(true); vibe(true); flash(true); }
+  function bad(msg,sub){ beep(false); vibe(false); flash(false); if(msg)toast(msg,sub,'err'); var c=document.querySelector('#wms .wms-cur'); if(c){ c.classList.remove('wms-miss'); void c.offsetWidth; c.classList.add('wms-miss'); } camResult(false,msg,sub); }
+  function toast(msg,sub,kind,action){
+    var box=byId('wmsToasts'); if(!box)return;
+    while(box.children.length>=2)box.removeChild(box.firstChild);
+    var t=document.createElement('div'); t.className='wms-toast '+(kind==='err'?'werr':kind==='ok'?'wok':'');
+    t.innerHTML='<i>'+(kind==='err'?'!':kind==='ok'?'✓':'i')+'</i><span>'+E(msg)+(sub?'<small>'+E(sub)+'</small>':'')+'</span>'+(action?'<button type="button">'+E(action.text)+'</button>':'');
+    if(action){ t.querySelector('button').onclick=function(e){ e.stopPropagation(); try{action.run()}catch(_){} t.remove(); }; }
+    t.onclick=function(){ t.remove(); };
+    box.appendChild(t);
+    setTimeout(function(){ t.classList.add('out'); setTimeout(function(){ t.remove(); },220); },action?9000:kind==='err'?5200:3000);
+  }
+
+  /* ---------------------------------------------------------------- queue (IndexedDB, fallback localStorage) */
+  function idb(){
+    return new Promise(function(res){
+      try{ if(!window.indexedDB)return res(null); var r=indexedDB.open('ta34wms',1);
+        r.onupgradeneeded=function(){ try{ r.result.createObjectStore('ops',{keyPath:'opId'}); }catch(_){} };
+        r.onsuccess=function(){ res(r.result); }; r.onerror=function(){ res(null); }; r.onblocked=function(){ res(null); };
+      }catch(_){ res(null); }
+    });
+  }
+  function qLoad(){
+    return new Promise(function(res){
+      if(!Q.db){ res((lsGet('ta34.wms.q',[])||[]).filter(function(o){return o&&o.appId===appId()})); return; }
+      try{ var tx=Q.db.transaction('ops','readonly'), r=tx.objectStore('ops').getAll();
+        r.onsuccess=function(){ res((r.result||[]).filter(function(o){return o&&o.appId===appId()})); }; r.onerror=function(){ res([]); };
+      }catch(_){ res([]); }
+    });
+  }
+  function qSave(op){
+    if(!Q.db){ var all=(lsGet('ta34.wms.q',[])||[]).filter(function(o){return o&&o.opId!==op.opId}); all.push(op); lsSet('ta34.wms.q',all); return; }
+    try{ Q.db.transaction('ops','readwrite').objectStore('ops').put(JSON.parse(JSON.stringify(op))); }catch(_){}
+  }
+  function qDrop(op){
+    if(!Q.db){ lsSet('ta34.wms.q',(lsGet('ta34.wms.q',[])||[]).filter(function(o){return o&&o.opId!==op.opId})); return; }
+    try{ Q.db.transaction('ops','readwrite').objectStore('ops').delete(op.opId); }catch(_){}
+  }
+  function opId(){
+    var r=''; try{ var a=new Uint8Array(8); crypto.getRandomValues(a); for(var i=0;i<a.length;i++)r+=a[i].toString(16).padStart(2,'0'); }catch(_){ r=Math.random().toString(16).slice(2,18); }
+    return 'w'+Date.now().toString(36)+r;
+  }
+  function device(){ var u=navigator.userAgent||''; var m=/(iPhone|iPad|Android[^;)]*)/.exec(u); return ((m?m[1]:'')+' · Manager '+VER).trim().slice(0,120); }
+  var EXTRA=['reason','from','to','docType'];
+  function enqueue(kind,docId,lines,extra){
+    var op={opId:opId(),appId:appId(),uid:fbUid(),kind:kind,docId:docId||'',lines:lines||[],createdAt:Date.now(),device:device(),state:'queued',tries:0};
+    if(extra)EXTRA.forEach(function(k){ if(extra[k]!=null)op[k]=extra[k]; });
+    Q.ops.push(op); qSave(op); paintChips(); pump(); return op;
+  }
+  function payloadOf(op){
+    var p={opId:op.opId,appId:op.appId,uid:op.uid||fbUid(),kind:op.kind,lines:op.lines||[],createdAt:op.createdAt,device:op.device,pend:1};
+    if(op.docId)p.docId=op.docId; EXTRA.forEach(function(k){ if(op[k]!=null)p[k]=op[k]; }); return p;
+  }
+  function pending(){ return Q.ops.filter(function(o){return o.state==='queued'}).length; }
+  function waiting(){ return Q.ops.filter(function(o){return o.state==='sent'}).length; }
+  function pump(){
+    if(!S.mounted||typeof FBDB==='undefined'||!FBDB||!fbUid())return;
+    Q.ops.forEach(function(op){ if(op.state==='queued'&&!Q.inflight[op.opId])send(op); });
+  }
+  function send(op){
+    Q.inflight[op.opId]=true; var settled=false;
+    var guard=setTimeout(function(){ if(!settled){ Q.inflight[op.opId]=false; paintChips(); } },15000);
+    var ref=FBDB.collection('whOps').doc(op.opId);
+    ref.set(payloadOf(op)).then(function(){
+      settled=true; clearTimeout(guard); Q.inflight[op.opId]=false;
+      if(op.state==='queued'){ op.state='sent'; op.sentAt=Date.now(); qSave(op); }
+      watch(op); paintChips();
+    }).catch(function(e){
+      settled=true; clearTimeout(guard); Q.inflight[op.opId]=false; op.tries=num(op.tries)+1; qSave(op);
+      var code=String(e&&e.code||'');
+      if(code==='permission-denied'||/permission/i.test(String(e&&e.message||''))){
+        /* already applied by the server (the document has a result) — or really no access */
+        ref.get().then(function(d){
+          var x=d&&d.exists?d.data()||{}:null;
+          if(x&&x.result){ finish(op,x.result); }
+          else if(x){ op.state='sent'; qSave(op); watch(op); }
+          else if(op.tries>=3){ finish(op,{ok:false,msg:'Нет доступа к складскому режиму. Обратитесь к администратору.'}); }
+          paintChips();
+        }).catch(function(){ paintChips(); });
+      }
+      paintChips();
+    });
+  }
+  function watch(op){
+    if(Q.subs[op.opId]||!FBDB)return;
+    try{ Q.subs[op.opId]=FBDB.collection('whOps').doc(op.opId).onSnapshot(function(d){
+      var x=d&&d.exists?d.data()||{}:null; if(x&&x.result&&num(x.pend)===0)finish(op,x.result);
+    },function(){}); }catch(_){}
+  }
+  function unwatch(id){ try{ if(Q.subs[id])Q.subs[id](); }catch(_){} delete Q.subs[id]; }
+  function finish(op,res){
+    unwatch(op.opId); if(op.state==='done'||op.state==='error')return;
+    op.state=res&&res.ok?'done':'error'; op.result={ok:!!(res&&res.ok),msg:String(res&&res.msg||''),no:res&&res.no||'',id:res&&res.id||''};
+    op.doneAt=Date.now(); qSave(op);
+    if(op.kind==='pdf'&&res&&res.ok&&res.pdf)S.pdf[op.opId]={b64:res.pdf,name:res.name||'Документ.pdf'};
+    onResult(op,res||{}); paintChips(); repaint();
+  }
+  function prune(){
+    var now=Date.now();
+    Q.ops=Q.ops.filter(function(op){ var old=(op.state==='done'||op.state==='error')&&now-num(op.doneAt)>3*864e5; if(old)qDrop(op); return !old; });
+  }
+  /* an op is still «ours» (not yet in the server numbers) until the tasks list it as applied */
+  function counts(op){
+    if(op.state==='error')return false;
+    if((T().ops||[]).indexOf(op.opId)>=0)return false;
+    if(op.state==='done')return Date.now()-num(op.doneAt)<120000&&num(T().at)<num(op.doneAt)+1;
+    return true;
+  }
+
+  /* ---------------------------------------------------------------- results from the server */
+  var KIND={assembly_scan:'Сборка',assembly_done:'Сборка',assembly_partial:'Сборка',receipt:'Приём',inventory_count:'Пересчёт',transfer:'Перемещение',pdf:'PDF'};
+  function onResult(op,res){
+    var ok=!!res.ok, msg=String(res.msg||'');
+    if(op.kind==='assembly_scan'){ if(!ok)bad(msg||'Сканирование не принято','Количество вернулось к данным сервера'); return; }
+    if(op.kind==='pdf'){
+      if(!ok){ toast(msg||'PDF не получен','', 'err'); return; }
+      toast('PDF готов',op.name||'Нажмите «Поделиться»','ok',{text:'Поделиться',run:function(){ sharePdf(op.opId); }});
+      return;
+    }
+    if(ok){
+      toast('Принято сервером ✓',msg,'ok');
+      if(op.kind==='receipt'&&W().recv[op.docId]){ delete W().recv[op.docId]; saveWork(); }
+      if(op.kind==='transfer'){ W().move.lines={}; saveWork(); }
+      if(op.kind==='inventory_count'){ var loc=W().inv[op.docId]; if(loc){ (op.lines||[]).forEach(function(l){ if(num(loc[l.p])===num(l.q))delete loc[l.p]; }); saveWork(); } }
+    }else{
+      beep(false); vibe(false); flash(false);
+      toast((KIND[op.kind]||'Операция')+': не принято',msg,'err');
+    }
+  }
+
+  /* ---------------------------------------------------------------- data from Firestore */
+  function setTasks(d){
+    if(d&&String(d.appId||'')!==appId())return;
+    S.tasks=d||{appId:appId(),none:true}; lsSet(key('tasks'),S.tasks); S.netOk=true;
+    Q.ops.forEach(function(op){ if(op.state==='done'&&!counts(op)){} });
+    repaint();
+  }
+  function setStock(d){ if(d&&String(d.appId||'')!==appId())return; S.stock=d||null; if(d)lsSet(key('stock'),d); if(S.view==='stock')repaint(); }
+  function listen(){
+    if(typeof FBDB==='undefined'||!FBDB||!FBAUTH||!FBAUTH.currentUser||!ME)return;
+    try{ fbStopListeners(); }catch(_){}
+    var user=FBAUTH.currentUser, id=safeId(appId());
+    FB_UNSUB.push(FBDB.collection('users').doc(user.uid).onSnapshot(function(d){
+      if(!d.exists||(d.data()||{}).active===false){ doLogout(); return; }
+      var x=d.data()||{}; if(String(x.role||'').toLowerCase()!==ROLE){ toast('Ваша роль изменилась — войдите заново','', 'err'); setTimeout(function(){ doLogout(); },1600); }
+    },function(){}));
+    FB_UNSUB.push(FBDB.collection('whTasks').doc(id).onSnapshot(function(d){ setTasks(d.exists?d.data():null); },function(e){ S.netOk=false; S.err=String(e&&e.message||e||''); paintChips(); repaint(); }));
+    FB_UNSUB.push(FBDB.collection('whTasks').doc(id+'.stock').onSnapshot(function(d){ setStock(d.exists?d.data():null); },function(){}));
+    try{ if(typeof fbStartPresence==='function')fbStartPresence(); }catch(_){}
+    Q.ops.forEach(function(op){ if(op.state==='sent')watch(op); });
+    pump();
+    try{ fbSetStatus(true); }catch(_){}
+  }
+  async function pull(){
+    if(typeof FBDB==='undefined'||!FBDB||!ME)return true;
+    var id=safeId(appId());
+    try{ var d=await FBDB.collection('whTasks').doc(id).get(); setTasks(d.exists?d.data():null); }catch(_){ S.netOk=false; }
+    try{ var s=await FBDB.collection('whTasks').doc(id+'.stock').get(); setStock(s.exists?s.data():null); }catch(_){}
+    return true;
+  }
+
+  /* ---------------------------------------------------------------- mount / unmount */
+  async function mount(){
+    if(S.mounted){ return; }
+    S.mounted=true; S.work=null;
+    document.documentElement.classList.add('ta34-wh');
+    var root=byId('wms'); if(root)root.remove();
+    root=document.createElement('div'); root.id='wms'; root.setAttribute('role','application');
+    root.innerHTML='<header class="wms-top" id="wmsTop"></header><main class="wms-main" id="wmsMain"></main><div class="wms-bar" id="wmsBar" hidden></div>'
+      +'<button class="wms-fab" id="wmsFab" type="button" aria-label="Сканировать камерой" title="Сканировать камерой">'+ic('cam')+'</button>'
+      +'<div class="wms-toasts" id="wmsToasts" aria-live="polite"></div><div class="wms-flash" id="wmsFlash"></div>'
+      +'<input id="wmsHid" type="text" inputmode="none" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="-1" aria-hidden="true">';
+    document.body.appendChild(root);
+    byId('wmsFab').onclick=function(){ openCamera(); };
+    root.addEventListener('pointerdown',function(){ audio(); },{passive:true});
+    root.addEventListener('click',onClick);
+    root.addEventListener('pointerup',function(e){ if(!e.target.closest('input,textarea,select,.wms-sheet,.wms-cam'))focusHid(); });
+    S.tasks=lsGet(key('tasks'),null); S.stock=lsGet(key('stock'),null);
+    if(!Q.db)Q.db=await idb();
+    var stored=await qLoad(); var have={}; Q.ops.forEach(function(o){have[o.opId]=1}); stored.forEach(function(o){ if(!have[o.opId])Q.ops.push(o); });
+    Q.ready=true; prune();
+    try{ history.replaceState({wms:'home'},''); }catch(_){}
+    S.view='home'; S.id=null;
+    repaint(); focusHid();
+    listen(); pump();
+  }
+  function unmount(){
+    if(!S.mounted)return; S.mounted=false;
+    closeCamera(); releaseWake();
+    Object.keys(Q.subs).forEach(unwatch);
+    var r=byId('wms'); if(r)r.remove();
+    document.documentElement.classList.remove('ta34-wh');
+  }
+  function focusHid(){ try{ var h=byId('wmsHid'); if(h&&!S.camera&&!document.querySelector('#wms .wms-sheet')&&document.activeElement!==h)h.focus({preventScroll:true}); }catch(_){} }
+
+  /* ---------------------------------------------------------------- navigation */
+  function nav(view,id){
+    flushPick();
+    S.view=view; S.id=id||null; S.sel=null; S.showDone=false;
+    try{ history.pushState({wms:view,id:id||null},''); }catch(_){}
+    if(/^(order|po|count|move)$/.test(view))keepAwake(); else releaseWake();
+    repaint(true);
+  }
+  function back(){ try{ if(history.state&&history.state.wms&&history.state.wms!=='home'){ history.back(); return; } }catch(_){} goUp(); }
+  function goUp(){
+    flushPick();
+    var up={order:'pick',po:'recv',count:'inv'}[S.view]||'home';
+    S.view=up; S.id=null; S.sel=null; if(up==='home'||up==='pick'||up==='recv'||up==='inv')releaseWake(); repaint(true);
+  }
+  window.addEventListener('popstate',function(e){
+    if(!S.mounted)return;
+    if(closeTop())return;
+    var st=e.state||{};
+    if(st.wms){ flushPick(); S.view=st.wms; S.id=st.id||null; S.sel=null; if(/^(order|po|count|move)$/.test(S.view))keepAwake(); else releaseWake(); repaint(true); }
+    else { try{ history.pushState({wms:S.view,id:S.id},''); }catch(_){} }
+  });
+  function closeTop(){
+    if(S.camera){ closeCamera(); return true; }
+    var sh=document.querySelector('#wms .wms-sheet'); if(sh){ closeSheet2(); return true; }
+    return false;
+  }
+
+  /* ---------------------------------------------------------------- Wake Lock */
+  async function keepAwake(){
+    try{ if(!('wakeLock' in navigator)||S.wake)return; S.wake=await navigator.wakeLock.request('screen'); S.wake.addEventListener('release',function(){ S.wake=null; }); }catch(_){ S.wake=null; }
+  }
+  function releaseWake(){ try{ if(S.wake)S.wake.release(); }catch(_){} S.wake=null; }
+  document.addEventListener('visibilitychange',function(){
+    if(!S.mounted)return;
+    if(document.visibilityState==='visible'){ if(/^(order|po|count|move)$/.test(S.view))keepAwake(); pump(); }
+    else flushPick();
+  });
+  window.addEventListener('online',function(){ if(S.mounted){ S.netOk=true; paintChips(); pump(); } });
+  window.addEventListener('offline',function(){ if(S.mounted){ paintChips(); } });
+  setInterval(function(){ if(S.mounted){ pump(); paintChips(); } },10000);
+
+  /* ---------------------------------------------------------------- Bluetooth scanner (keyboard) */
+  var KB={buf:'',last:0};
+  window.addEventListener('keydown',function(e){
+    if(!S.mounted)return;
+    var t=e.target;
+    if(t&&t.id!=='wmsHid'&&t.closest&&t.closest('input,textarea,select,[contenteditable="true"]'))return;   /* a real text field: normal typing */
+    if(e.ctrlKey||e.metaKey||e.altKey)return;
+    var now=Date.now();
+    if(e.key==='Enter'||e.key==='Tab'){
+      var code=KB.buf.trim(); KB.buf='';
+      try{ var h=byId('wmsHid'); if(h)h.value=''; }catch(_){}
+      if(code.length>=3){ e.preventDefault(); scan(code,'hid'); }
+      return;
+    }
+    if(e.key==='Escape'){ if(closeTop()){ e.preventDefault(); } return; }
+    if(e.key&&e.key.length===1){
+      if(now-KB.last>600)KB.buf='';            /* a pause: a new code starts */
+      KB.buf+=e.key; KB.last=now;
+      if(t&&t.id==='wmsHid')return;            /* the hidden field keeps the keys; it is cleared on Enter */
+      e.preventDefault();
+    }
+  },true);
+
+  /* ---------------------------------------------------------------- data helpers */
+  function picks(){ return Array.isArray(T().pick)?T().pick:[]; }
+  function recvs(){ return Array.isArray(T().recv)?T().recv:[]; }
+  function invs(){ return Array.isArray(T().inv)?T().inv:[]; }
+  function prods(){ return (S.stock&&Array.isArray(S.stock.prods))?S.stock.prods:[]; }
+  function whName(id){ var all=[].concat(T().to||[],T().from||[],T().stockWh||[],(S.stock&&S.stock.wh)||[]); var w=all.find(function(x){return x.id===id}); return w?w.n:''; }
+  function findOrder(id){ return picks().find(function(o){return o.id===id})||null; }
+  function findPo(id){ return recvs().find(function(o){return o.id===id})||null; }
+  function findInv(id){ return invs().find(function(o){return o.id===id})||null; }
+  function codeOf(l){ var c=[l.a]; if(l.r)c.push(l.r); var b=(l.b||[])[0]; if(b)c.push('…'+String(b).slice(-5)); return c.filter(Boolean).join(' · '); }
+  function match(code,items){
+    code=String(code||'').trim(); var low=code.toLowerCase(), i, it;
+    for(i=0;i<items.length;i++){ it=items[i]; if((it.b||[]).indexOf(code)>=0)return {it:it,qty:1,pack:false}; }
+    for(i=0;i<items.length;i++){ it=items[i]; if((it.pb||[]).indexOf(code)>=0)return {it:it,qty:num(it.pq)>1?num(it.pq):1,pack:true}; }
+    for(i=0;i<items.length;i++){ it=items[i]; if(String(it.a||'').toLowerCase()===low||(it.r&&String(it.r).toLowerCase()===low))return {it:it,qty:1,pack:false}; }
+    return null;
+  }
+  function catalogFind(code){ var m=match(code,prods()); return m?m.it:null; }
+
+  /* --- assembly numbers: server «s» + changes not yet in the server numbers (draft and queued ops) */
+  function pickDelta(orderId,p){
+    var d=num((W().pick[orderId]||{})[p]);
+    Q.ops.forEach(function(op){ if(op.kind==='assembly_scan'&&op.docId===orderId&&counts(op))(op.lines||[]).forEach(function(l){ if(l.p===p)d+=num(l.q); }); });
+    return d;
+  }
+  function scanned(o,l){ return Math.max(0,num(l.s)+pickDelta(o.id,l.p)); }
+  function orderSum(o){ var a=0,b=0,n=0,d=0; (o.lines||[]).forEach(function(l){ var s=Math.min(scanned(o,l),num(l.q)); a+=s; b+=num(l.q); n++; if(s>=num(l.q))d++; }); return {got:a,need:b,lines:n,done:d}; }
+  function orderSent(o){ return Q.ops.some(function(op){ return (op.kind==='assembly_done'||op.kind==='assembly_partial')&&op.docId===o.id&&(op.state==='queued'||op.state==='sent'||(op.state==='done'&&counts(op))); }); }
+  function addPick(o,l,delta){
+    var w=W().pick[o.id]||(W().pick[o.id]={}); w[l.p]=num(w[l.p])+delta; if(!w[l.p])delete w[l.p]; saveWork();
+    clearTimeout(S.timers['pick'+o.id]); S.timers['pick'+o.id]=setTimeout(function(){ flushPick(o.id); },900);
+  }
+  function flushPick(only){
+    var w=W().pick, ids=only?[only]:Object.keys(w);
+    ids.forEach(function(id){
+      clearTimeout(S.timers['pick'+id]);
+      var m=w[id]; if(!m)return; var lines=Object.keys(m).filter(function(p){return num(m[p])!==0}).map(function(p){ return {p:p,q:num(m[p])}; });
+      delete w[id]; saveWork();
+      if(lines.length)enqueue('assembly_scan',id,lines);
+    });
+  }
+  /* --- receipt: local counts */
+  function recvGot(po,l){ var r=(W().recv[po.id]||{})[l.p]; return r?num(r.q):0; }
+  function recvDate(po,l){ var r=(W().recv[po.id]||{})[l.p]; return r&&r.pd||''; }
+  function setRecv(po,l,qv,pd){ var w=W().recv[po.id]||(W().recv[po.id]={}); var r=w[l.p]||(w[l.p]={q:0}); if(qv!=null)r.q=Math.max(0,qv); if(pd!==undefined)r.pd=pd; if(!r.q&&!r.pd)delete w[l.p]; saveWork(); }
+  function recvSent(po){ return Q.ops.some(function(op){ return op.kind==='receipt'&&op.docId===po.id&&(op.state==='queued'||op.state==='sent'); }); }
+  /* --- inventory: local counts (absolute) */
+  function invCount(d,l){ var loc=W().inv[d.id]||{}; if(loc[l.p]!=null)return num(loc[l.p]); var pend=null; Q.ops.forEach(function(op){ if(op.kind==='inventory_count'&&op.docId===d.id&&counts(op))(op.lines||[]).forEach(function(x){ if(x.p===l.p)pend=num(x.q); }); }); if(pend!=null)return pend; return l.c!=null?num(l.c):null; }
+  function invChanged(d){ var loc=W().inv[d.id]||{}; return (d.lines||[]).filter(function(l){ return loc[l.p]!=null&&(l.c==null||num(loc[l.p])!==num(l.c)); }); }
+  function setInv(d,l,v){ var w=W().inv[d.id]||(W().inv[d.id]={}); w[l.p]=Math.max(0,v); saveWork(); }
+
+  /* ---------------------------------------------------------------- scanning */
+  function scan(code,src){
+    code=String(code||'').trim(); if(!code)return;
+    var now=Date.now();
+    if(src==='cam'&&code===S.lastCode&&now-S.lastAt<1600)return;       /* the camera sees the same code many times */
+    S.lastCode=code; S.lastAt=now;
+    var v=S.view;
+    if(v==='order')return scanPick(code);
+    if(v==='po')return scanRecv(code);
+    if(v==='count')return scanInv(code);
+    if(v==='move')return scanMove(code);
+    return scanStock(code);
+  }
+  function scanPick(code){
+    var o=findOrder(S.id); if(!o)return bad('Заказ уже не в сборке');
+    if(orderSent(o))return bad('Заказ уже отправлен как собранный');
+    var m=match(code,o.lines||[]);
+    if(!m){ var p=catalogFind(code); return p?bad('Нет в заказе: '+p.n,'Отложите этот товар'):bad('Штрихкод '+code+' не найден','Проверьте товар или введите код вручную'); }
+    var l=m.it, have=scanned(o,l), need=num(l.q);
+    if(have+m.qty>need){ S.sel=l.p; repaint(); return bad(have>=need?'Уже собрано: '+q(need)+' из '+q(need):'Больше, чем в заказе: нужно ещё '+q(need-have),l.n); }
+    addPick(o,l,m.qty); S.sel=l.p; good(); repaint(); hit(l.p);
+    camResult(true,l.n,(m.pack?'Упаковка +'+q(m.qty)+' · ':'')+q(have+m.qty)+' из '+q(need));
+  }
+  function scanRecv(code){
+    var po=findPo(S.id); if(!po)return bad('Заказ поставщику уже закрыт');
+    if(po.wait||recvSent(po))return bad('Этот приход уже отправлен');
+    var m=match(code,po.lines||[]);
+    if(!m){ var p=catalogFind(code); return p?bad('Нет в заказе поставщику: '+p.n,'Отложите — оператор оформит отдельно'):bad('Штрихкод '+code+' не найден'); }
+    var l=m.it, got=recvGot(po,l)+m.qty; setRecv(po,l,got); S.sel=l.p; good(); repaint(); hit(l.p);
+    if(got>num(l.q))toast('Сверх заказа: '+q(got)+' из '+q(l.q),l.n);
+    camResult(true,l.n,(m.pack?'Упаковка +'+q(m.qty)+' · ':'')+'принято '+q(got)+' из '+q(l.q));
+  }
+  function scanInv(code){
+    var d=findInv(S.id); if(!d)return bad('Пересчёт уже закрыт');
+    var m=match(code,d.lines||[]);
+    if(!m){ var p=catalogFind(code); return p?bad('Товара нет в этом пересчёте: '+p.n):bad('Штрихкод '+code+' не найден'); }
+    var l=m.it, c=(invCount(d,l)||0)+m.qty; setInv(d,l,c); S.sel=l.p; good(); repaint(); hit(l.p);
+    camResult(true,l.n,(m.pack?'Упаковка +'+q(m.qty)+' · ':'')+'посчитано '+q(c));
+  }
+  function scanMove(code){
+    var it=catalogFind(code); if(!it)return bad('Штрихкод '+code+' не найден',S.stock?'':'Остатки ещё загружаются');
+    var mv=W().move; if(!mv.from)return bad('Сначала выберите склад «Откуда»');
+    var m=match(code,[it]), add=m?m.qty:1, cur=num(mv.lines[it.p]), av=avail(it,mv.from);
+    if(av!=null&&cur+add>av)return bad('На складе «'+whName(mv.from)+'» есть только '+q(av),it.n);
+    mv.lines[it.p]=cur+add; saveWork(); S.sel=it.p; good(); repaint(); hit(it.p);
+    camResult(true,it.n,'к перемещению '+q(cur+add));
+  }
+  function scanStock(code){
+    var it=catalogFind(code);
+    if(!it){ if(S.view!=='stock'){ S.view='stock'; try{history.pushState({wms:'stock'},'')}catch(_){} } S.stockPick=null; S.stockQuery=code; repaint(true); return bad('Штрихкод '+code+' не найден',S.stock?'':'Остатки ещё загружаются'); }
+    good(); S.stockPick=it.p; S.stockQuery=''; var r=W().recent.filter(function(x){return x!==it.p}); r.unshift(it.p); W().recent=r.slice(0,12); saveWork();
+    if(S.view!=='stock'){ S.view='stock'; try{history.pushState({wms:'stock'},'')}catch(_){} }
+    repaint(true); camResult(true,it.n,stockLine(it));
+  }
+  function hit(p){ setTimeout(function(){
+    var r=document.querySelector('#wms [data-line="'+p+'"]'); if(r){ r.classList.remove('wms-hit'); void r.offsetWidth; r.classList.add('wms-hit'); }
+    /* the big card is the feedback: bring it back into view when the list was scrolled down */
+    var c=document.querySelector('#wms .wms-cur'), m=byId('wmsMain');
+    if(c&&m){ var cr=c.getBoundingClientRect(), mr=m.getBoundingClientRect(); if(cr.top<mr.top||cr.top>mr.top+mr.height*0.5){ try{ m.scrollTo({top:Math.max(0,c.offsetTop-12),behavior:'smooth'}); }catch(_){ m.scrollTop=Math.max(0,c.offsetTop-12); } } }
+  },10); }
+  /* v19 fix: blind count on → the server sends no quantities, only «есть» (true) per warehouse */
+  function blindStock(){ return !!(S.stock&&S.stock.blind===true); }
+  function avail(it,wh){ var s=it&&it.s&&it.s[wh]; if(blindStock()||s===true)return null; return s?num(s[1]):(S.stock?0:null); }
+  function stockLine(it){ var s=it.s||{}, ws=Object.keys(s); if(!ws.length)return 'Нет на ваших складах'; return ws.map(function(w){ return whName(w)+': '+(s[w]===true?'есть':q(s[w][0])); }).join(' · '); }
+
+  /* ---------------------------------------------------------------- painting */
+  function paintTop(cfg){
+    var top=byId('wmsTop'); if(!top)return;
+    var left=cfg.back?'<button class="wms-back" type="button" data-a="back" aria-label="Назад" title="Назад">'+ic('back')+'</button>'
+      :'<div class="wms-mark" aria-hidden="true">'+(typeof TradeAgentBrandMark==='function'?TradeAgentBrandMark({small:true}):'')+'</div>';
+    var ini=(typeof ta22Initials==='function')?ta22Initials(ME&&ME.name||'К'):'К';
+    top.innerHTML=left+'<div class="wms-ttl"><b>'+E(cfg.title)+'</b><span>'+E(cfg.sub||'')+'</span></div><div class="wms-chips" id="wmsChips"></div>'
+      +'<button class="wms-ava" type="button" data-a="menu" aria-label="Профиль и выход" title="Профиль и выход">'+E(ini)+'</button>';
+    paintChips();
+  }
+  function paintChips(){
+    var box=byId('wmsChips'); if(!box)return;
+    var off=navigator.onLine===false||!S.netOk, n=pending(), s=waiting(), h='';
+    if(n>0)h+='<span class="wms-chip q" title="Операции сохранены на телефоне и уйдут сами, когда будет сеть"><i></i>В очереди: '+n+'</span>';
+    else if(s>0)h+='<span class="wms-chip s" title="Отправлено, ждём ответ сервера: '+s+'">'+ic('share')+s+'</span>';
+    if(off&&n===0)h+='<span class="wms-chip off" title="Нет сети — работа сохраняется на телефоне"><i></i>Нет сети</span>';
+    else if(off)h=h.replace('class="wms-chip q"','class="wms-chip q off"');
+    if(box.innerHTML!==h)box.innerHTML=h;
+  }
+  function paintBar(btns){
+    var bar=byId('wmsBar'), main=byId('wmsMain'); if(!bar)return;
+    if(!btns||!btns.length){ bar.hidden=true; bar.innerHTML=''; main.classList.remove('has-bar'); return; }
+    bar.hidden=false; main.classList.add('has-bar');
+    btns=[{a:'cam',text:'',cls:'cam',ic:'cam',title:'Сканировать камерой'}].concat(btns);
+    bar.innerHTML=btns.map(function(b){ return '<button type="button" class="wms-btn '+(b.cls||'')+'" data-a="'+b.a+'"'+(b.dis?' disabled':'')+(b.title?' title="'+E(b.title)+'"':'')+'>'+(b.ic?ic(b.ic):'')+(b.text?'<span>'+E(b.text)+'</span>':'')+'</button>'; }).join('');
+  }
+  var lastView='';
+  function repaint(scrollTop){
+    if(!S.mounted)return;
+    var main=byId('wmsMain'); if(!main)return;
+    var keep=main.scrollTop, v=S.view, r;
+    try{
+      r=v==='pick'?vPick():v==='order'?vOrder():v==='recv'?vRecv():v==='po'?vPo():v==='inv'?vInv():v==='count'?vCount():v==='move'?vMove():v==='stock'?vStock():vHome();
+    }catch(e){ try{console.error('wms view',e)}catch(_){} r={title:'Склад',html:'<div class="wms-note werr"><b>Экран не открылся</b>'+E(String(e&&e.message||e))+'</div>',back:true}; }
+    paintTop(r); main.innerHTML=r.html; paintBar(r.bar);
+    var fab=byId('wmsFab'); if(fab)fab.style.display=r.fab===false||(r.bar&&r.bar.length)?'none':'';
+    if(scrollTop||lastView!==v+'|'+S.id)main.scrollTop=0; else main.scrollTop=keep;
+    lastView=v+'|'+S.id;
+    if(r.after)try{ r.after(main); }catch(_){}
+  }
+
+  /* --- notices when there are no tasks */
+  function gate(){
+    var t=S.tasks;
+    if(!t)return '<div class="wms-note"><b>Загружаю задания…</b>Задания приходят из Trade Agent Desktop. Если телефон без сети — они появятся, как только сеть вернётся.</div>';
+    if(t.none)return '<div class="wms-note wwarn"><b>Заданий пока нет</b>Trade Agent Desktop ещё не отправил задания для вашего входа. Они появятся сами в течение минуты после включения складского режима.</div>';
+    if(t.on===false||t.linked===false)return '<div class="wms-note wwarn"><b>'+(t.on===false?'Складской режим выключен':'Вход ещё не настроен')+'</b>'+E(t.msg||'Обратитесь к администратору.')+'</div>';
+    return '';
+  }
+  function updatedText(){ var t=T(); return t.date?'обновлено '+String(t.date).slice(-5):''; }
+
+  /* ================================================================ HOME */
+  function vHome(){
+    var t=T(), g=gate(), rights=t.rights||{};
+    var nPick=picks().length, nLines=picks().reduce(function(s,o){ return s+(o.lines||[]).length; },0);
+    var today=picks().filter(function(o){ var d=dayDiff(o.ship); return d!=null&&d<=0; }).length;
+    var nRecv=recvs().filter(function(x){return !x.wait}).length, nInv=invs().length;
+    var first=String(ME&&ME.name||'').split(' ').filter(Boolean); var hello=first.length>1?first[1]:(first[0]||'');
+    var cnt=nPick+nRecv+nInv, upd=updatedText();
+    var h='<div class="wms-hello"><b>'+(hello?'Привет, '+E(hello):'Склад')+'</b><span>'+(S.tasks&&!S.tasks.none&&t.on!==false?(cnt?'В работе '+cnt+' '+plural(cnt,'задание','задания','заданий'):'Заданий нет — можно проверить остатки')+(upd?' · '+upd:''):'Склад Trade Agent')+'</span></div>';
+    if(g)h+=g;
+    var dis=!!g&&!(S.tasks&&!S.tasks.none&&t.on!==false&&t.linked!==false);
+    function tile(cls,a,icn,title,sub,n,flag,off){
+      return '<button type="button" class="wms-tile '+cls+'" data-a="'+a+'"'+(off?' disabled':'')+'>'+(flag||'')+'<span class="ic">'+ic(icn)+'</span><span class="wrow"><span><span class="wt">'+title+'</span><span class="ws">'+sub+'</span></span>'
+        +(n!=null?'<span class="wn'+(n?'':' z')+'">'+n+'</span>':'')+'</span></button>';
+    }
+    h+='<div class="wms-grid" style="margin-top:14px">'
+      +tile('whero','go:pick','pick','Собрать',nPick?nLines+' '+plural(nLines,'строка','строки','строк')+' в '+nPick+' '+plural(nPick,'заказе','заказах','заказах'):'Заказов к сборке нет',nPick,today?'<span class="flag wms-badge ba">к отгрузке сегодня: '+today+'</span>':'',dis||rights.pick===false)
+      +tile('c2','go:recv','recv','Принять',nRecv?'по заказам поставщику':'Ждём поставок',nRecv,'',dis||rights.recv===false)
+      +tile('c3','go:inv','inv','Пересчитать',nInv?'инвентаризация':'Пересчётов нет',nInv,'',dis||rights.inv===false)
+      +tile('c4','go:move','move','Переместить','между складами',null,'',dis||rights.move===false)
+      +tile('c5','go:stock','stock','Остатки','найти товар',null,'',false)
+      +'</div>';
+    var open=resumeCard(); if(open)h='<div>'+h+'</div>'+open;
+    h+='<div class="wms-scanhint">'+ic('scan')+'<span>Сканер подключён по Bluetooth? Просто сканируйте — покажу товар и остатки. Камера — кнопка справа внизу.</span></div>';
+    return {title:'Склад',sub:(ME&&ME.name||'')+(t.user&&t.user!==ME.name?' · '+t.user:''),html:h};
+  }
+  function resumeCard(){
+    var w=W(), o=Object.keys(w.recv).map(findPo).filter(Boolean)[0];
+    if(o)return '<div class="wms-h">Не закончено</div><button type="button" class="wms-card" data-a="open:po:'+o.id+'"><div class="wl1"><span class="wno">'+E(o.no)+'</span><span class="wsp"></span><span class="wms-badge bb">приём</span></div><div class="wwho">'+E(o.sup||'')+'</div><div class="wm">Продолжить приём ›</div></button>';
+    var d=Object.keys(w.inv).map(findInv).filter(function(x){ return x&&invChanged(x).length; })[0];
+    if(d)return '<div class="wms-h">Не отправлено</div><button type="button" class="wms-card" data-a="open:count:'+d.id+'"><div class="wl1"><span class="wno">'+E(d.no)+'</span><span class="wsp"></span><span class="wms-badge ba">'+invChanged(d).length+' не отправлено</span></div><div class="wm">Продолжить пересчёт ›</div></button>';
+    return '';
+  }
+
+  /* ================================================================ PICK LIST */
+  function shipBadge(o){
+    var d=dayDiff(o.ship); if(d==null)return o.conf?'<span class="wms-badge bm">с '+ddmm(o.conf)+'</span>':'';
+    if(d<0)return '<span class="wms-badge br">отгрузка '+ddmm(o.ship)+'</span>';
+    if(d===0)return '<span class="wms-badge ba">отгрузка сегодня</span>';
+    if(d===1)return '<span class="wms-badge bb">завтра</span>';
+    return '<span class="wms-badge bm">'+ddmm(o.ship)+'</span>';
+  }
+  function vPick(){
+    var g=gate(), list=picks().slice().sort(function(a,b){ var x=dayDiff(a.ship),y=dayDiff(b.ship); x=x==null?99:x; y=y==null?99:y; return x-y||String(a.no).localeCompare(String(b.no),'ru'); });
+    var h=g;
+    if(!g&&!list.length)h+='<div class="wms-empty">'+ic('pick')+'<b>Всё собрано</b>Новые заказы появятся здесь сами, как только оператор их подтвердит.</div>';
+    list.forEach(function(o){
+      var s=orderSum(o), sent=orderSent(o);
+      h+='<button type="button" class="wms-card wring'+(sent?' dim':'')+'" data-a="open:order:'+o.id+'"><div class="wl1"><span class="wno">'+E(o.no)+'</span>'+shipBadge(o)+(o.st==='picking'?'<span class="wms-badge bg">собирается</span>':'')+'</div>'
+        +'<div class="wwho">'+E(o.client||'')+'</div><div class="wm">'+s.lines+' '+plural(s.lines,'строка','строки','строк')+' · '+q(s.got)+' из '+q(s.need)+' шт'+(o.whName?' · '+E(o.whName):'')+(sent?' · отправлено':'')+'</div>'
+        +'<span class="wms-ringw">'+ring(s.got,s.need,52)+'</span></button>';
+    });
+    return {title:'Собрать',sub:list.length?list.length+' '+plural(list.length,'заказ','заказа','заказов')+' · '+updatedText():updatedText(),back:true,html:h};
+  }
+
+  /* ================================================================ ORDER (assembly) */
+  function vOrder(){
+    var o=findOrder(S.id);
+    if(!o)return {title:'Заказ',back:true,html:'<div class="wms-empty">'+ic('check')+'<b>Заказ закрыт</b>Он уже собран или оператор вернул его. Вернитесь к списку.</div>',fab:false};
+    var s=orderSum(o), sent=orderSent(o), lines=(o.lines||[]).slice();
+    var todo=lines.filter(function(l){ return scanned(o,l)<num(l.q); }), done=lines.filter(function(l){ return scanned(o,l)>=num(l.q); });
+    var cur=lines.find(function(l){return l.p===S.sel})||null;
+    var h='<div class="wms-head"><span>'+ring(s.got,s.need,64)+'</span><div class="tx"><b>'+E(o.client||'')+'</b><span>'+E(o.no)+(o.whName?' · '+E(o.whName):'')+'</span>'
+      +'<div class="big">'+q(s.got)+'<small>из '+q(s.need)+' шт · '+s.done+'/'+s.lines+' строк</small></div></div></div>';
+    if(shipBadge(o))h=h.replace('<div class="tx">','<div class="tx"><div style="margin-bottom:6px">'+shipBadge(o)+'</div>');
+    if(sent)h+='<div class="wms-note" style="margin-bottom:12px"><b>Отправлено как собранный</b>Ждём подтверждение сервера — заказ исчезнет из списка.</div>';
+    h+=curCard(cur?{k:'Сейчас',n:cur.n,cd:codeOf(cur),got:scanned(o,cur),need:num(cur.q),unit:cur.u,life:cur.life,mode:'pick'}:null,'Сканируйте товар заказа','Bluetooth-сканер работает сразу. Или камера — кнопка внизу справа.');
+    h+='<div class="wms-h">Собрать <em>'+todo.length+'</em></div>';
+    if(!todo.length)h+='<div class="wms-note" style="border-color:#3A4A2A"><b>Всё отсканировано ✓</b>Нажмите «Готово» — заказ уйдёт на отгрузку.</div>';
+    todo.forEach(function(l){ h+=lineRow(l,scanned(o,l),num(l.q),'pick'); });
+    if(done.length){
+      h+='<button type="button" class="wms-fold" data-a="fold">'+(S.showDone?'Скрыть собранное':'Собрано · '+done.length)+'</button>';
+      if(S.showDone)done.forEach(function(l){ h+=lineRow(l,scanned(o,l),num(l.q),'pick'); });
+    }
+    var complete=s.got>=s.need&&s.need>0;
+    return {title:o.no,sub:o.whName||updatedText(),back:true,html:h,
+      bar:sent?[]:[{a:'partial',text:'Частично',title:'Собрано не всё — отметить с причиной'},{a:'done',text:'Готово',cls:'wpri',ic:'check',title:complete?'Отметить заказ собранным':'Собрано '+q(s.got)+' из '+q(s.need)}]};
+  }
+  function lifeBadge(life){ if(!life)return ''; return '<span class="wms-badge ba" title="Остаточный срок годности партии, которая уйдёт">срок '+num(life.pct)+'% · нужно '+num(life.need)+'%</span>'; }
+  function lineRow(l,got,need,mode){
+    var pct=need>0?Math.min(100,Math.round(got/need*100)):(got>0?100:0), ok=need>0&&got>=need, over=need>0&&got>need;
+    var qty=mode==='inv'?(got==null?'<span class="qty"><small>—</small></span>':'<span class="qty">'+q(got)+(need!=null?'<small> / '+q(need)+'</small>':'')+'</span>')
+      :need==null?'<span class="qty">'+q(got)+'<small> шт</small></span>'
+      :'<span class="qty'+(over?' wover':ok?' wok':'')+'">'+q(got)+'<small> / '+q(need)+'</small></span>';
+    var tags=(l.life?lifeBadge(l.life):'')+(mode==='recv'&&l._pd?'<span class="wms-badge bb">'+ic('cal').replace('<svg','<svg style="width:12px;height:12px;margin-right:4px"')+ddmmyyyy(l._pd)+'</span>':'')+(num(l.pq)>1?'<span class="wms-badge bm">упак. '+q(l.pq)+'</span>':'');
+    return '<button type="button" class="wms-line'+(S.sel===l.p?' cur':'')+(ok&&mode!=='inv'&&mode!=='move'?' done':'')+'" data-line="'+E(l.p)+'" data-a="sel:'+E(l.p)+'">'
+      +'<span><span class="nm">'+E(l.n||'Товар')+'</span><span class="cd">'+E(codeOf(l))+'</span>'+(tags?'<span class="tags">'+tags+'</span>':'')+'</span>'+qty
+      +(mode==='inv'||mode==='move'?'':'<span class="bar"><i class="'+(ok?'wok':'')+'" style="width:'+pct+'%"></i></span>')+'</button>';
+  }
+  function curCard(c,idleTitle,idleText){
+    if(!c)return '<div class="wms-cur idle">'+ic('scan')+'<b>'+E(idleTitle)+'</b>'+E(idleText)+'</div>';
+    var over=c.need!=null&&c.got>c.need, ok=c.need!=null&&c.got>=c.need&&!over;
+    var right=c.mode==='inv'?(c.need!=null?'<em class="wms-badge '+(c.got===c.need?'bg':'ba')+'">учёт '+q(c.need)+'</em>':'')
+      :c.mode==='move'?(c.av!=null?'<em class="wms-badge bm">есть '+q(c.av)+'</em>':''):(ok?'<em class="wms-badge bg">'+(c.mode==='recv'?'принято':'собрано')+'</em>':over?'<em class="wms-badge ba">сверх '+q(c.got-c.need)+'</em>':'<em class="wms-badge bm">ещё '+q(Math.max(0,c.need-c.got))+'</em>');
+    var h='<div class="wms-cur'+(ok?' wok':over?' wover':'')+'"><div class="k">'+E(c.k)+'</div><div class="nm">'+E(c.n)+'</div><div class="cd">'+E(c.cd||'')+'</div>'
+      +(c.life?'<div style="margin-top:6px">'+lifeBadge(c.life)+'</div>':'')
+      +'<div class="qq"><b>'+q(c.got)+'</b>'+(c.need!=null&&c.mode!=='inv'&&c.mode!=='move'?'<span>/ '+q(c.need)+'</span>':'<span>шт</span>')+right+'</div>'
+      +'<div class="wms-pad"><button type="button" data-a="minus" aria-label="Минус один" title="−1">−</button>'
+      +'<button type="button" class="wnum" data-a="keypad" title="Ввести число"><b>'+q(c.got)+'</b>ввести число</button>'
+      +'<button type="button" data-a="plus" aria-label="Плюс один" title="+1">+</button></div>'
+      +'<div class="wms-more">'+(c.need!=null&&c.mode!=='inv'?'<button type="button" data-a="all">Все · '+q(c.need)+'</button>':'')
+      +(c.mode==='recv'?'<button type="button" data-a="pdate">'+(c.pd?'Произведён '+ddmmyyyy(c.pd):'Дата производства')+'</button>':'')
+      +(c.mode==='move'?'<button type="button" data-a="rm">Убрать</button>':'')+'</div></div>';
+    return h;
+  }
+
+  /* ================================================================ RECEIVE */
+  function vRecv(){
+    var g=gate(), list=recvs(), h=g;
+    if(!g&&!list.length)h+='<div class="wms-empty">'+ic('recv')+'<b>Поставок не ждём</b>Отправленные заказы поставщикам появятся здесь сами.</div>';
+    list.forEach(function(po){
+      var need=0,got=0; (po.lines||[]).forEach(function(l){ need+=num(l.q); got+=Math.min(recvGot(po,l),num(l.q)); });
+      var d=dayDiff(po.exp), when=po.exp?(d<0?'<span class="wms-badge br">ждали '+ddmm(po.exp)+'</span>':d===0?'<span class="wms-badge ba">сегодня</span>':'<span class="wms-badge bm">'+ddmm(po.exp)+'</span>'):'';
+      h+='<button type="button" class="wms-card wring'+(po.wait?' dim':'')+'" data-a="open:po:'+po.id+'"><div class="wl1"><span class="wno">'+E(po.no)+'</span>'+when+(po.wait?'<span class="wms-badge bb">ждёт проведения</span>':'')+'</div>'
+        +'<div class="wwho">'+E(po.sup||'')+'</div><div class="wm">'+(po.lines||[]).length+' '+plural((po.lines||[]).length,'позиция','позиции','позиций')+' · ждём '+q(need)+' шт'+(po.whName?' · '+E(po.whName):'')+'</div>'
+        +'<span class="wms-ringw">'+ring(got,need,52)+'</span></button>';
+    });
+    return {title:'Принять',sub:list.length?list.length+' '+plural(list.length,'поставка','поставки','поставок')+' · '+updatedText():updatedText(),back:true,html:h};
+  }
+  function vPo(){
+    var po=findPo(S.id);
+    if(!po)return {title:'Приём',back:true,html:'<div class="wms-empty">'+ic('check')+'<b>Заказ поставщику закрыт</b>Приход уже оформлен. Вернитесь к списку.</div>',fab:false};
+    var lines=(po.lines||[]).map(function(l){ return Object.assign({},l,{_pd:recvDate(po,l)}); });
+    var need=0,got=0,more=0; lines.forEach(function(l){ var g=recvGot(po,l); need+=num(l.q); got+=Math.min(g,num(l.q)); more+=Math.max(0,g-num(l.q)); });
+    var sent=recvSent(po), cur=lines.find(function(l){return l.p===S.sel})||null;
+    var h='<div class="wms-head"><span>'+ring(got,need,64)+'</span><div class="tx"><b>'+E(po.sup||'')+'</b><span>'+E(po.no)+(po.whName?' · '+E(po.whName):'')+(po.exp?' · '+(dayDiff(po.exp)===0?'ждём сегодня':dayDiff(po.exp)<0?'ждали '+ddmm(po.exp):'ждём '+ddmm(po.exp)):'')+'</span>'
+      +'<div class="big">'+q(got+more)+'<small>из '+q(need)+' шт'+(more?' · сверх '+q(more):'')+'</small></div></div></div>';
+    if(po.wait)h+='<div class="wms-note" style="margin-bottom:12px"><b>Приход '+E(po.wait)+' ждёт проведения</b>Оператор проведёт его в Trade Agent Desktop. Повторно принимать не нужно.</div>';
+    else if(sent)h+='<div class="wms-note" style="margin-bottom:12px"><b>Приход отправлен</b>Ждём подтверждение сервера.</div>';
+    h+=curCard(cur?{k:'Сейчас',n:cur.n,cd:codeOf(cur),got:recvGot(po,cur),need:num(cur.q),mode:'recv',pd:cur._pd}:null,'Сканируйте поступивший товар','Каждое сканирование +1, штрихкод упаковки — вся упаковка.');
+    var todo=lines.filter(function(l){ return recvGot(po,l)<num(l.q); }), done=lines.filter(function(l){ return recvGot(po,l)>=num(l.q); });
+    h+='<div class="wms-h">Ждём <em>'+todo.length+'</em></div>';
+    todo.forEach(function(l){ h+=lineRow(l,recvGot(po,l),num(l.q),'recv'); });
+    if(done.length){ h+='<div class="wms-h">Принято <em>'+done.length+'</em></div>'; done.forEach(function(l){ h+=lineRow(l,recvGot(po,l),num(l.q),'recv'); }); }
+    var total=got+more, post=!!T().postReceipts;
+    return {title:po.no,sub:po.whName||updatedText(),back:true,html:h,
+      bar:po.wait||sent?[]:[{a:'recv-done',text:total?(post?'Принять и провести · ':'Принять · ')+q(total)+' шт':'Принять',cls:'wpri',ic:'check',dis:!total}]};
+  }
+
+  /* ================================================================ INVENTORY */
+  function vInv(){
+    var g=gate(), list=invs(), h=g;
+    if(!g&&!list.length)h+='<div class="wms-empty">'+ic('inv')+'<b>Пересчётов нет</b>Когда оператор начнёт инвентаризацию, она появится здесь.</div>';
+    list.forEach(function(d){
+      var n=(d.lines||[]).length, c=(d.lines||[]).filter(function(l){ return invCount(d,l)!=null; }).length, ch=invChanged(d).length;
+      h+='<button type="button" class="wms-card wring" data-a="open:count:'+d.id+'"><div class="wl1"><span class="wno">'+E(d.no)+'</span>'+(d.st==='review'?'<span class="wms-badge bg">всё посчитано</span>':'')+(ch?'<span class="wms-badge ba">не отправлено '+ch+'</span>':'')+'</div>'
+        +'<div class="wwho">'+E(d.whName||'')+'</div><div class="wm">'+n+' '+plural(n,'товар','товара','товаров')+' · посчитано '+c+(d.started?' · с '+ddmm(d.started):'')+'</div>'
+        +'<span class="wms-ringw">'+ring(c,n,52)+'</span></button>';
+    });
+    return {title:'Пересчитать',sub:updatedText(),back:true,html:h};
+  }
+  function vCount(){
+    var d=findInv(S.id);
+    if(!d)return {title:'Пересчёт',back:true,html:'<div class="wms-empty">'+ic('check')+'<b>Пересчёт закрыт</b>Оператор уже завершил инвентаризацию.</div>',fab:false};
+    var blind=!!T().blind, lines=(d.lines||[]), ch=invChanged(d), cur=lines.find(function(l){return l.p===S.sel})||null;
+    var cnt=lines.filter(function(l){ return invCount(d,l)!=null; }).length;
+    var h='<div class="wms-head"><span>'+ring(cnt,lines.length,64)+'</span><div class="tx"><b>'+E(d.whName||'')+'</b><span>'+E(d.no)+(blind?' · вслепую':'')+'</span>'
+      +'<div class="big">'+cnt+'<small>из '+lines.length+' товаров посчитано</small></div></div></div>';
+    h+=curCard(cur?{k:'Считаю',n:cur.n,cd:codeOf(cur),got:invCount(d,cur)||0,need:blind?null:(cur.e!=null?num(cur.e):null),mode:'inv'}:null,'Сканируйте каждую единицу','Сканер прибавляет по одной. Число можно ввести кнопкой на карточке.');
+    var todo=lines.filter(function(l){ return invCount(d,l)==null; }), done=lines.filter(function(l){ return invCount(d,l)!=null; });
+    h+='<div class="wms-h">Не посчитано <em>'+todo.length+'</em></div>';
+    if(!todo.length)h+='<div class="wms-note">Все товары посчитаны.'+(ch.length?' Отправьте результат.':'')+'</div>';
+    todo.forEach(function(l){ h+=lineRow(l,null,blind?null:(l.e!=null?num(l.e):null),'inv'); });
+    if(done.length){ h+='<div class="wms-h">Посчитано <em>'+done.length+'</em></div>'; done.forEach(function(l){ h+=lineRow(l,invCount(d,l),blind?null:(l.e!=null?num(l.e):null),'inv'); }); }
+    return {title:d.no,sub:d.whName||updatedText(),back:true,html:h,
+      bar:[{a:'inv-send',text:ch.length?'Отправить · '+ch.length+' '+plural(ch.length,'строка','строки','строк'):'Всё отправлено',cls:'wpri',ic:'check',dis:!ch.length}]};
+  }
+
+  /* ================================================================ MOVE */
+  function vMove(){
+    var t=T(), mv=W().move, from=t.from||[], to=(t.to||[]).filter(function(w){ return w.id!==mv.from; });
+    if(!mv.from&&from.length===1){ mv.from=from[0].id; saveWork(); }
+    if(mv.to===mv.from){ mv.to=''; saveWork(); }
+    var h=gate();
+    if(!from.length&&!gate())h+='<div class="wms-note wwarn"><b>Нет склада для перемещения</b>У вашего сотрудника нет права отправлять товар со склада. Обратитесь к администратору.</div>';
+    h+='<div class="wms-lbl">Откуда</div><div class="wms-seg">'+from.map(function(w){ return '<button type="button" class="'+(mv.from===w.id?'on':'')+'" data-a="from:'+w.id+'">'+E(w.n)+'</button>'; }).join('')+'</div>';
+    h+='<div class="wms-lbl">Куда</div><div class="wms-seg">'+to.map(function(w){ return '<button type="button" class="'+(mv.to===w.id?'on':'')+'" data-a="to:'+w.id+'">'+E(w.n)+'</button>'; }).join('')+'</div>';
+    var ids=Object.keys(mv.lines).filter(function(p){ return num(mv.lines[p])>0; }), all=prods(), items=ids.map(function(p){ return all.find(function(x){return x.p===p}); }).filter(Boolean);
+    var cur=items.find(function(x){return x.p===S.sel})||null, total=ids.reduce(function(s,p){ return s+num(mv.lines[p]); },0);
+    h+='<div style="height:6px"></div>'+curCard(cur?{k:'Перемещаю',n:cur.n,cd:codeOf(cur),got:num(mv.lines[cur.p]),need:null,mode:'move',av:avail(cur,mv.from)}:null,'Сканируйте товар','Товар добавится в перемещение. Повторное сканирование +1.');
+    h+='<div class="wms-h">В перемещении <em>'+items.length+'</em></div>';
+    if(!items.length)h+='<div class="wms-note">Пока пусто.</div>';
+    items.forEach(function(it){ h+=lineRow(it,num(mv.lines[it.p]),null,'move'); });
+    var ready=!!(mv.from&&mv.to&&total>0), sent=Q.ops.some(function(op){ return op.kind==='transfer'&&(op.state==='queued'||op.state==='sent'); });
+    return {title:'Переместить',sub:mv.from&&mv.to?whName(mv.from)+' → '+whName(mv.to):'выберите склады',back:true,html:h,
+      bar:[{a:'move-done',text:sent?'Отправляю…':total?'Переместить · '+q(total)+' шт':'Переместить',cls:'wpri',ic:'move',dis:!ready||sent}]};
+  }
+
+  /* ================================================================ STOCK */
+  function vStock(){
+    var all=prods(), qv=S.stockQuery||'', h='';
+    h+='<label class="wms-search">'+ic('stock')+'<input id="wmsStockQ" type="search" placeholder="Название, код или штрихкод" value="'+E(qv)+'" autocomplete="off" enterkeyhint="search"></label>';
+    if(!S.stock)h+='<div class="wms-note">Остатки загружаются из Trade Agent Desktop…</div>';
+    var pick=S.stockPick&&all.find(function(x){return x.p===S.stockPick});
+    if(pick)h+=stockCard(pick);
+    var res=[];
+    if(qv&&!pick){
+      var low=qv.toLowerCase();
+      res=all.filter(function(x){ return String(x.n||'').toLowerCase().indexOf(low)>=0||String(x.a||'').toLowerCase().indexOf(low)>=0||String(x.r||'').toLowerCase().indexOf(low)>=0||(x.b||[]).some(function(b){return String(b).indexOf(qv)>=0}); }).slice(0,40);
+      h+='<div class="wms-h">Найдено <em>'+res.length+(res.length===40?'+':'')+'</em></div>';
+      if(!res.length)h+='<div class="wms-empty" style="padding:22px 10px"><b>Ничего не нашлось</b>Проверьте код или отсканируйте товар.</div>';
+      res.forEach(function(x){ h+=stockRow(x); });
+    }else if(!pick){
+      var rec=(W().recent||[]).map(function(p){ return all.find(function(x){return x.p===p}); }).filter(Boolean);
+      if(rec.length){ h+='<div class="wms-h">Недавно</div>'; rec.forEach(function(x){ h+=stockRow(x); }); }
+      else if(S.stock)h+='<div class="wms-empty">'+ic('scan')+'<b>Отсканируйте товар</b>'+(blindStock()?'Покажу, есть ли он на ваших складах.':'Покажу, сколько его на ваших складах.')+' Цены здесь не показываются.</div>';
+    }
+    return {title:'Остатки',sub:S.stock&&S.stock.date?'обновлено '+String(S.stock.date).slice(-5):'',back:true,html:h,
+      after:function(main){ var inp=main.querySelector('#wmsStockQ'); if(inp){ inp.oninput=function(){ S.stockQuery=inp.value; S.stockPick=null; var pos=inp.selectionStart; repaint(); var n=byId('wmsStockQ'); if(n){ n.focus(); try{n.setSelectionRange(pos,pos)}catch(_){} } }; inp.onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); var v=inp.value.trim(); if(v){ var it=catalogFind(v); if(it){ S.stockPick=it.p; S.stockQuery=''; repaint(); } } } }; } }};
+  }
+  function stockRow(x){
+    var s=x.s||{}, has=Object.keys(s).some(function(w){ return s[w]===true; }), tot=Object.keys(s).reduce(function(a,w){ return a+(s[w]===true?0:num(s[w][0])); },0);
+    var badge=blindStock()?(has?'есть':'нет'):q(tot)+' шт';   /* v19 fix: blind count — no quantities */
+    return '<button type="button" class="wms-card" data-a="sp:'+x.p+'"><div class="wl1"><span class="wwho" style="margin:0;flex:1">'+E(x.n)+'</span><span class="wms-badge '+((tot>0||has)?'bg':'bm')+'">'+badge+'</span></div><div class="wm">'+E(codeOf(x))+'</div></button>';
+  }
+  function stockCard(x){
+    var s=x.s||{}, whs=(S.stock&&S.stock.wh)||[];
+    var h='<div class="wms-cur"><div class="k">Товар</div><div class="nm">'+E(x.n)+'</div><div class="cd">'+E([x.a,x.r].filter(Boolean).join(' · '))+'</div>';
+    if((x.b||[]).length)h+='<div class="cd">Штрихкод '+E((x.b||[]).join(', '))+'</div>';
+    if((x.pb||[]).length)h+='<div class="cd">Упаковка '+q(x.pq||1)+' шт: '+E((x.pb||[]).join(', '))+'</div>';
+    h+='<div class="wms-wh'+(whs.length<2?' one':'')+'" style="margin-top:12px">'+(whs.length?whs.map(function(w){ var v=s[w.id];
+      if(blindStock()||v===true)return '<div class="'+(v?'':'zero')+'"><b>'+(v?'есть':'нет')+'</b><span>'+E(w.n)+'</span></div>';   /* v19 fix: blind count */
+      return '<div class="'+(v&&num(v[0])>0?'':'zero')+'"><b>'+q(v?v[0]:0)+' <small style="font:600 13px Golos Text,sans-serif;color:#9AA08E">шт</small></b><span>'+E(w.n)+'</span>'+(v&&num(v[1])!==num(v[0])?'<em>свободно '+q(v[1])+', в резерве '+q(num(v[0])-num(v[1]))+'</em>':'')+'</div>'; }).join(''):'<div class="zero"><b>—</b><span>Нет ваших складов</span></div>')+'</div>';
+    if(blindStock())h+='<div class="cd" style="margin-top:8px">Пересчёт вслепую: количество скрыто</div>';
+    h+='<div class="wms-more"><button type="button" data-a="sp-clear">Найти другой</button></div></div>';
+    return h;
+  }
+
+  /* ---------------------------------------------------------------- actions */
+  function onClick(e){
+    var b=e.target.closest('[data-a]'); if(!b||!byId('wms').contains(b))return;
+    var a=b.getAttribute('data-a'); if(b.disabled)return;
+    var c=a.indexOf(':'), name=c>0?a.slice(0,c):a, arg=c>0?a.slice(c+1):'';
+    switch(name){
+      case 'back': back(); break;
+      case 'menu': openMenu(); break;
+      case 'go': nav(arg); break;
+      case 'open': var p=arg.indexOf(':'); nav(arg.slice(0,p),arg.slice(p+1)); break;
+      case 'sel': S.sel=S.sel===arg?null:arg; repaint(); break;
+      case 'fold': S.showDone=!S.showDone; repaint(); break;
+      case 'plus': step(1); break;
+      case 'minus': step(-1); break;
+      case 'all': setAll(); break;
+      case 'keypad': keypad(); break;
+      case 'pdate': pickDate(); break;
+      case 'rm': if(S.view==='move'&&S.sel){ delete W().move.lines[S.sel]; S.sel=null; saveWork(); repaint(); } break;
+      case 'done': finishOrder(false); break;
+      case 'partial': finishOrder(true); break;
+      case 'recv-done': finishRecv(); break;
+      case 'inv-send': sendInv(); break;
+      case 'move-done': finishMove(); break;
+      case 'from': W().move.from=arg; if(W().move.to===arg)W().move.to=''; saveWork(); repaint(); break;
+      case 'to': W().move.to=arg; saveWork(); repaint(); break;
+      case 'sp': S.stockPick=arg; var r=W().recent.filter(function(x){return x!==arg}); r.unshift(arg); W().recent=r.slice(0,12); saveWork(); repaint(true); break;
+      case 'sp-clear': S.stockPick=null; S.stockQuery=''; repaint(true); break;
+      case 'pdf': requestPdf(); break;
+      case 'cam': openCamera(); break;
+    }
+  }
+  function current(){
+    var v=S.view;
+    if(v==='order'){ var o=findOrder(S.id); var l=o&&(o.lines||[]).find(function(x){return x.p===S.sel}); return l?{o:o,l:l,got:scanned(o,l),need:num(l.q)}:null; }
+    if(v==='po'){ var po=findPo(S.id); var l2=po&&(po.lines||[]).find(function(x){return x.p===S.sel}); return l2?{po:po,l:l2,got:recvGot(po,l2),need:num(l2.q)}:null; }
+    if(v==='count'){ var d=findInv(S.id); var l3=d&&(d.lines||[]).find(function(x){return x.p===S.sel}); return l3?{d:d,l:l3,got:invCount(d,l3)||0,need:null}:null; }
+    if(v==='move'){ var it=prods().find(function(x){return x.p===S.sel}); return it?{it:it,got:num(W().move.lines[it.p]),need:null}:null; }
+    return null;
+  }
+  function setTo(c,v){
+    v=Math.max(0,Math.round(num(v)*1000)/1000);
+    if(c.o){ if(orderSent(c.o))return bad('Заказ уже отправлен как собранный'); if(v>c.need)return bad('Больше, чем в заказе: '+q(c.need),c.l.n); if(v!==c.got){ addPick(c.o,c.l,v-c.got); good(); } }
+    else if(c.po){ setRecv(c.po,c.l,v); good(); }
+    else if(c.d){ setInv(c.d,c.l,v); good(); }
+    else if(c.it){ var mv=W().move, av=avail(c.it,mv.from); if(av!=null&&v>av)return bad('На складе есть только '+q(av),c.it.n); if(v>0)mv.lines[c.it.p]=v; else { delete mv.lines[c.it.p]; S.sel=null; } saveWork(); good(); }
+    repaint(); if(S.sel)hit(S.sel);
+  }
+  function step(d){ var c=current(); if(!c)return; if(c.got+d<0)return; setTo(c,c.got+d); }
+  function setAll(){ var c=current(); if(!c||c.need==null)return; setTo(c,c.need); }
+
+  /* ---------------------------------------------------------------- sheets */
+  function sheet(html,onMount){
+    closeSheet2();
+    var root=byId('wms'), sh=document.createElement('div'), sd=document.createElement('div');
+    sd.className='wms-shade'; sh.className='wms-sheet'; sh.setAttribute('role','dialog'); sh.innerHTML='<div class="grab"></div>'+html;
+    sd.onclick=closeSheet2; root.appendChild(sd); root.appendChild(sh); root.classList.add('has-sheet');
+    try{ history.pushState({wms:S.view,id:S.id,sheet:1},''); }catch(_){}
+    if(onMount)onMount(sh); return sh;
+  }
+  function closeSheet2(){ var r=byId('wms'); if(!r)return; r.querySelectorAll('.wms-sheet,.wms-shade').forEach(function(x){x.remove()}); r.classList.remove('has-sheet'); setTimeout(focusHid,30); }
+  function keypad(){
+    var c=current(); if(!c)return;
+    var val='', name=(c.l||c.it).n;
+    var sh=sheet('<h3>'+E(name)+'</h3><p>'+(c.need!=null?'Нужно '+q(c.need)+' · сейчас '+q(c.got):'Сейчас '+q(c.got))+'</p>'
+      +'<div class="wms-kp-disp"><b id="kpV">'+q(c.got)+'</b><span>шт</span></div><div class="wms-kp">'
+      +['1','2','3','−','4','5','6','+','7','8','9','⌫'].map(function(k){ return '<button type="button" class="'+('−+⌫'.indexOf(k)>=0?'fn':'')+'" data-k="'+k+'">'+k+'</button>'; }).join('')
+      +'<button type="button" class="fn all" data-k="all"'+(c.need==null?' disabled style="opacity:.35"':'')+'>Все</button><button type="button" data-k="0">0</button><button type="button" class="wkok" data-k="ok">Готово</button></div>');
+    var disp=sh.querySelector('#kpV'), cur=c.got;
+    function show(){ disp.textContent=q(val===''?cur:Number(val)); }
+    sh.querySelectorAll('[data-k]').forEach(function(btn){ btn.onclick=function(){
+      var k=btn.getAttribute('data-k'), v=val===''?cur:Number(val);
+      if(/^\d$/.test(k)){ val=(val==='0'?'':val)+k; if(val.length>6)val=val.slice(0,6); }
+      else if(k==='⌫'){ val=String(val).slice(0,-1); }
+      else if(k==='+'){ val=String(v+1); }
+      else if(k==='−'){ val=String(Math.max(0,v-1)); }
+      else if(k==='all'){ if(c.need!=null)val=String(c.need); }
+      else if(k==='ok'){ closeSheet2(); setTo(c,val===''?cur:Number(val)); return; }
+      show();
+    }; });
+  }
+  function pickDate(){
+    var c=current(); if(!c||!c.po)return;
+    var pd=recvDate(c.po,c.l);
+    sheet('<h3>Дата производства</h3><p>'+E(c.l.n)+'. «Годен до» сервер посчитает по сроку годности товара.</p>'
+      +'<label class="wf"><span>Произведён</span><input class="in" id="wmsPd" type="date" max="'+isoToday()+'" value="'+E(pd||'')+'"></label>'
+      +'<div class="acts"><button type="button" class="wms-btn" id="wmsPdClr">Без даты</button><button type="button" class="wms-btn wpri" id="wmsPdOk">Сохранить</button></div>',function(sh){
+      var inp=sh.querySelector('#wmsPd');
+      sh.querySelector('#wmsPdClr').onclick=function(){ setRecv(c.po,c.l,null,''); closeSheet2(); repaint(); };
+      sh.querySelector('#wmsPdOk').onclick=function(){ var v=inp.value; if(v&&v>isoToday()){ toast('Дата производства не может быть в будущем','', 'err'); return; } setRecv(c.po,c.l,null,v||''); closeSheet2(); repaint(); };
+    });
+  }
+  function openMenu(){
+    var t=T();
+    sheet('<h3>'+E(ME&&ME.name||'Кладовщик')+'</h3><p>Кладовщик'+(t.user?' · сотрудник '+E(t.user):'')+'<br>Trade Agent Manager v'+VER+'</p>'
+      +'<div class="wms-opt" style="margin-bottom:10px"><button type="button" id="wmsSnd" class="'+(soundOn()?'on':'')+'">Звук сканера: '+(soundOn()?'вкл':'выкл')+'</button>'
+      +(S.view==='order'?'<button type="button" id="wmsPdf">'+ic('share').replace('<svg','<svg style="width:16px;height:16px;margin-right:6px;vertical-align:-3px"')+'PDF заказа</button>':'')+'</div>'
+      +'<div class="wms-note" style="margin-bottom:6px"><b>Очередь</b>'+(pending()?'Ждут отправки: '+pending()+'. Уйдут сами, как только будет сеть.':waiting()?'Отправлено, ждём ответ сервера: '+waiting()+'.':'Все операции отправлены.')+'</div>'
+      +'<div class="acts"><button type="button" class="wms-btn" id="wmsCode">Сменить код</button><button type="button" class="wms-btn dng" id="wmsOut">Выйти</button></div>',function(sh){
+      sh.querySelector('#wmsSnd').onclick=function(){ lsSet('ta34.wms.sound',!soundOn()); closeSheet2(); openMenu(); if(soundOn())beep(true); };
+      var pdf=sh.querySelector('#wmsPdf'); if(pdf)pdf.onclick=function(){ closeSheet2(); requestPdf(); };
+      sh.querySelector('#wmsCode').onclick=function(){ changeCode(); };
+      sh.querySelector('#wmsOut').onclick=function(){
+        flushPick();
+        if(pending()){ if(!confirm('Не отправлено операций: '+pending()+'. Они сохранятся на этом телефоне и уйдут после следующего входа. Выйти?'))return; }
+        try{ doLogout(); }catch(_){ location.reload(); }
+      };
+    });
+  }
+  async function changeCode(){
+    var old=prompt('Текущий код доступа'); if(old===null)return;
+    var np=prompt('Новый код доступа (минимум 6 символов)'); if(!np||np.length<6){ toast('Код — минимум 6 символов','', 'err'); return; }
+    try{ var u=FBAUTH.currentUser, cred=firebase.auth.EmailAuthProvider.credential(u.email,old); await u.reauthenticateWithCredential(cred); await u.updatePassword(np); closeSheet2(); toast('Код доступа изменён','', 'ok'); }
+    catch(err){ toast('Не удалось изменить код',String(err&&err.message||err).slice(0,80),'err'); }
+  }
+
+  /* ---------------------------------------------------------------- finishing tasks */
+  function finishOrder(partial){
+    var o=findOrder(S.id); if(!o)return;
+    var s=orderSum(o);
+    if(!partial&&s.got>=s.need){ flushPick(o.id); enqueue('assembly_done',o.id,[]); good(); toast('Отправлено: '+o.no+' собран',navigator.onLine===false?'Нет сети — уйдёт автоматически':'Ждём подтверждение сервера','ok'); goUp(); return; }
+    var missing=(o.lines||[]).filter(function(l){ return scanned(o,l)<num(l.q); });
+    var reasons=['Нет на складе','Нет на полке','Брак','Пересорт'], chosen='';
+    sheet('<h3>'+(partial?'Собрано частично':'Собрано не всё')+'</h3><p>'+(s.got?'Собрано '+q(s.got)+' из '+q(s.need)+' шт. Не хватает:':'Ещё ничего не отсканировано.')+'</p>'
+      +(missing.length?'<div class="wms-miss-list">'+missing.slice(0,8).map(function(l){ return '<div><span>'+E(l.n)+'</span><b>−'+q(num(l.q)-scanned(o,l))+'</b></div>'; }).join('')+(missing.length>8?'<div><span>и ещё '+(missing.length-8)+'</span><b></b></div>':'')+'</div>':'')
+      +(s.got?'<div class="wms-lbl">Причина</div><div class="wms-opt">'+reasons.map(function(r){ return '<button type="button" data-r="'+E(r)+'">'+E(r)+'</button>'; }).join('')+'</div>'
+        +'<label class="wf"><span>Или своими словами</span><input class="in" id="wmsReason" maxlength="200" placeholder="Например: остаток на складе 3 шт"></label>':'')
+      +'<div class="acts"><button type="button" class="wms-btn" id="wmsCont">Досканировать</button>'+(s.got?'<button type="button" class="wms-btn wpri" id="wmsPart" disabled>Собрано частично</button>':'')+'</div>',function(sh){
+      sh.querySelector('#wmsCont').onclick=function(){ closeSheet2(); };
+      var go=sh.querySelector('#wmsPart'), inp=sh.querySelector('#wmsReason');
+      if(!go)return;
+      function upd(){ var r=(inp.value||'').trim()||chosen; go.disabled=r.length<3; }
+      sh.querySelectorAll('[data-r]').forEach(function(b){ b.onclick=function(){ chosen=b.getAttribute('data-r'); sh.querySelectorAll('[data-r]').forEach(function(x){ x.classList.toggle('on',x===b); }); upd(); }; });
+      inp.oninput=upd;
+      go.onclick=function(){ var r=(inp.value||'').trim()||chosen; if(r.length<3)return; flushPick(o.id); enqueue('assembly_partial',o.id,[],{reason:r}); closeSheet2(); good();
+        toast('Отправлено: '+o.no+' собран частично',r,'ok'); goUp(); };
+    });
+  }
+  function finishRecv(){
+    var po=findPo(S.id); if(!po)return;
+    var lines=(po.lines||[]).map(function(l){ var r=(W().recv[po.id]||{})[l.p]; return r&&num(r.q)>0?{p:l.p,q:num(r.q),pd:r.pd||undefined,n:l.n,need:num(l.q)}:null; }).filter(Boolean);
+    if(!lines.length)return bad('Ничего не принято');
+    var short=(po.lines||[]).filter(function(l){ return recvGot(po,l)<num(l.q); }), over=lines.filter(function(l){ return l.q>l.need; });
+    var post=!!T().postReceipts, total=lines.reduce(function(s,l){return s+l.q},0);
+    sheet('<h3>Принять товар</h3><p>'+E(po.sup||'')+' · '+E(po.no)+'<br>Принято '+q(total)+' шт в '+lines.length+' '+plural(lines.length,'позиции','позициях','позициях')+'. '+(post?'Приход проведётся сразу.':'Приход сохранится, проведёт оператор.')+'</p>'
+      +(short.length?'<div class="wms-lbl">Недостача</div><div class="wms-miss-list">'+short.slice(0,6).map(function(l){ return '<div><span>'+E(l.n)+'</span><b>−'+q(num(l.q)-recvGot(po,l))+'</b></div>'; }).join('')+(short.length>6?'<div><span>и ещё '+(short.length-6)+'</span><b></b></div>':'')+'</div>':'')
+      +(over.length?'<div class="wms-lbl">Сверх заказа</div><div class="wms-miss-list">'+over.map(function(l){ return '<div><span>'+E(l.n)+'</span><b>+'+q(l.q-l.need)+'</b></div>'; }).join('')+'</div>':'')
+      +'<div class="acts"><button type="button" class="wms-btn" id="wmsNo">Вернуться</button><button type="button" class="wms-btn wpri" id="wmsYes">'+(post?'Принять и провести':'Принять')+'</button></div>',function(sh){
+      sh.querySelector('#wmsNo').onclick=closeSheet2;
+      sh.querySelector('#wmsYes').onclick=function(){
+        enqueue('receipt',po.id,lines.map(function(l){ var x={p:l.p,q:l.q}; if(l.pd)x.pd=l.pd; return x; }));
+        closeSheet2(); good(); toast('Приём отправлен',navigator.onLine===false?'Нет сети — уйдёт автоматически':'Ждём подтверждение сервера','ok'); repaint();
+      };
+    });
+  }
+  function sendInv(){
+    var d=findInv(S.id); if(!d)return; var ch=invChanged(d), loc=W().inv[d.id]||{};
+    if(!ch.length)return;
+    enqueue('inventory_count',d.id,ch.map(function(l){ return {p:l.p,q:num(loc[l.p])}; }));
+    ch.forEach(function(l){ delete loc[l.p]; }); saveWork();   /* the sent numbers now live in the queued op */
+    good(); toast('Пересчёт отправлен',ch.length+' '+plural(ch.length,'строка','строки','строк'),'ok'); repaint();
+  }
+  function finishMove(){
+    var mv=W().move, ids=Object.keys(mv.lines).filter(function(p){ return num(mv.lines[p])>0; });
+    if(!mv.from||!mv.to||!ids.length)return;
+    var total=ids.reduce(function(s,p){return s+num(mv.lines[p])},0);
+    sheet('<h3>Переместить</h3><p>'+E(whName(mv.from))+' → '+E(whName(mv.to))+'<br>'+ids.length+' '+plural(ids.length,'товар','товара','товаров')+', '+q(total)+' шт.</p>'
+      +'<div class="acts"><button type="button" class="wms-btn" id="wmsNo">Вернуться</button><button type="button" class="wms-btn wpri" id="wmsYes">Переместить</button></div>',function(sh){
+      sh.querySelector('#wmsNo').onclick=closeSheet2;
+      sh.querySelector('#wmsYes').onclick=function(){
+        enqueue('transfer','',ids.map(function(p){ return {p:p,q:num(mv.lines[p])}; }),{from:mv.from,to:mv.to});
+        closeSheet2(); good(); toast('Перемещение отправлено',navigator.onLine===false?'Нет сети — уйдёт автоматически':'','ok'); repaint();
+      };
+    });
+  }
+
+  /* ---------------------------------------------------------------- PDF via Web Share */
+  function requestPdf(){
+    var o=findOrder(S.id); if(!o)return;
+    if((T().rights||{}).pdf===false)return toast('Нет права печатать документы','', 'err');
+    var op=enqueue('pdf',o.id,[],{docType:'customer_order'}); op.name='Заказ '+o.no+'.pdf'; qSave(op);
+    toast('Готовлю PDF заказа…',navigator.onLine===false?'Нет сети — подготовлю, когда появится':'Это займёт до минуты');
+  }
+  function b64ToBlob(b64){ var bin=atob(b64), arr=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i); return new Blob([arr],{type:'application/pdf'}); }
+  async function sharePdf(id){
+    var p=S.pdf[id]; if(!p)return toast('PDF уже недоступен — запросите заново','', 'err');
+    var blob=b64ToBlob(p.b64), name=String(p.name||'Документ.pdf').replace(/[\\/:*?"<>|]+/g,' ');
+    try{
+      var file=new File([blob],name,{type:'application/pdf'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){ await navigator.share({files:[file],title:name}); return; }
+    }catch(e){ if(e&&e.name==='AbortError')return; }
+    var url=URL.createObjectURL(blob), a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+  }
+
+  /* ---------------------------------------------------------------- camera */
+  function camResult(ok,title,sub){
+    var r=document.querySelector('#wms .wms-cam .res'); if(!r)return;
+    r.className='res '+(ok?'wok':'werr'); r.innerHTML='<i>'+(ok?'✓':'!')+'</i><span>'+E(title||'')+(sub?'<small>'+E(sub)+'</small>':'')+'</span>';
+  }
+  function loadZxing(){
+    return new Promise(function(res,rej){
+      if(window.ZXing&&window.ZXing.BrowserMultiFormatReader)return res(window.ZXing);
+      var s=document.createElement('script'); s.src='./vendor/zxing.min.js?v='+VER; s.async=true;
+      s.onload=function(){ window.ZXing?res(window.ZXing):rej(new Error('ZXing')); }; s.onerror=function(){ rej(new Error('Сканер камеры не загрузился')); };
+      document.head.appendChild(s);
+    });
+  }
+  async function openCamera(){
+    if(S.camera)return;
+    flushPick();
+    var root=byId('wms'), box=document.createElement('div');
+    box.className='wms-cam'; box.setAttribute('role','dialog'); box.setAttribute('aria-label','Сканер камерой');
+    box.innerHTML='<video playsinline muted autoplay></video><div class="shade"></div><div class="frame"></div><div class="laser"></div>'
+      +'<div class="bar"><button type="button" class="rb" data-c="x" aria-label="Закрыть" title="Закрыть">'+ic('x')+'</button><b>'+({order:'Сборка',po:'Приём',count:'Пересчёт',move:'Перемещение'}[S.view]||'Остатки')+'</b>'
+      +'<button type="button" class="rb" data-c="torch" aria-label="Фонарик" title="Фонарик" hidden>'+ic('torch')+'</button></div>'
+      +'<button type="button" class="manual" data-c="manual">'+ic('kbd').replace('<svg','<svg style="width:16px;height:16px;margin-right:6px;vertical-align:-3px"')+'Ввести код</button>'
+      +'<div class="res"><i>'+ic('scan').replace('<svg','<svg style="width:22px;height:22px"')+'</i><span>Наведите камеру на штрихкод<small>Сканирую непрерывно — можно по очереди</small></span></div>';
+    root.appendChild(box); root.classList.add('has-cam');
+    var cam={box:box,stream:null,timer:null,reader:null,track:null,torch:false,stop:false};
+    S.camera=cam;
+    try{ history.pushState({wms:S.view,id:S.id,cam:1},''); }catch(_){}
+    box.addEventListener('click',function(e){
+      var b=e.target.closest('[data-c]'); if(!b)return; var c=b.getAttribute('data-c');
+      if(c==='x')closeCamera();
+      else if(c==='torch'){ cam.torch=!cam.torch; try{ cam.track.applyConstraints({advanced:[{torch:cam.torch}]}); b.classList.toggle('on',cam.torch); }catch(_){ } }
+      else if(c==='manual'){ var v=prompt('Штрихкод или код товара'); if(v&&v.trim())scan(v.trim(),'manual'); }
+    });
+    var video=box.querySelector('video');
+    try{
+      if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('Камера недоступна в этом браузере');
+      cam.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
+      if(cam.stop){ cam.stream.getTracks().forEach(function(t){t.stop()}); return; }
+      video.srcObject=cam.stream; try{ await video.play(); }catch(_){}
+      cam.track=cam.stream.getVideoTracks()[0];
+      try{ var caps=cam.track.getCapabilities&&cam.track.getCapabilities(); if(caps&&caps.torch)box.querySelector('[data-c="torch"]').hidden=false; }catch(_){}
+      if('BarcodeDetector' in window){
+        var formats=['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','qr_code','data_matrix'];
+        try{ var sup=await window.BarcodeDetector.getSupportedFormats(); formats=formats.filter(function(f){return sup.indexOf(f)>=0}); }catch(_){}
+        var det=new window.BarcodeDetector(formats.length?{formats:formats}:undefined);
+        var tick=async function(){
+          if(cam.stop)return;
+          try{ if(video.readyState>=2){ var r=await det.detect(video); if(r&&r[0]&&r[0].rawValue)scan(r[0].rawValue,'cam'); } }catch(_){}
+          cam.timer=setTimeout(tick,110);
+        };
+        tick();
+      }else{
+        var Z=await loadZxing(); if(cam.stop)return;
+        var hints=new Map(); hints.set(Z.DecodeHintType.POSSIBLE_FORMATS,[Z.BarcodeFormat.EAN_13,Z.BarcodeFormat.EAN_8,Z.BarcodeFormat.CODE_128,Z.BarcodeFormat.CODE_39,Z.BarcodeFormat.UPC_A,Z.BarcodeFormat.ITF,Z.BarcodeFormat.QR_CODE]);
+        cam.reader=new Z.BrowserMultiFormatReader(hints,150);
+        cam.reader.decodeFromStream(cam.stream,video,function(result){ if(result&&!cam.stop)scan(result.getText(),'cam'); });
+      }
+    }catch(err){
+      camResult(false,'Камера не включилась',String(err&&err.message||err).slice(0,120)+'. Разрешите доступ к камере в настройках браузера.');
+    }
+  }
+  function closeCamera(){
+    var cam=S.camera; if(!cam)return; cam.stop=true; S.camera=null;
+    clearTimeout(cam.timer);
+    try{ if(cam.reader)cam.reader.reset(); }catch(_){}
+    try{ if(cam.stream)cam.stream.getTracks().forEach(function(t){ t.stop(); }); }catch(_){}
+    try{ cam.box.remove(); }catch(_){} try{ byId('wms').classList.remove('has-cam'); }catch(_){}
+    repaint(); setTimeout(focusHid,50);
+  }
+
+  /* ---------------------------------------------------------------- hooks into the app */
+  wrap('go',function(base){ return function(v){ if(isWh()){ try{ VIEW='wms'; }catch(_){} mount(); return; } if(S.mounted)unmount(); return base.apply(this,arguments); }; });
+  wrap('render',function(base){ return function(){ if(isWh()){ mount(); if(S.mounted&&Q.ready)repaint(); return; } if(S.mounted)unmount(); return base.apply(this,arguments); }; });
+  wrap('fbListen',function(base){ return function(){ if(isWh())return listen(); return base.apply(this,arguments); }; });
+  wrap('fbPullAll',function(base){ return async function(){ if(isWh())return pull(); return base.apply(this,arguments); }; });
+  wrap('doLogout',function(base){ return async function(){ try{ flushPick(); unmount(); }catch(_){} return base.apply(this,arguments); }; });
+  wrap('relogin',function(base){ return function(){ try{ unmount(); }catch(_){} return base.apply(this,arguments); }; });
+
+  /* ---------------------------------------------------------------- administrator: «+ Новый кладовщик», role label */
+  function fixRoles(){
+    try{ var u=(DB&&DB.users)||{}; MANAGERS.forEach(function(m){ var x=u[m.id]; if(x&&String(x.role||'').toLowerCase()===ROLE)m.role=ROLE; else if(m.role===ROLE&&x&&String(x.role||'').toLowerCase()==='manager')m.role='manager'; }); }catch(_){}
+  }
+  wrap('fbPullUsersForAdmin',function(base){ return async function(){ var r=await base.apply(this,arguments); fixRoles(); return r; }; });
+  function openNewKeeper(){
+    sheetApp('Новый кладовщик',
+      '<div class="note g">Кладовщик входит в этот же Manager: выбирает своё имя и вводит код. На телефоне он видит только склад — сборку, приём, пересчёт, перемещение и остатки, без цен.</div>'
+      +'<label class="f"><span>ФИО</span><input class="inp" id="nkName" maxlength="80" placeholder="Например: Сериков Ерлан"></label>'
+      +'<label class="f"><span>Код доступа (минимум 6 символов)</span><input class="inp" id="nkCode" type="password" minlength="6" inputmode="numeric" autocomplete="new-password"></label>'
+      +'<div class="note" style="margin:6px 0 14px">После создания в Trade Agent Desktop («Администрирование» → «Trade Agent Manager» → «Представители») выберите для него сотрудника с ролью «Склад».</div>'
+      +'<button class="btn pri" id="nkCreate">Добавить кладовщика</button>',
+      function(el){
+        el.querySelector('#nkCreate').onclick=async function(){
+          var b=el.querySelector('#nkCreate'), name=String(el.querySelector('#nkName').value||'').replace(/\s+/g,' ').trim(), code=String(el.querySelector('#nkCode').value||'');
+          if(name.length<2){ toastApp('Введите ФИО кладовщика'); return; }
+          if(MANAGERS.some(function(m){ return String(m.name).toLowerCase()===name.toLowerCase(); })){ toastApp('Такой пользователь уже есть'); return; }
+          if(code.length<6){ toastApp('Код доступа — минимум 6 символов'); return; }
+          var dyn=window.taDynUsers; if(!dyn){ toastApp('Обновите страницу и повторите'); return; }
+          var id=dyn.makeId(name); b.disabled=true; dyn.add(id,name,{pay:[],freePrice:false,seeDisc:false});
+          var m=MANAGERS.find(function(x){return x.id===id}); if(m)m.role=ROLE;
+          try{
+            await fbCreateAliasAccess(id,code,{role:ROLE,name:name,seed:{name:name,role:ROLE,pay:[],freePrice:false,seeDisc:false}});
+            dyn.save(); closeSheet(); toastApp('Кладовщик добавлен: '+name); render();
+          }catch(e){
+            var i=MANAGERS.findIndex(function(x){return x.id===id}); if(i>0)MANAGERS.splice(i,1);
+            toastApp('Не удалось: '+String(e&&e.message||e).slice(0,100)); b.disabled=false;
+          }
+        };
+      });
+  }
+  function sheetApp(t,h,f){ try{ sheet0(t,h,f); }catch(_){} }
+  var sheet0=window.sheet; function toastApp(m){ try{ window.toast(m); }catch(_){} }
+  wrap('vUsers22',function(base){ return function(){
+    fixRoles();
+    var r=base.apply(this,arguments);
+    try{
+      if(!isAdmin())return r;
+      var view=document.getElementById('view'); if(!view)return r;
+      view.querySelectorAll('[data-userreset22]').forEach(function(btn){
+        var id=btn.getAttribute('data-userreset22'), u=(DB.users||{})[id]||{}, m=MANAGERS.find(function(x){return x.id===id})||{};
+        if(String(u.role||m.role||'').toLowerCase()!==ROLE)return;
+        var card=btn.closest('.ta22-user'), p=card&&card.querySelector('p');
+        var linked=!!u.firebaseUid||!!(typeof FB_LOGIN_DIR!=='undefined'&&FB_LOGIN_DIR&&FB_LOGIN_DIR[id]);
+        if(p)p.innerHTML='Кладовщик · склад на телефоне · '+(linked?'вход подключен':'доступ не создан')+'<br>без цен и клиентов';
+        if(card)card.classList.add('ta34-keeper');
+      });
+      var acts=view.querySelector('.ta22-pagehead .actions');
+      if(acts&&!document.getElementById('dynAddKeeper')){
+        acts.insertAdjacentHTML('beforeend','<button id="dynAddKeeper" class="btn">+ Новый кладовщик</button>');
+        document.getElementById('dynAddKeeper').onclick=openNewKeeper;
+      }
+    }catch(_){}
+    return r;
+  }; });
+  wrap('render',function(base){ return function(){ try{ if(ME&&isAdmin())fixRoles(); }catch(_){} return base.apply(this,arguments); }; });
+
+  /* Login list: users restored from the device cache (td-dynamic-users) were added after the first paint and the
+     list was not painted again — after a restart only «Администратор» could be chosen. Paint it once more. */
+  setTimeout(function(){ try{ var sel=document.getElementById('lUser'); if(!ME&&sel&&sel.options.length!==MANAGERS.length&&typeof paintLogin==='function')paintLogin(); }catch(_){} },80);
+  wrap('fbLoadLoginDirectory',function(base){ return async function(){ var r=await base.apply(this,arguments); setTimeout(function(){ try{ var sel=document.getElementById('lUser'); if(!ME&&sel&&sel.options.length!==MANAGERS.length)paintLogin(); }catch(_){} },0); return r; }; });
+
+  window.taWms={version:VER,state:S,queue:Q,scan:function(c){ scan(c,'test'); },isWarehouse:isWh,flush:flushPick,pump:pump,open:function(v,id){ nav(v,id); }};
+})();
+</script>
 </body>
 </html>
