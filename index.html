@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="34.0.3" name="app-version"/>
+<meta content="34.1.0" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=34.0.3" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=34.0.3" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=34.0.3" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=34.0.3" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=34.1.0" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=34.1.0" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=34.1.0" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=34.1.0" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3415,7 +3415,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v34.0.3</i>
+<i id="loginVersion">v34.1.0</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -3440,7 +3440,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.0.3</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.1.0</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -3537,7 +3537,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.0.3';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.1.0';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -14171,7 +14171,7 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.0.3';
+  var VER='34.1.0';
   var HINT_LOCKED='Заявка принята оператором — изменить или отменить можно только через оператора';
   var NEW_RET_REASONS=['Брак','Истёк срок годности','Короткий срок годности','Повреждена упаковка','Ошибка в заказе / пересорт','Клиент отказался'];
 
@@ -17007,7 +17007,7 @@ html.ta32 #shBody .cli33-acts .btn{white-space:nowrap!important;padding-left:8px
    ===================================================================== */
 (function(){
   'use strict';
-  var VER='34.0.3';
+  var VER='34.1.0';
   var FORMATS=['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','qr_code','data_matrix'];
   function soundOn(){ try{ var v=localStorage.getItem('ta34.wms.sound'); return v?JSON.parse(v)!==false:true; }catch(_){ return true; } }
   var AC=null;
@@ -17468,7 +17468,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.0.3';
+  var VER='34.1.0';
   var ROLE='warehouse';
 
   function isWh(){ try{ return !!ME&&String(ME.role||'').toLowerCase()===ROLE; }catch(_){ return false; } }
@@ -18576,6 +18576,119 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   wrap('fbLoadLoginDirectory',function(base){ return async function(){ var r=await base.apply(this,arguments); setTimeout(function(){ try{ var sel=document.getElementById('lUser'); if(!ME&&sel&&sel.options.length!==MANAGERS.length)paintLogin(); }catch(_){} },0); return r; }; });
 
   window.taWms={version:VER,state:S,queue:Q,scan:function(c){ scan(c,'test'); },isWarehouse:isWh,flush:flushPick,pump:pump,open:function(v,id){ nav(v,id); }};
+})();
+</script>
+<!-- v20 acc -->
+<script id="ta341-acc-runtime">
+/* =====================================================================
+   Trade Agent Manager 34.1.0 — входы создаются в Trade Agent Desktop (карточка сотрудника → «Доступ в Manager»).
+   • «Пользователи» (администратор): подсказка, что сотрудников теперь добавляют в Desktop; старые кнопки работают.
+     Вход, созданный в Desktop (users/{uid}.accBy = 'desktop'), подписан «из Trade Agent Desktop»; роль «Водитель».
+   • Водитель (role 'driver'): экран водителя придёт в следующем обновлении — до этого вместо экранов представителя
+     показывается понятное сообщение и кнопка «Выйти». Так же — для любой роли, которую эта версия ещё не знает.
+   • Выключенный в Desktop вход (state/loginDirectory.map[appId].off = true) не показывается в списке имён на входе.
+   Представитель, кладовщик и администратор работают как раньше.
+   ===================================================================== */
+(function(){
+  'use strict';
+  if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
+  var VER='34.1.0';
+  var KNOWN={admin:1,manager:1,warehouse:1};
+  var ROLE_TEXT={driver:'Водитель',warehouse:'Кладовщик',manager:'Торговый представитель'};
+  function wrap(name,make){
+    try{ var base=window[name]; if(typeof base!=='function')return; var w=make(base); if(typeof w==='function')window[name]=w; }
+    catch(e){ try{console.warn('acc: '+name,e)}catch(_){} }
+  }
+  function E(s){ return (typeof esc==='function')?esc(s):String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}); }
+  function role(){ try{ return ME?String(ME.role||'manager').toLowerCase():''; }catch(_){ return ''; } }
+  /* a role this version has no screen for (the driver until his screen comes) */
+  function isStub(){ var r=role(); return !!r&&!KNOWN[r]; }
+  window.taIsRoleStub=isStub;
+
+  /* ---------------------------------------------------------------- the friendly screen */
+  (function(){ try{ var st=document.createElement('style'); st.id='ta341AccStyle';
+    st.textContent='#ta341Stub{position:fixed;inset:0;z-index:2147482000;display:grid;place-items:center;padding:22px;background:#07100a;color:#eef3ea}'
+      +'#ta341Stub .card{width:min(100%,420px);padding:26px 22px;border-radius:24px;background:#0b140d;border:1px solid rgba(217,242,118,.18);box-shadow:0 28px 90px #000a;text-align:center}'
+      +'#ta341Stub .ic{width:64px;height:64px;margin:0 auto 14px;border-radius:20px;display:grid;place-items:center;background:rgba(217,242,118,.1);color:#d9ef79}'
+      +'#ta341Stub .ic svg{width:34px;height:34px}'
+      +'#ta341Stub .k{font-size:10px;font-weight:900;letter-spacing:.15em;color:#9eb35a;text-transform:uppercase}'
+      +'#ta341Stub h3{margin:8px 0 8px;font-size:21px;line-height:1.25}'
+      +'#ta341Stub p{margin:0 0 18px;color:#929e91;font-size:14px;line-height:1.5}'
+      +'#ta341Stub .card button{display:block!important;width:100%!important;height:52px!important;padding:0!important;border-radius:14px!important;font-weight:850!important;font-size:16px!important;cursor:pointer;text-transform:none!important;letter-spacing:0!important;text-align:center!important;box-shadow:none!important}'
+      +'#ta341Stub .card button::before,#ta341Stub .card button::after{content:none!important;display:none!important}'
+      +'#ta341Stub .card .pri{background:linear-gradient(180deg,#d9ef79,#b5d14e)!important;color:#11170a!important;border:0!important}'
+      +'#ta341Stub .card .sec{margin-top:10px!important;background:transparent!important;color:#cfd8cb!important;border:1px solid rgba(255,255,255,.14)!important}'
+      +'.ta341-hint{margin:0 0 14px}';
+    document.head.appendChild(st); }catch(_){} })();
+  function mountStub(){
+    if(document.getElementById('ta341Stub'))return;
+    var r=role(), driver=r==='driver';
+    var el=document.createElement('div'); el.id='ta341Stub'; el.setAttribute('role','dialog');
+    el.innerHTML='<div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      +(driver?'<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.7"/><circle cx="17.5" cy="17.5" r="1.7"/>':'<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 2"/>')
+      +'</svg></div><div class="k">'+E(ME&&ME.name||'')+'</div>'
+      +'<h3>'+(driver?'Экран водителя появится в следующем обновлении':'Экран для вашей роли появится в следующем обновлении')+'</h3>'
+      +'<p>'+(driver?'Вход работает. Когда выйдет обновление, здесь будет ваш маршрут на день: адреса, звонок клиенту, «Доставлено» и оплата. Пока ничего делать не нужно.'
+                    :'Вход работает, но эта версия Manager ещё не умеет показывать экран для вашей роли. Обратитесь к администратору.')+'</p>'
+      +'<button type="button" class="pri" id="ta341Reload">Проверить обновление</button>'
+      +'<button type="button" class="sec" id="ta341Out">Выйти</button></div>';
+    document.body.appendChild(el);
+    el.querySelector('#ta341Reload').onclick=function(){ try{ location.reload(); }catch(_){} };
+    el.querySelector('#ta341Out').onclick=function(){ try{ el.remove(); }catch(_){} try{ doLogout(); }catch(_){ location.reload(); } };
+    document.documentElement.classList.add('ta341-stub');
+  }
+  function unmountStub(){ var el=document.getElementById('ta341Stub'); if(el)el.remove(); document.documentElement.classList.remove('ta341-stub'); }
+
+  wrap('render',function(base){ return function(){ if(isStub()){ mountStub(); return; } unmountStub(); return base.apply(this,arguments); }; });
+  wrap('go',function(base){ return function(){ if(isStub()){ mountStub(); return; } return base.apply(this,arguments); }; });
+  /* no representative data is loaded for such a login (orders, catalog listeners) */
+  wrap('fbListen',function(base){ return function(){ if(isStub())return; return base.apply(this,arguments); }; });
+  wrap('fbPullAll',function(base){ return async function(){ if(isStub())return true; return base.apply(this,arguments); }; });
+  wrap('doLogout',function(base){ return async function(){ unmountStub(); return base.apply(this,arguments); }; });
+
+  /* ---------------------------------------------------------------- login list: logins switched off in Desktop are hidden */
+  function hideOff(dir){
+    try{
+      var off=Object.keys(dir||{}).filter(function(k){ return dir[k]&&dir[k].off===true; });
+      if(!off.length)return false;
+      var removed=false;
+      for(var i=MANAGERS.length-1;i>0;i--){ if(off.indexOf(MANAGERS[i].id)>=0&&!(ME&&ME.id===MANAGERS[i].id)){ MANAGERS.splice(i,1); removed=true; } }
+      if(removed&&window.taDynUsers&&typeof window.taDynUsers.save==='function')window.taDynUsers.save();
+      return removed;
+    }catch(_){ return false; }
+  }
+  wrap('fbLoadLoginDirectory',function(base){ return async function(){
+    var r=await base.apply(this,arguments);
+    if(hideOff(r))setTimeout(function(){ try{ if(!ME&&document.getElementById('lUser'))paintLogin(); }catch(_){} },0);
+    return r;
+  }; });
+  /* the list is painted from several places (device cache, directory, users) — filter right before every paint */
+  wrap('paintLogin',function(base){ return function(){ try{ if(!ME&&typeof FB_LOGIN_DIR!=='undefined')hideOff(FB_LOGIN_DIR); }catch(_){} return base.apply(this,arguments); }; });
+
+  /* ---------------------------------------------------------------- «Пользователи»: where people are added now */
+  wrap('vUsers22',function(base){ return function(){
+    var r=base.apply(this,arguments);
+    try{
+      if(!isAdmin())return r;
+      var view=document.getElementById('view'); if(!view)return r;
+      var head=view.querySelector('.ta22-pagehead');
+      if(head&&!document.getElementById('ta341UsersHint')){
+        head.insertAdjacentHTML('afterend','<div class="note g ta341-hint" id="ta341UsersHint"><b>Сотрудников теперь добавляют в Trade Agent Desktop:</b> карточка сотрудника → Доступ в Manager. Там выбирают роль (представитель, кладовщик, водитель), а код входа сразу отправляют в WhatsApp. Кнопки ниже работают как раньше.</div>');
+      }
+      var users=(typeof DB!=='undefined'&&DB&&DB.users)||{};
+      view.querySelectorAll('[data-userreset22]').forEach(function(btn){
+        var id=btn.getAttribute('data-userreset22'), u=users[id]||{}, rl=String(u.role||'').toLowerCase();
+        var card=btn.closest('.ta22-user'), p=card&&card.querySelector('p'); if(!p)return;
+        var desk=u.accBy==='desktop';
+        if(rl==='driver')p.innerHTML='Водитель · экран водителя — в следующем обновлении'+(u.active===false?' · доступ выключен':'')+'<br>без цен и клиентов';
+        else if(!KNOWN[rl]&&rl)p.innerHTML=E(ROLE_TEXT[rl]||rl)+' · экран для этой роли — в следующем обновлении';
+        if(desk&&!p.querySelector('.ta341-desk'))p.insertAdjacentHTML('beforeend','<br><span class="ta341-desk">из Trade Agent Desktop'+(u.active===false?' · доступ выключен':'')+'</span>');
+      });
+    }catch(_){}
+    return r;
+  }; });
+
+  window.taAcc={version:VER,isStub:isStub,mount:mountStub};
 })();
 </script>
 </body>
