@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="34.8.0" name="app-version"/>
+<meta content="34.9.0" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=34.8.0" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=34.8.0" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=34.8.0" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=34.8.0" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=34.9.0" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=34.9.0" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=34.9.0" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=34.9.0" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3567,6 +3567,9 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 @media (min-width:640px){#v20gModal{align-items:center}#v20gModal .box{border-radius:22px}}
 #v20gModal h3{margin:0 0 4px;font-size:18px;font-weight:850}
 #v20gModal .sub{font-size:13px;color:var(--mut);margin-bottom:10px;overflow-wrap:anywhere}
+#v20gModal .v20g-note{font-size:13px;color:var(--mut);line-height:1.5;margin:6px 0;overflow-wrap:anywhere}   /* 34.9.0 */
+#v20gModal .v20g-note[hidden]{display:none}
+#v20gModal #v20gOld{color:var(--ink);font-weight:700}
 #v20gModal label{display:block;font-size:12.5px;font-weight:750;color:var(--mut);margin:10px 0 5px}
 #v20gModal input[type=text],#v20gModal input[type=number],#v20gModal select,#v20gModal textarea{box-sizing:border-box;width:100%;min-height:46px;padding:10px 12px;
   border-radius:12px;border:1px solid var(--line);background:var(--bg2);color:var(--ink);font:inherit;font-size:16px}
@@ -3908,7 +3911,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v34.8.0</i>
+<i id="loginVersion">v34.9.0</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -3933,7 +3936,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.8.0</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.9.0</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -4030,7 +4033,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.8.0';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.9.0';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -14664,7 +14667,7 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.8.0';
+  var VER='34.9.0';
   var HINT_LOCKED='Заявка принята оператором — изменить или отменить можно только через оператора';
   var NEW_RET_REASONS=['Брак','Истёк срок годности','Короткий срок годности','Повреждена упаковка','Ошибка в заказе / пересорт','Клиент отказался'];
 
@@ -17500,7 +17503,7 @@ html.ta32 #shBody .cli33-acts .btn{white-space:nowrap!important;padding-left:8px
    ===================================================================== */
 (function(){
   'use strict';
-  var VER='34.8.0';
+  var VER='34.9.0';
   var FORMATS=['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','qr_code','data_matrix'];
   function soundOn(){ try{ var v=localStorage.getItem('ta34.wms.sound'); return v?JSON.parse(v)!==false:true; }catch(_){ return true; } }
   var AC=null;
@@ -17972,7 +17975,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.8.0';
+  var VER='34.9.0';
   var ROLE='warehouse';
 
   function isWh(){ try{ return !!ME&&String(ME.role||'').toLowerCase()===ROLE; }catch(_){ return false; } }
@@ -19343,7 +19346,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   function setInvert(v){ lsSet(INV,!!v); }
   function invert(){ return !!lsGet(INV,false); }
 
-  window.taLabels={version:'34.8.0',parseSize:parseSize,compose:compose,layout:layout,render:render,bitmap:bitmap,tspl:tspl,rawbtUrl:rawbtUrl,
+  window.taLabels={version:'34.9.0',parseSize:parseSize,compose:compose,layout:layout,render:render,bitmap:bitmap,tspl:tspl,rawbtUrl:rawbtUrl,
     supported:supported,printer:printer,connect:connect,print:print,forget:forget,setInvert:setInvert,invert:invert,services:SERVICES};
 })();
 </script>
@@ -19361,7 +19364,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.8.0';
+  var VER='34.9.0';
   var KNOWN={admin:1,manager:1,warehouse:1};
   var ROLE_TEXT={driver:'Водитель',warehouse:'Кладовщик',manager:'Торговый представитель'};
   function wrap(name,make){
@@ -20643,7 +20646,8 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
                        отметил, «Сдать кассу» (ждёт / принято / не сходится)
      tdGeo/{appId}     у каких клиентов торгового уже есть место на карте {pts}, место последнего визита {vis}, новые клиенты {req}
    Телефон отправляет операции drvOps/{opId} (pend: 1; сервер применяет один раз и пишет result {ok, msg}):
-     водитель: delivered (фото накладной), pay (наличные / Kaspi, сумма), partial (по строкам — что клиент не взял, причина),
+     водитель: delivered (фото накладной), pay (наличные / Kaspi, сумма; 34.9.0: до общего долга клиента owedAll, если сервер его
+               присылает — остаток сверх накладной идёт в счёт старого долга, сервер пишет его в pold), partial (по строкам — что клиент не взял, причина),
                refused (причина), handover («Сдать кассу»), point (место клиента по телефону)
      торговый: point («Запомнить место» у своего клиента: геолокация с точностью до 100 м или ссылка 2ГИС)
    Операции без сети ждут в очереди на телефоне и уходят сами. Водитель видит только свой маршрут (без цен, без чужих клиентов).
@@ -20833,6 +20837,16 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   function stopById(id){ var r=route(); return r?(r.stops||[]).find(function(s){ return s.id===id; })||null:null; }
   function stState(s){ var l=G.local[s.id]; return (l&&l.st)||s.st||''; }
   function paidOf(s){ var l=G.local[s.id]; if(l&&l.paid!=null)return {sum:l.paid,m:l.pm}; return {sum:num(s.paid),m:s.pm}; }
+  /* 34.9.0: the client's whole open debt (a newer server sends owedAll beside owed — this invoice); null = an older server: as before */
+  function owedAllOf(s){ return s&&s.owed!=null&&s.owedAll!=null&&isFinite(num(s.owedAll))?Math.max(num(s.owedAll),num(s.owed)):null; }
+  function r2(x){ return Math.round(num(x)*100)/100; }
+  /* the part of the money above this invoice — «в счёт старого долга» (the phone's own unsent amount, else the server's pold) */
+  function oldOf(s){
+    var p=paidOf(s); if(!(p.sum>0))return 0;
+    var l=G.local[s.id];
+    if(l&&l.paid!=null)return owedAllOf(s)!=null?Math.max(0,r2(num(l.paid)-num(s.owed))):0;
+    return s.pold!=null?Math.min(num(s.pold),p.sum):0;
+  }
   function locked(s,r){ return !!(s.closed||s.cancelled||(r&&r.ho&&r.ho.st==='pending'&&s.ho==='pending')||s.ho==='pending'||s.ho==='confirmed'); }
 
   function mountDriver(){
@@ -20857,11 +20871,14 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     else if(st==='refused')chip='<span class="v20g-chip red">Отказ'+(s.why?': '+E(s.why):'')+'</span>';
     if(G.local[s.id]&&G.local[s.id].sending)chip+='<span class="v20g-chip wait">отправляется…</span>';
     if(paid.sum>0)chip+='<span class="v20g-chip ok">Получено '+tg(paid.sum)+(paid.m==='kaspi'?' Kaspi':' наличными')+'</span>';
+    var old=oldOf(s); if(old>0)chip+='<span class="v20g-chip ok">в т.ч. в счёт старого долга '+tg(old)+'</span>';   /* 34.9.0 */
     if(s.closed)chip+='<span class="v20g-chip">закрыта в программе</span>';
     else if(s.ho==='pending')chip+='<span class="v20g-chip wait">касса сдана</span>';
     var col=num(s.col)>0?'<div class="v20g-col">Забрать '+tg(s.col)+' '+(s.how==='kaspi'?'Kaspi':s.how==='bank'?'банком':'наличными')+'</div>'
       :(s.leave?'<div class="v20g-col leave">Оставить '+E(s.leave)+(num(s.leaveSum)>0?' '+tg(s.leaveSum):'')+'</div>':'');
-    var owed=s.owed!=null&&done?'<div class="v20g-meta">Долг по накладной сейчас: '+tg(s.owed)+'</div>':'';
+    var all=owedAllOf(s);
+    var owed=s.owed!=null&&done?'<div class="v20g-meta">Долг по накладной сейчас: '+tg(s.owed)+'</div>'
+      +(all!=null&&all>num(s.owed)+0.001?'<div class="v20g-meta">Общий долг клиента: '+tg(all)+'</div>':''):'';
     var meta=[s.no?'Заказ '+E(s.no):'',s.inv?'накладная '+E(s.inv):'',s.box!=null?'коробок: '+E(s.box):''].filter(Boolean).join(' · ');
     var open=!!G.open[s.id];
     var lines=open&&Array.isArray(s.lines)?'<div class="v20g-lines">'+s.lines.map(function(l){ return '<div><span>'+E(l.n)+'</span><b>'+E(num(l.q))+' '+E(l.u||'шт')+'</b></div>'; }).join('')+'</div>':'';
@@ -20989,22 +21006,32 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 
   function openPay(s){
     var cur=paidOf(s), method=cur.m||(s.how==='kaspi'?'kaspi':'cash');
-    var max=s.owed!=null?num(s.owed):null, def=cur.sum>0?cur.sum:(num(s.col)>0?num(s.col):(max!=null?max:0));
+    /* 34.9.0: a newer server sends owedAll — up to the client's whole debt (the rest goes to his older invoices); without it as before */
+    var inv=s.owed!=null?num(s.owed):null, all=owedAllOf(s), max=all!=null?all:inv, def=cur.sum>0?cur.sum:(num(s.col)>0?num(s.col):(inv!=null?inv:0));
     modal('Получил оплату',s.cn,'<label>Как получены деньги</label><div class="seg"><button data-m="cash">Наличные</button><button data-m="kaspi">Kaspi</button></div>'
       +'<label>Сумма, ₸</label><input type="number" id="v20gSum" inputmode="decimal" min="0" step="1" value="'+E(Math.round(def*100)/100)+'">'
-      +(max!=null?'<div class="v20g-note">Долг по накладной: '+tg(max)+' — больше принять нельзя.</div>':'<div class="v20g-note">Не больше долга по накладной.</div>')
+      +(all!=null?'<div class="v20g-note" id="v20gOw">По этой накладной: '+tg(inv)+' · Общий долг клиента: '+tg(all)+'</div><div class="v20g-note" id="v20gOld" hidden></div>'
+        :max!=null?'<div class="v20g-note">Долг по накладной: '+tg(max)+' — больше принять нельзя.</div>':'<div class="v20g-note">Не больше долга по накладной.</div>')
       +'<div class="err" id="v20gErr"></div><div class="acts">'+(cur.sum>0?'<button data-x="zero">Убрать оплату</button>':'')+'<button class="pri" data-x="ok">Сохранить</button></div>',
       function(m){
         function seg(){ m.querySelectorAll('[data-m]').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-m')===method); }); }
         m.querySelectorAll('[data-m]').forEach(function(b){ b.onclick=function(){ method=b.getAttribute('data-m'); seg(); }; }); seg();
+        function amountOf(){ return parseFloat(String(m.querySelector('#v20gSum').value).replace(',','.')); }
+        function hint(){   /* 34.9.0: «Из них в счёт старого долга: Z ₸» while the sum is above this invoice */
+          var h=m.querySelector('#v20gOld'); if(!h)return;
+          var a=amountOf(), z=all!=null&&a>inv+0.001?r2(Math.min(a,all)-inv):0;
+          h.hidden=!(z>0); h.textContent=z>0?'Из них в счёт старого долга: '+tg(z):'';
+        }
+        if(all!=null){ m.querySelector('#v20gSum').addEventListener('input',function(){ m.querySelector('#v20gErr').textContent=''; hint(); }); hint(); }
         function go(amount){
           var err=m.querySelector('#v20gErr');
           if(!(amount>=0)){ err.textContent='Введите сумму.'; return; }
-          if(max!=null&&amount>max+0.001){ err.textContent='Больше долга по накладной ('+tg(max)+').'; return; }
+          if(all!=null&&amount>all+0.001){ err.textContent='Больше общего долга клиента ('+tg(all)+').'; return; }
+          if(all==null&&max!=null&&amount>max+0.001){ err.textContent='Больше долга по накладной ('+tg(max)+').'; return; }
           var op=sendOp('pay',{stop:s.id,amount:Math.round(amount*100)/100,method:method},sent(s,'Оплата записана'));
           markLocal(s,{paid:amount,pm:amount>0?method:null},op); closeModal();
         }
-        m.querySelector('[data-x=ok]').onclick=function(){ go(parseFloat(String(m.querySelector('#v20gSum').value).replace(',','.'))); };
+        m.querySelector('[data-x=ok]').onclick=function(){ go(amountOf()); };
         var z=m.querySelector('[data-x=zero]'); if(z)z.onclick=function(){ go(0); };
       });
   }
@@ -21046,14 +21073,16 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 
   function openHandover(){
     var r=route(); if(!r)return;
-    var cash=0, kaspi=0, marked=0, unmarked=0;
+    var cash=0, kaspi=0, marked=0, unmarked=0, olds=[];
     (r.stops||[]).forEach(function(s){
       if(s.closed||s.cancelled||s.ho==='pending'||s.ho==='confirmed')return;
       var st=stState(s); if(st)marked++; else unmarked++;
       var p=paidOf(s); if(p.sum>0){ if(p.m==='kaspi')kaspi+=p.sum; else cash+=p.sum; }
+      var z=oldOf(s); if(z>0)olds.push('<div class="v20g-note">'+E(s.cn)+': '+tg(p.sum)+', в т.ч. в счёт старого долга '+tg(z)+'</div>');   /* 34.9.0 */
     });
     if(!marked){ say('Сдавать нечего: отметьте точки («Доставлено» / «Отказ») и оплаты.'); return; }
     modal('Сдать кассу',dmy(r.date),'<div class="v20g-sum" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><u>Наличные</u><b>'+tg(cash)+'</b></div><div><u>Kaspi</u><b>'+tg(kaspi)+'</b></div></div>'
+      +olds.join('')
       +'<div class="v20g-note">Отмечено точек: '+marked+(unmarked?'. Не отмечено: '+unmarked+' — их можно сдать позже.':'.')+' Отдайте наличные кассиру — он пересчитает и подтвердит в программе.</div>'
       +'<label>Комментарий (необязательно)</label><input type="text" id="v20gCm" maxlength="300">'
       +'<div class="acts"><button data-x="cancel">Отмена</button><button class="pri" data-x="ok">Сдать кассу</button></div>',
