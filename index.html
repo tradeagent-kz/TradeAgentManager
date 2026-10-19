@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="34.7.1" name="app-version"/>
+<meta content="34.8.0" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=34.7.1" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=34.7.1" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=34.7.1" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=34.7.1" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=34.8.0" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=34.8.0" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=34.8.0" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=34.8.0" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3908,7 +3908,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v34.7.1</i>
+<i id="loginVersion">v34.8.0</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -3933,7 +3933,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.7.1</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.8.0</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -4030,7 +4030,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.7.1';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.8.0';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -14664,7 +14664,7 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.7.1';
+  var VER='34.8.0';
   var HINT_LOCKED='Заявка принята оператором — изменить или отменить можно только через оператора';
   var NEW_RET_REASONS=['Брак','Истёк срок годности','Короткий срок годности','Повреждена упаковка','Ошибка в заказе / пересорт','Клиент отказался'];
 
@@ -17500,7 +17500,7 @@ html.ta32 #shBody .cli33-acts .btn{white-space:nowrap!important;padding-left:8px
    ===================================================================== */
 (function(){
   'use strict';
-  var VER='34.7.1';
+  var VER='34.8.0';
   var FORMATS=['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','qr_code','data_matrix'];
   function soundOn(){ try{ var v=localStorage.getItem('ta34.wms.sound'); return v?JSON.parse(v)!==false:true; }catch(_){ return true; } }
   var AC=null;
@@ -17972,7 +17972,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.7.1';
+  var VER='34.8.0';
   var ROLE='warehouse';
 
   function isWh(){ try{ return !!ME&&String(ME.role||'').toLowerCase()===ROLE; }catch(_){ return false; } }
@@ -19343,7 +19343,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   function setInvert(v){ lsSet(INV,!!v); }
   function invert(){ return !!lsGet(INV,false); }
 
-  window.taLabels={version:'34.7.1',parseSize:parseSize,compose:compose,layout:layout,render:render,bitmap:bitmap,tspl:tspl,rawbtUrl:rawbtUrl,
+  window.taLabels={version:'34.8.0',parseSize:parseSize,compose:compose,layout:layout,render:render,bitmap:bitmap,tspl:tspl,rawbtUrl:rawbtUrl,
     supported:supported,printer:printer,connect:connect,print:print,forget:forget,setInvert:setInvert,invert:invert,services:SERVICES};
 })();
 </script>
@@ -19361,7 +19361,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.7.1';
+  var VER='34.8.0';
   var KNOWN={admin:1,manager:1,warehouse:1};
   var ROLE_TEXT={driver:'Водитель',warehouse:'Кладовщик',manager:'Торговый представитель'};
   function wrap(name,make){
@@ -21902,6 +21902,9 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       видна, ясно, что сети нет.
    Данные — те же документы Firestore (whTasks, whOps, tdDriver, drvOps, photos); новые виды операций склада: inventory_done,
    return_receive, trip_accept (сервер Trade Agent v20 w).
+   34.8.0: «Перевернуть печать на 180°» (Trade Agent Desktop → «Настройки этикеток», сервер присылает «rot»: 1 в
+   whTasks/{appId}.labels): TSPL этикеток печатается с DIRECTION 0 вместо 1 — по шаблону, без шаблона, по Bluetooth и в
+   приложении для Android. Без «rot» — те же байты, что раньше.
    ===================================================================== */
 (function(){
   'use strict';
@@ -22458,7 +22461,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   }
 
   /* ---- the templates of this storekeeper (whTasks/{appId}.labels: «tpl», items «tp») and the overrides of window.taLabels */
-  var LBL={tpl:null,def:null,items:{},imp:'',h:'',map:{},sub:false};
+  var LBL={tpl:null,def:null,items:{},imp:'',h:'',map:{},sub:false,rot:false,rotApp:null};
   function lblKey(){ var m=me(); return 'ta20w.labels.'+(m?m.id:''); }
   function lblLoadCache(){ var c=lsGet(lblKey(),null); if(c&&c.h){ LBL.tpl=c.tpl||null; LBL.items=c.items||{}; LBL.imp=c.imp||''; LBL.h=c.h; lblIndex(); } }
   function lblIndex(){
@@ -22466,8 +22469,20 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     (LBL.tpl||[]).forEach(function(t){ if(t.d)LBL.def=t; }); if(!LBL.def&&LBL.tpl&&LBL.tpl.length)LBL.def=LBL.tpl[0];
     Object.keys(LBL.items).forEach(function(p){ var it=LBL.items[p], k=compose(it.t||'',LBL.imp); (LBL.map[k]=LBL.map[k]||[]).push(p); });
   }
+  /* 34.8.0: «Перевернуть печать на 180°» of the head document («rot»: 1), kept for this login (offline start) */
+  function rotKey(a){ return 'ta348.labels.rot.'+a; }
+  function lblRot(d){ var a=String((me()||{}).id||''); LBL.rot=num(d&&d.rot)===1; LBL.rotApp=a; lsSet(rotKey(a),LBL.rot?1:null); }
+  function rotOn(){ var a=String((me()||{}).id||''); if(!a)return false; if(LBL.rotApp===a)return !!LBL.rot; return num(lsGet(rotKey(a),0))===1; }
+  /* TSPL «DIRECTION 1» → «DIRECTION 0» in the head of the job (before the bitmap); the rest of the bytes untouched */
+  function turnTspl(b){
+    if(!b||!rotOn())return b;
+    var pat=[68,73,82,69,67,84,73,79,78,32,49,13,10], lim=Math.min(b.length-pat.length,240);   /* «DIRECTION 1\r\n» */
+    for(var i=0;i<=lim;i++){ var k=0; while(k<pat.length&&b[i+k]===pat[k])k++; if(k===pat.length){ b[i+10]=48; break; } }
+    return b;
+  }
   async function lblHead(d){
     if(!d||String(d.appId||'')!==String((me()||{}).id||''))return;
+    lblRot(d);   /* 34.8.0 */
     if(d.h&&d.h===LBL.h&&LBL.tpl!==undefined)return;
     var items={}, n=Math.max(0,Math.min(50,num(d.n))), id=safeId((me()||{}).id);
     try{ for(var i=1;i<=n;i++){ var c=await FBDB.collection('whTasks').doc(id+'.labels.'+i).get(); var x=c&&c.exists?c.data()||{}:{}; (x.items||[]).forEach(function(it){ if(it&&it.p)items[it.p]={t:String(it.t||''),e:!!it.e,tp:it.tp||''}; }); } }catch(_){ return; }
@@ -22516,10 +22531,19 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       var c=renderTemplate(t,dataFor(p,Object.assign({eac:!!eac},batchOf(p))),dpmm||8);
       c.taProduct=p; LAST.c=c; return c;
     };
-    /* TSPL: SIZE = the size of the label template */
-    TL.tspl=function(canvas,copies,size,invert){ return LEG.tspl.call(TL,canvas,copies,(canvas&&canvas.taSize)||size,invert); };
+    /* TSPL: SIZE = the size of the label template; 34.8.0: DIRECTION 0 when «Перевернуть печать на 180°» is on */
+    TL.tspl=function(canvas,copies,size,invert){ return turnTspl(LEG.tspl.call(TL,canvas,copies,(canvas&&canvas.taSize)||size,invert)); };
+    TL.rot180=rotOn;
     TL.print=async function(items,size,onProgress){
-      if(!LBL.tpl)return LEG.print.apply(TL,arguments);
+      if(!LBL.tpl&&!rotOn())return LEG.print.apply(TL,arguments);
+      if(!LBL.tpl){   /* 34.8.0: the labels without templates, turned — the same as the base print, through TL.tspl */
+        var inv0=TL.invert(), n0=items.length;
+        for(var j=0;j<items.length;j++){
+          var it0=items[j], c0=LEG.render.call(TL,it0.text,size,it0.eac,8);
+          await writeBt(TL.tspl(c0,it0.copies,size,inv0),function(x){ if(onProgress)onProgress((j+x)/n0); });
+        }
+        return true;
+      }
       await ensureFonts();
       var invert=TL.invert(), total=items.length, list=null;
       try{ var S=taWms.state; if(S.view==='labels'){ var L=(S.work.labels||[]).filter(function(x){ return num(x.q)>0; }); if(L.length===items.length)list=L.map(function(x){ return x.p; }); } }catch(_){}
