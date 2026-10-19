@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="34.7.0" name="app-version"/>
+<meta content="34.7.1" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=34.7.0" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=34.7.0" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=34.7.0" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=34.7.0" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=34.7.1" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=34.7.1" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=34.7.1" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=34.7.1" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3908,7 +3908,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v34.7.0</i>
+<i id="loginVersion">v34.7.1</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -3933,7 +3933,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.7.0</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v34.7.1</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -4030,7 +4030,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.7.0';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'34.7.1';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -14664,7 +14664,7 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.7.0';
+  var VER='34.7.1';
   var HINT_LOCKED='Заявка принята оператором — изменить или отменить можно только через оператора';
   var NEW_RET_REASONS=['Брак','Истёк срок годности','Короткий срок годности','Повреждена упаковка','Ошибка в заказе / пересорт','Клиент отказался'];
 
@@ -17500,7 +17500,7 @@ html.ta32 #shBody .cli33-acts .btn{white-space:nowrap!important;padding-left:8px
    ===================================================================== */
 (function(){
   'use strict';
-  var VER='34.7.0';
+  var VER='34.7.1';
   var FORMATS=['ean_13','ean_8','code_128','code_39','upc_a','upc_e','itf','qr_code','data_matrix'];
   function soundOn(){ try{ var v=localStorage.getItem('ta34.wms.sound'); return v?JSON.parse(v)!==false:true; }catch(_){ return true; } }
   var AC=null;
@@ -17972,7 +17972,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.7.0';
+  var VER='34.7.1';
   var ROLE='warehouse';
 
   function isWh(){ try{ return !!ME&&String(ME.role||'').toLowerCase()===ROLE; }catch(_){ return false; } }
@@ -19343,7 +19343,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   function setInvert(v){ lsSet(INV,!!v); }
   function invert(){ return !!lsGet(INV,false); }
 
-  window.taLabels={version:'34.7.0',parseSize:parseSize,compose:compose,layout:layout,render:render,bitmap:bitmap,tspl:tspl,rawbtUrl:rawbtUrl,
+  window.taLabels={version:'34.7.1',parseSize:parseSize,compose:compose,layout:layout,render:render,bitmap:bitmap,tspl:tspl,rawbtUrl:rawbtUrl,
     supported:supported,printer:printer,connect:connect,print:print,forget:forget,setInvert:setInvert,invert:invert,services:SERVICES};
 })();
 </script>
@@ -19361,7 +19361,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 (function(){
   'use strict';
   if(typeof MANAGERS==='undefined'||typeof render!=='function'||typeof isAdmin!=='function')return;
-  var VER='34.7.0';
+  var VER='34.7.1';
   var KNOWN={admin:1,manager:1,warehouse:1};
   var ROLE_TEXT={driver:'Водитель',warehouse:'Кладовщик',manager:'Торговый представитель'};
   function wrap(name,make){
@@ -24338,6 +24338,23 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     };
     TL.forget=function(){ var p=lsGet(PKEY,null); lsSet(PKEY,null); try{ if(p&&has('forgetPrinter'))nat().forgetPrinter(p.id); }catch(_){} };
     TL.nativePrinters=printerList; TL.pickPrinter=pickPrinter;
+    /* 34.7.1: without Desktop label templates the base print wrote through its own Web Bluetooth connect (absent in the app)
+       → «не умеет печатать по Bluetooth». Here that path also renders + TSPL and sends through TL.connect (the phone's printer). */
+    if(!TL.__v20kPrint){
+      var basePrint=TL.print; TL.__v20kPrint=true;
+      TL.print=async function(items,size,onProgress){
+        var tpl=null; try{ tpl=TL.templates?TL.templates():null; }catch(_){ tpl=null; }
+        if(tpl)return basePrint.apply(TL,arguments);
+        var inv=!!(TL.invert&&TL.invert()), total=items.length||1;
+        for(var k=0;k<items.length;k++){
+          var it=items[k], c=TL.render(it.text,size,it.eac,8);
+          var bytes=TL.tspl(c,it.copies,(c&&c.taSize)||size,inv);
+          var ch=await TL.connect(false); await ch.writeValue(bytes);
+          if(onProgress)onProgress((k+1)/total);
+        }
+        return true;
+      };
+    }
   }
 
   /* =====================================================================
