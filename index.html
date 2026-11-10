@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="35.1.4" name="app-version"/>
+<meta content="35.1.5" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=35.1.4" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=35.1.4" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=35.1.4" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=35.1.4" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=35.1.5" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=35.1.5" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=35.1.5" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=35.1.5" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -1031,8 +1031,8 @@ button:disabled{cursor:not-allowed;opacity:.52}
 .att-back{width:auto;margin:0 0 10px;padding:7px 10px;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:#0F1212;color:#9AA8A1;font-size:11px;font-weight:800}.att-head{display:flex;flex-direction:column;gap:3px;margin:0 0 10px;padding:11px 12px;border-radius:14px;border:1px solid rgba(128,193,160,.10);background:rgba(128,193,160,.035)}.att-head b{font-size:14px;color:#F2F0E9}.att-head span{font-size:10.5px;line-height:1.45;color:#798A82}.att-detail-list{display:flex;flex-direction:column;gap:8px}.att-detail-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;padding:11px 12px;border:1px solid rgba(255,255,255,.07);border-radius:15px;background:#0F1212}.att-detail-card.warn{border-color:rgba(126,192,159,.15)}.att-detail-card.danger{border-color:rgba(232,149,124,.16)}.att-detail-card.low{grid-template-columns:46px minmax(0,1fr);}.att-detail-main{min-width:0}.att-detail-main b{display:block;color:#F1EFE9;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.att-detail-main i,.att-detail-main small{display:block;font-style:normal;color:#7A8C83;font-size:9.5px;line-height:1.45;margin-top:2px}.att-detail-card>strong{font:800 12px var(--mono);color:#7DBA9C;white-space:nowrap}.att-actions{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}.att-actions button{min-height:31px;padding:0 10px;border:1px solid rgba(255,255,255,.08);border-radius:9px;background:#161B1B;color:#C8D0CC;font-size:9.5px;font-weight:800}.att-actions button.ok{background:rgba(174,204,130,.09);border-color:rgba(174,204,130,.16);color:#B8D392}.att-actions button.bad{background:rgba(231,145,118,.08);border-color:rgba(231,145,118,.15);color:#EBA48E}.att-stock{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#262E2E;color:#84C1A2;font:900 15px var(--mono)}.att-stock.critical{background:#38221B;color:#EBA58F}.attention-hero i{max-width:440px;line-height:1.45}
 @media(max-width:700px){.att-detail-card{grid-template-columns:minmax(0,1fr);}.att-detail-card.low{grid-template-columns:42px minmax(0,1fr)}.att-detail-card.low .att-actions{grid-column:1/-1}.att-detail-card>strong{justify-self:start}.att-actions button{flex:1 1 auto}.att-head b{font-size:13px}}
 
-/* iPhone: offer to turn on notifications (v20k web push) */
-.ta-webpush{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9000;display:flex;flex-direction:column;gap:12px;
+/* iPhone: offer to turn on notifications (v20k web push); at the top under the header — at the bottom the tab bar covered its buttons */
+.ta-webpush{position:fixed;left:12px;right:12px;top:calc(72px + env(safe-area-inset-top,0px));z-index:2147483000;display:flex;flex-direction:column;gap:12px;
   padding:14px 14px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh2);color:var(--ink);max-width:520px;margin:0 auto}
 .ta-webpush-t{display:flex;flex-direction:column;gap:4px;font-size:14px;line-height:1.4}
 .ta-webpush-t b{font-size:15px;font-weight:650}
@@ -3982,7 +3982,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v35.1.4</i>
+<i id="loginVersion">v35.1.5</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -4007,7 +4007,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.1.4</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.1.5</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -4104,7 +4104,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.1.4';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.1.5';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
