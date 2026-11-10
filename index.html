@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="35.1.6" name="app-version"/>
+<meta content="35.1.7" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=35.1.6" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=35.1.6" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=35.1.6" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=35.1.6" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=35.1.7" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=35.1.7" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=35.1.7" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=35.1.7" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3982,7 +3982,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v35.1.6</i>
+<i id="loginVersion">v35.1.7</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -4007,7 +4007,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.1.6</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.1.7</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -4104,7 +4104,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.1.6';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.1.7';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -15088,7 +15088,7 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
     var lastCat=null;
     list.forEach(function(p){
       var cat=String(cats[p.c]||'Без категории');
-      if(cat!==lastCat){ if(y>270){doc.addPage();y=18;head();} txt(cat.toUpperCase(),L,y+1,{size:8,bold:true,color:[110,130,40]}); y+=6; lastCat=cat; }
+      if(cat!==lastCat){ if(y>270){doc.addPage();y=18;head();} txt(cat.toUpperCase(),L,y+1,{size:8,bold:true,color:[64,126,95]}); y+=6; lastCat=cat; }
       var nm=fit(p.n,cols[1].w,8.6), h=Math.max(5,nm.length*3.9)+1.4;
       if(y+h>280){ doc.addPage(); y=18; head(); }
       txt(String(p.a),cols[0].x,y,{size:8,color:[80,80,80]});
