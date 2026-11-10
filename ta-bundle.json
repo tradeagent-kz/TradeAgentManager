@@ -1,0 +1,31 @@
+{
+ "managerVersion": "35.1.1",
+ "managerUrl": "https://tradeagent-kz.github.io/TradeAgentManager/",
+ "files": 33,
+ "cdn": [
+  {
+   "url": "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js",
+   "file": "ta-cdn/cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"
+  },
+  {
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+   "file": "ta-cdn/cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+  },
+  {
+   "url": "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+   "file": "ta-cdn/cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+  },
+  {
+   "url": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js",
+   "file": "ta-cdn/www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"
+  },
+  {
+   "url": "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js",
+   "file": "ta-cdn/www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"
+  },
+  {
+   "url": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js",
+   "file": "ta-cdn/www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"
+  }
+ ]
+}
