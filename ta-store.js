@@ -8,6 +8,8 @@
 (function () {
   'use strict';
   if (window.TA_STORE) return;
+  // the demo / test base (debug APK demo mode, tests/manager-smoke.mjs) is already in place: it stays the page's «firebase»
+  if (window.firebase && window.firebase.__fake) return;
 
   var DEFAULT_SERVER = 'https://agent.italcolours.kz';
   var SESSION_KEY = 'ta.mgr.session';

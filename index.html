@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="35.2.0" name="app-version"/>
+<meta content="35.2.1" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=35.2.0" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=35.2.0" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=35.2.0" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=35.2.0" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=35.2.1" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=35.2.1" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=35.2.1" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=35.2.1" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3982,7 +3982,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v35.2.0</i>
+<i id="loginVersion">v35.2.1</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -4007,7 +4007,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.2.0</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.2.1</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -4094,7 +4094,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="dvpage" id="dvPage"></div>
 </div>
 <!-- documents and sign-in on our own server (docs/OWN_SERVER_PHONES.md); Google's libraries only for notifications -->
-<script src="./ta-store.js?v=35.2.0"></script>
+<script src="./ta-store.js?v=35.2.1b"></script>
 <script>
 /* =====================================================================
    ДАННЫЕ ПРАЙСА (вшиты в файл)
@@ -4103,7 +4103,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.2.0';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.2.1';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -7246,14 +7246,24 @@ var vSync; /* v29.2.0: мёртвая копия функции убрана, и
 function loginInitials(name){
   return String(name||'').split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase()||'TA';
 }
+/* 35.2.1: on our server the sign-in list is the server's directory — only logins that really exist and are switched on.
+   The built-in «Администратор» of the Firebase days stays only if the directory has it. */
+var FB_DIR_LOADED=false;
+function loginList(){
+  if(!window.TA_STORE||!FB_DIR_LOADED)return MANAGERS;
+  const dir=FB_LOGIN_DIR||{};
+  const list=MANAGERS.filter(m=>dir[m.id]&&dir[m.id].email&&!dir[m.id].off);
+  return list.length?list:MANAGERS.slice(0,1);
+}
 function renderLoginUserPicker(){
   const sel=$('#lUser'); if(!sel) return;
-  const id=sel.value||DB?.auth?.uid||MANAGERS[0].id;
-  const m=MANAGERS.find(x=>x.id===id)||MANAGERS[0];
+  const L=loginList();
+  const id=sel.value||DB?.auth?.uid||L[0].id;
+  const m=L.find(x=>x.id===id)||L[0];
   const nm=$('#lUserName'), badge=$('#lUserBadge'), menu=$('#lUserMenu');
   if(nm) nm.textContent=m.name;
   if(badge) badge.textContent=loginInitials(m.name);
-  if(menu) menu.innerHTML=MANAGERS.map(x=>`<button type="button" role="option" aria-selected="${x.id===m.id}" data-login-user="${esc(x.id)}" class="${x.id===m.id?'on':''}">
+  if(menu) menu.innerHTML=L.map(x=>`<button type="button" role="option" aria-selected="${x.id===m.id}" data-login-user="${esc(x.id)}" class="${x.id===m.id?'on':''}">
     <span class="login-menu-badge">${esc(loginInitials(x.name))}</span><span class="login-menu-name">${esc(x.name)}</span><span class="login-menu-check">${x.id===m.id?'✓':''}</span></button>`).join('');
 }
 function toggleLoginUserMenu(force){
@@ -7268,10 +7278,11 @@ function chooseLoginUser(id){
   sel.dispatchEvent(new Event('change',{bubbles:true}));
 }
 function paintLogin(){
-  const cur=$('#lUser').value||DB.auth.uid||MANAGERS[0].id;
+  const L=loginList();
+  const cur=$('#lUser').value||DB.auth.uid||L[0].id;
   const sel=$('#lUser');
-  sel.innerHTML=MANAGERS.map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');
-  sel.value=MANAGERS.some(m=>m.id===cur)?cur:MANAGERS[0].id;
+  sel.innerHTML=L.map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');
+  sel.value=L.some(m=>m.id===cur)?cur:L[0].id;
   renderLoginUserPicker();
   onUserPick();
 }
@@ -8219,7 +8230,7 @@ async function fbLoadLoginDirectory(){
     if(r&&r.ok){
       const jj=await r.json(); const j=jj&&jj.docs&&jj.docs[0];
       const map=j&&j.exists&&j.fields&&j.fields.map?fbRestValue(j.fields.map):{};
-      if(map&&typeof map==='object'){FB_LOGIN_DIR=map;return FB_LOGIN_DIR}
+      if(map&&typeof map==='object'){FB_LOGIN_DIR=map;FB_DIR_LOADED=true;return FB_LOGIN_DIR}
     }
   }catch(_){}
   return FB_LOGIN_DIR||{};
@@ -8643,6 +8654,7 @@ async function fbFinishExplicitLogin(user,id,pass,email,bootstrap){
   });
 }
 
+const TA_NEWCODE='Новый код выдаёт руководитель в Trade Agent Desktop: Сотрудники → карточка сотрудника → «Доступ в Manager» → «Новый код».';
 doLogin=async function(){
   if(FB_LOGIN_ATTEMPTING)return;
   const id=(document.getElementById('lUser')?.value||'admin').trim();
@@ -8661,13 +8673,21 @@ doLogin=async function(){
     /* PWA and Safari do NOT share localStorage on iPhone. Resolve the hidden
        Firebase email from the shared loginDirectory before falling back to a
        one-time admin email prompt. */
-    let email=fbLoginEmailFor(id);
-    if(!email){
+    /* 35.2.1: on our server the directory is the only truth — load it before every sign-in, a copy saved on the
+       phone from the Firebase days (another address) must not be tried */
+    const OWN=!!window.TA_STORE;
+    let email='';
+    if(OWN){
       await fbLoadLoginDirectory();
+      const d=FB_LOGIN_DIR&&FB_LOGIN_DIR[id];
+      email=d&&d.email&&!d.off?String(d.email).trim():'';
+      if(!email)return err(d&&d.off?'Этот вход выключен. '+TA_NEWCODE:'Для этого пользователя вход ещё не создан. '+TA_NEWCODE);
+    }else{
       email=fbLoginEmailFor(id);
+      if(!email){await fbLoadLoginDirectory();email=fbLoginEmailFor(id);}
     }
     let bootstrap=false;
-    if(!email&&id==='admin'){
+    if(!OWN&&!email&&id==='admin'){
       FB_LOGIN_ATTEMPTING=false;
       email=await fbOneTimeAdminEmail();
       if(!email)return err('Для первого входа в ярлыке один раз нужен служебный email администратора.');
@@ -8684,7 +8704,10 @@ doLogin=async function(){
     await fbFinishExplicitLogin(user,id,pass,email,bootstrap);
   }catch(e){
     const code=e&&e.code;
-    err((code&&['auth/invalid-credential','auth/wrong-password','auth/user-not-found'].includes(code))?'Неверный код доступа':String(e&&e.message||e).replace(/^Firebase:\s*/,'').slice(0,140));
+    const wrong=code&&['auth/invalid-credential','auth/wrong-password','auth/user-not-found'].includes(code);
+    err(wrong?(window.TA_STORE?'Неверный код. Коды из прежней версии Manager больше не действуют. '+TA_NEWCODE:'Неверный код доступа')
+      :code==='unavailable'?'Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.'
+      :String(e&&e.message||e).replace(/^Firebase:\s*/,'').slice(0,160));
   }
 };
 
@@ -8692,6 +8715,7 @@ doLogin=async function(){
 document.addEventListener('click',async e=>{
   const b=e.target.closest('#fbForgot');if(!b)return;e.preventDefault();
   const id=(document.getElementById('lUser')?.value||'admin').trim();
+  if(window.TA_STORE){document.getElementById('lErr').textContent=TA_NEWCODE;return}
   if(id!=='admin'){document.getElementById('lErr').textContent='Новый код выдает администратор в разделе «Пользователи».';return}
   const email=await fbOneTimeAdminEmail();if(!email)return;
   b.disabled=true;
@@ -14603,7 +14627,7 @@ html body .empty:not([data-ta304-empty]){--ta304-rgb:168 206 90;--ta304-ei:url("
 
   fromCache(); try{fromUsers()}catch(_){}
   setTimeout(async function(){
-    try{ var dir=await fbLoadLoginDirectory(); if(fromDir(dir))repaint(); save(); }catch(_){}
+    try{ var dir=await fbLoadLoginDirectory(); fromDir(dir); repaint(); save(); }catch(_){}
   },30);
 
   var basePull=fbPullUsersForAdmin;
