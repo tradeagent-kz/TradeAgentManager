@@ -17229,13 +17229,17 @@ html.ta33-readonly #save,html.ta33-readonly #pOk,html.ta33-readonly #newClientSa
    Manager проверяет подпись файла своей копией ОТКРЫТОГО ключа (ECDSA P-256 / SHA-256, WebCrypto) по тем же
    правилам, что TradeAgentLicense.cs. Время сервера главное (serverToday, readOnly). Только просмотр: нельзя
    создать заказ, клиента, оплату, возврат и изменить заявку; просмотр, PDF/Excel и отправка документов работают.
-   Без поля lic (старый сервер) — ничего не меняется. Данные никогда не удаляются. */
+   Без поля lic (старый сервер) — ничего не меняется. Данные никогда не удаляются.
+   n9r20: необязательные поля файла maxComputers / maxOrgs (ограничения применяет сервер) и installId (привязка к серверу компании)
+   принимаются; после даты окончания сервер ещё 7 дней работает полностью (status "expired", readOnly false — полоса с его сообщением);
+   status "revoked" — лицензия отозвана правообладателем (только просмотр, сообщение сервера). */
 (function(root){
   'use strict';
   var HOLDER = 'Кудинов Артур Александрович';
   var PROD_KEY = 'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE2UtwSRnfBQw7BsN2146aFcscl+KyAuW/838wWLrmexB6/F/mtHQqc0wZGYk98b4q24tGxU1e4FM0EmNspUHtAg==';
   var FORMAT = 'TradeAgentLicense/1';
   var APPS = ['server','desktop','manager'], KINDS = ['trial','perpetual','subscription'];
+  var GRACE_AFTER = 7;   /* n9r20: days of full work after the end date (LicenseRules.ExpiredGraceDays) */
   var T = {
     holder: HOLDER,
     holderLine: 'Правообладатель — ' + HOLDER,
@@ -17281,10 +17285,13 @@ html.ta33-readonly #save,html.ta33-readonly #pOk,html.ta33-readonly #newClientSa
     if(kind==='perpetual'?to!==null:to===null) return bad(dates);
     if(to!==null&&diff(to,e.validFrom)<0) return bad(dates);
     var lim=function(k){ var v=e[k]; return v===undefined||v===null||(typeof v==='number'&&Number.isInteger(v)&&v>0); };
-    if(!lim('maxUsers')||!lim('maxReps')) return bad('В файле лицензии неверные лимиты.');
+    if(!lim('maxUsers')||!lim('maxReps')||!lim('maxComputers')||!lim('maxOrgs')) return bad('В файле лицензии неверные лимиты.');
+    if(e.installId!==undefined&&e.installId!==null&&(typeof e.installId!=='string'||!/^\{?[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12}\}?$/.test(e.installId)))
+      return bad('В файле лицензии неверная привязка к серверу.');
     if(!Array.isArray(e.apps)||!e.apps.length||e.apps.some(function(a){return APPS.indexOf(a)<0})) return bad('В файле лицензии не указаны программы.');
     return {ok:true,payload:{licenseId:id.trim(),company:company.trim(),bin:bin,kind:kind,issuedOn:e.issuedOn,validFrom:e.validFrom,validTo:to,
-      maxUsers:e.maxUsers||null,maxReps:e.maxReps||null,apps:e.apps.filter(function(a,i,s){return s.indexOf(a)===i}),holder:holder,note:str('note')}};
+      maxUsers:e.maxUsers||null,maxReps:e.maxReps||null,maxComputers:e.maxComputers||null,maxOrgs:e.maxOrgs||null,installId:str('installId'),
+      apps:e.apps.filter(function(a,i,s){return s.indexOf(a)===i}),holder:holder,note:str('note')}};
   }
   /* verify(fileText, app, {keys:[spki base64...], subtle}) -> Promise<{ok, error, payload, unavailable?}> */
   function verify(fileText, app, opts){
@@ -17329,8 +17336,8 @@ html.ta33-readonly #save,html.ta33-readonly #pOk,html.ta33-readonly #newClientSa
         s.verified=true; s.payload=check.payload;
         if(s.payload.validTo){
           s.daysLeft=diff(s.payload.validTo,s.serverToday);
-          /* the licence itself says it ended: read-only even if the flag says otherwise (3 days for device clocks) */
-          if(diff(s.payload.validTo,today)<-3&&!s.readOnly){ s.readOnly=true; s.status='expired'; s.roMessage=T.roExpired; }
+          /* the licence itself says it ended (and the 7 days after it): read-only even if the flag says otherwise (3 days for device clocks) */
+          if(diff(s.payload.validTo,today)<-(GRACE_AFTER+3)&&!s.readOnly){ s.readOnly=true; s.status='expired'; s.roMessage=T.roExpired; }
         }
       }else if(check.unavailable){
         s.unverifiable=true;
@@ -17387,7 +17394,9 @@ html.ta33-readonly #save,html.ta33-readonly #pOk,html.ta33-readonly #newClientSa
   }
   function describe(s){
     if(!s) return null;
-    if(s.readOnly) return {key:'ro',level:'problem',title:'Только просмотр',text:s.roMessage+' Заказы, клиенты и оплаты сейчас не создаются, просмотр работает.'};
+    if(s.readOnly) return {key:'ro',level:'problem',title:s.status==='revoked'?'Только просмотр: лицензия отозвана':'Только просмотр',text:s.roMessage+' Заказы, клиенты и оплаты сейчас не создаются, просмотр работает.'};
+    /* n9r20: the 7 days of full work after the end date — the server's sentence says until when */
+    if(s.status==='expired') return {key:'grace',level:'soon',title:'Срок лицензии истёк',text:s.message||'Продлите лицензию у правообладателя.'};
     if(s.status==='expiring'){ var d=s.daysLeft==null?0:s.daysLeft;
       return {key:'exp'+s.level,level:s.level==='soon'?'soon':'info',title:d<=0?'Сегодня последний день лицензии':'Лицензия заканчивается через '+days(d),
         text:'Действует до '+ru(s.payload&&s.payload.validTo)+'. Продлите её у правообладателя заранее.'}; }
