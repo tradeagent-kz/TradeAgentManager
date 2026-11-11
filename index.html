@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="35.1.7" name="app-version"/>
+<meta content="35.2.0" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=35.1.7" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=35.1.7" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=35.1.7" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=35.1.7" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=35.2.0" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=35.2.0" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=35.2.0" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=35.2.0" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3982,7 +3982,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v35.1.7</i>
+<i id="loginVersion">v35.2.0</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -4007,7 +4007,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.1.7</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.2.0</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -4093,9 +4093,8 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 </div>
 <div class="dvpage" id="dvPage"></div>
 </div>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<!-- documents and sign-in on our own server (docs/OWN_SERVER_PHONES.md); Google's libraries only for notifications -->
+<script src="./ta-store.js?v=35.2.0"></script>
 <script>
 /* =====================================================================
    ДАННЫЕ ПРАЙСА (вшиты в файл)
@@ -4104,7 +4103,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.1.7';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.2.0';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -8213,11 +8212,13 @@ async function fbLoadLoginDirectory(){
      Read the one public document with a bounded plain HTTP request. If it fails,
      existing local mappings remain usable exactly like v25.0.5. */
   try{
-    const url='https://firestore.googleapis.com/v1/projects/'+encodeURIComponent(FIREBASE_CONFIG.projectId)+'/databases/(default)/documents/state/'+encodeURIComponent(FB_LOGIN_DIR_DOC);
-    const r=await fbWithTimeout(fetch(url,{cache:'no-store',headers:{'Accept':'application/json'}}),4500,'Каталог входа недоступен');
+    /* 35.2.0: the directory is on our server (docs/OWN_SERVER_PHONES.md): the phones' API answers it before the sign-in */
+    const url=(window.TA_STORE?TA_STORE.server():'https://agent.italcolours.kz')+'/api/mgr/v1/docs/get';
+    const r=await fbWithTimeout(fetch(url,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({paths:['state/'+FB_LOGIN_DIR_DOC]})}),4500,'Каталог входа недоступен');
     if(r&&r.ok){
-      const j=await r.json();
-      const map=j&&j.fields&&j.fields.map?fbRestValue(j.fields.map):{};
+      const jj=await r.json(); const j=jj&&jj.docs&&jj.docs[0];
+      const map=j&&j.exists&&j.fields&&j.fields.map?fbRestValue(j.fields.map):{};
       if(map&&typeof map==='object'){FB_LOGIN_DIR=map;return FB_LOGIN_DIR}
     }
   }catch(_){}
@@ -17930,7 +17931,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 .wms-flash.werr{background:rgba(230,139,111,.16);box-shadow:inset 0 0 0 8px rgba(230,139,111,.95);animation:wmsFlash .7s ease-out}
 @keyframes wmsFlash{0%{opacity:1}100%{opacity:0}}
 .wms-hit{animation:wmsHit .7s cubic-bezier(.22,.8,.24,1)}
-@keyframes wmsHit{0%{background:#3A4A1F;border-color:#8CC6A9}100%{}}
+@keyframes wmsHit{0%{background:#2B3E35;border-color:#8CC6A9}100%{}}
 .wms-miss{animation:wmsMiss .5s}
 @keyframes wmsMiss{20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
 .wms-toasts{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 98px);z-index:80;display:flex;flex-direction:column;gap:8px;pointer-events:none}
@@ -25217,19 +25218,26 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   function standalone(){ try{ return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true; }catch(_){ return false; } }
   function webOK(){ try{ return !nat()&&isIOS()&&standalone()&&('serviceWorker' in navigator)&&('PushManager' in window)&&('Notification' in window); }catch(_){ return false; } }
   function webPerm(){ try{ return Notification.permission; }catch(_){ return 'denied'; } }
+  /* Google's own app + messaging libraries, only for the notification token, kept as window.TA_FB_REAL: the documents and the
+     sign-in are on our server (ta-store.js owns window.firebase) */
   var msgLoad=null;
+  function loadScript(src){ return new Promise(function(res,rej){ var sc=document.createElement('script'); sc.src=src; sc.onload=function(){ res(); }; sc.onerror=function(){ rej(new Error(src)); }; document.head.appendChild(sc); }); }
   function loadMessaging(){
-    if(window.firebase&&firebase.messaging)return Promise.resolve();
+    if(window.TA_FB_REAL&&TA_FB_REAL.messaging)return Promise.resolve();
     if(msgLoad)return msgLoad;
-    msgLoad=new Promise(function(res,rej){
-      var sc=document.createElement('script'); sc.src='https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js';
-      sc.onload=function(){ res(); }; sc.onerror=function(){ msgLoad=null; rej(new Error('messaging')); }; document.head.appendChild(sc);
-    });
+    var mine=window.firebase, G='https://www.gstatic.com/firebasejs/10.14.1/';
+    try{ delete window.firebase; }catch(_){ window.firebase=undefined; }
+    msgLoad=loadScript(G+'firebase-app-compat.js').then(function(){ return loadScript(G+'firebase-messaging-compat.js'); }).then(function(){
+      window.TA_FB_REAL=window.firebase; window.firebase=mine;
+    },function(e){ window.firebase=mine; msgLoad=null; throw e; });
     return msgLoad;
   }
   function webToken(){
     return navigator.serviceWorker.register('./ta-push-sw.js',{scope:'./'}).then(function(reg){
-      return loadMessaging().then(function(){ return firebase.messaging().getToken({vapidKey:VAPID,serviceWorkerRegistration:reg}); });
+      return loadMessaging().then(function(){
+        var R=window.TA_FB_REAL; var app=R.apps.length?R.app():R.initializeApp(FIREBASE_CONFIG);
+        return R.messaging(app).getToken({vapidKey:VAPID,serviceWorkerRegistration:reg});
+      });
     });
   }
   function webOfferHide(){ var b=byId('taWebPush'); if(b)b.remove(); }
@@ -25304,7 +25312,73 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       return;
     }
     setTimeout(function(){ pushRegister(false); flushPush(); if(K.pendingOpen){ var d=K.pendingOpen; K.pendingOpen=null; routePush(d); } },1500);
+    setTimeout(function(){ trackSync(true); },3000);
   }
+
+  /* =====================================================================
+     7. Маршрут в рабочее время (живое отслеживание, 11.11.2026). Только в приложении Android: руководитель включает
+        «Отслеживать» в карточке сотрудника, сотрудник один раз нажимает «Согласен» и разрешает место «Разрешать всегда»;
+        дальше приложение само отмечает место раз в минуту в его рабочие часы и дни и отправляет на наш сервер
+        (api/mgr/v1/track). «Не сейчас» — спросим при следующем открытии. Отозвать — «Не согласен» в том же окне.
+     ===================================================================== */
+  var TRK='ta.v20t.';
+  var trkAt=0;
+  function trkCall(path,body){
+    var st=window.TA_STORE, s=st&&st.session&&st.session();
+    if(!s||!s.token)return Promise.reject(new Error('signed out'));
+    return fetch(st.server()+'/api/mgr/v1/track/'+path,{method:'POST',cache:'no-store',
+      headers:{'Content-Type':'application/json','X-TA-Session':s.token},body:JSON.stringify(body||{})})
+      .then(function(r){ if(r.status===404)return null; if(!r.ok)throw new Error('HTTP '+r.status); return r.json(); });
+  }
+  function trkStart(cfg,ask){
+    var st=window.TA_STORE, s=st.session();
+    return nat().trackStart({api:st.server(),token:s&&s.token||'',deviceId:devId().slice(0,80),config:cfg,ask:!!ask});
+  }
+  function trkHours(c){
+    var n=['','пн','вт','ср','чт','пт','сб','вс'], d=(c.days||[]).slice().sort();
+    var days=d.join(',')==='1,2,3,4,5'?'пн–пт':d.join(',')==='1,2,3,4,5,6'?'пн–сб':d.length===7?'каждый день':d.map(function(x){return n[x]||'';}).join(', ');
+    return 'с '+E(c.from)+' до '+E(c.to)+', '+days;
+  }
+  function trkConsent(cfg){
+    if(typeof window.sheet!=='function')return;
+    window.sheet('Маршрут в рабочее время',
+      '<p style="margin:0 0 12px;line-height:1.45">Руководитель включил отметку маршрута: в рабочее время ('+trkHours(cfg)+') приложение раз в минуту отмечает, где вы, и отправляет на сервер компании. Вне рабочего времени ничего не записывается.</p>'+
+      '<p style="margin:0 0 18px;line-height:1.45;opacity:.75">После «Согласен» телефон попросит доступ к местоположению — выберите «Разрешать всегда». В шторке будет значок «Trade Agent — рабочий день».</p>'+
+      '<button class="btn pri" id="v20tYes" type="button">Согласен</button>'+
+      '<button class="btn" id="v20tNo" type="button" style="margin-top:10px">Не сейчас</button>',
+      function(body){
+        body.querySelector('#v20tYes').onclick=async function(){
+          this.disabled=true;
+          try{
+            var c=await trkCall('consent',{agree:true});
+            try{ closeSheet(); }catch(_){}
+            if(c){ lsSet(TRK+'asked.'+appId(),Date.now()); await trkStart(c,true); say('Маршрут в рабочее время включён'); }
+          }catch(e){ this.disabled=false; say('Нет связи с сервером — попробуйте ещё раз'); }
+        };
+        body.querySelector('#v20tNo').onclick=function(){ try{ closeSheet(); }catch(_){} };
+      });
+  }
+  async function trackSync(force){
+    if(!has('trackStart')||!window.TA_STORE||!appId())return;
+    if(!force&&Date.now()-trkAt<20*60*1000)return;
+    trkAt=Date.now();
+    var cfg; try{ cfg=await trkCall('config',{}); }catch(_){ return; }
+    if(!cfg)return;   /* the server is older: nothing to do */
+    if(!cfg.enabled||!cfg.consent){
+      try{ await nat().trackStop(); }catch(_){}
+      if(cfg.enabled&&!cfg.consent)trkConsent(cfg);
+      return;
+    }
+    var st={}; try{ st=await nat().trackStatus()||{}; }catch(_){}
+    var key=TRK+'asked.'+appId(), need=(st.permission!=='always'||st.battery==='limited')&&Date.now()-lsGet(key,0)>20*3600*1000;
+    if(need)lsSet(key,Date.now());
+    try{ await trkStart(cfg,need); }catch(_){}
+  }
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&me())setTimeout(function(){ trackSync(false); },800); });
+  wrap('doLogout',function(base){ return async function(){
+    try{ if(has('trackStop'))await Promise.race([nat().trackStop(),new Promise(function(r){ setTimeout(r,800); })]); }catch(_){}
+    return base.apply(this,arguments);
+  }; });
 
   /* =====================================================================
      install: the app may add TaNative before or right after this page starts
