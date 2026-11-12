@@ -140,6 +140,10 @@ main{padding:0 10px calc(var(--tabh) + 104px + env(safe-area-inset-bottom));max-
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
 @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* 35.2.2: an app, not a web page — a long press does not select labels and buttons or open the «copy / look up» menu.
+   Typing fields stay selectable; rules that ask for selection on purpose (the article number) win: :where() has no weight */
+:where(html,body,body *){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+:where(input,textarea,select,[contenteditable],[contenteditable] *){-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 .pad{padding:14px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
 @media(max-width:480px){.row2{grid-template-columns:1fr}}
