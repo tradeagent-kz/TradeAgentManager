@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="35.2.2" name="app-version"/>
+<meta content="35.3.1" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=35.2.2" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=35.2.2" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=35.2.2" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=35.2.2" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=35.3.1" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=35.3.1" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=35.3.1" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=35.3.1" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -140,7 +140,7 @@ main{padding:0 10px calc(var(--tabh) + 104px + env(safe-area-inset-bottom));max-
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
 @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-/* 35.2.2: an app, not a web page — a long press does not select labels and buttons or open the «copy / look up» menu.
+/* 35.2.3: an app, not a web page — a long press does not select labels and buttons or open the «copy / look up» menu.
    Typing fields stay selectable; rules that ask for selection on purpose (the article number) win: :where() has no weight */
 :where(html,body,body *){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 :where(input,textarea,select,[contenteditable],[contenteditable] *){-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
@@ -3986,7 +3986,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v35.2.2</i>
+<i id="loginVersion">v35.3.1</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -4011,7 +4011,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.2.2</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.3.1</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -4098,7 +4098,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="dvpage" id="dvPage"></div>
 </div>
 <!-- documents and sign-in on our own server (docs/OWN_SERVER_PHONES.md); Google's libraries only for notifications -->
-<script src="./ta-store.js?v=35.2.2"></script>
+<script src="./ta-store.js?v=35.3.1"></script>
 <script>
 /* =====================================================================
    ДАННЫЕ ПРАЙСА (вшиты в файл)
@@ -4107,7 +4107,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.2.2';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.3.1';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -4284,6 +4284,8 @@ function meCfg(){
   return Object.assign({},base,cloud,{pay:Array.isArray(cloud.pay)?cloud.pay:(Array.isArray(base.pay)?base.pay:[])});
 }
 const isAdmin=()=>!!(ME&&String(ME.role||'').toLowerCase()==='admin');
+/* 16.11: имя для приветствия — в программе ФИО пишется «Фамилия Имя Отчество», здороваемся по имени (как на складе) */
+function taFirstName(n){const w=String(n||'').trim().split(/\s+/).filter(Boolean);return w.length>1?w[1]:(w[0]||'');}
 
 /* =====================================================================
    ОСТАТКИ
@@ -4671,7 +4673,7 @@ function paintPriceSummary(){
   const box=$('#powerStrip'); if(!box||!ME) return;
   const lines=cartLines(), T=MONEY.totals(lines), st=syncState(), att=attentionData();
   const daySales=myOrders().filter(o=>o.status!=='Отменён'&&o.status!=='Списан'&&MONEY.shipDay(o)===today()).reduce((s,o)=>s+(+o.total||0),0);
-  const first=(ME.name||'').split(' ')[0]||ME.name;
+  const first=taFirstName(ME.name);
   box.innerHTML=`<div class="workspace-brief"><div><u>РАБОЧАЯ СЕССИЯ</u><b>${esc(first)}</b><i>${LIVE_PUSH?'LIVE канал активен':'защищённая синхронизация'}</i></div>
       <button data-power="attention" class="attention-pill ${att.total?'hot':''}"><span>${att.total}</span><b>Внимание</b></button></div>
     <div class="powercards">
@@ -5170,8 +5172,13 @@ function skeleton(n){ return Array.from({length:n},()=>
 function paintOrders(){
   const box0=$('#olist');
   /* первая загрузка: показываем каркас, а не пустой экран */
-  if(box0&&!DB.since&&DB.sync.url&&!DB.orders.length&&!DB.sync.err){
-    box0.innerHTML=skeleton(3); return;
+  /* 16.11: каркас — только первые 5 секунд; на своём сервере заявки приходят без «since», и пустой список иначе навсегда
+     оставался каркасом вместо «Заявок пока нет» */
+  if(!window.__taOrdersSkelUntil)window.__taOrdersSkelUntil=Date.now()+5000;
+  if(box0&&!DB.since&&DB.sync.url&&!DB.orders.length&&!DB.sync.err&&Date.now()<window.__taOrdersSkelUntil){
+    box0.innerHTML=skeleton(3);
+    setTimeout(function(){try{if(VIEW==='orders')paintOrders()}catch(_){}},window.__taOrdersSkelUntil-Date.now()+60);
+    return;
   }
   if(box0&&DB.sync.err&&!DB.orders.length){
     box0.innerHTML=`<div class="empty err"><b>Не удалось получить данные</b>
@@ -5966,7 +5973,7 @@ function vAdmin(){
     <div class="sec">План продаж на месяц</div>
     <div class="card pad">
       <div class="note g">Факт считается по дате отгрузки текущего месяца. Менеджер видит свой процент в «Итогах».</div>
-      ${MANAGERS.filter(m=>m.role==='manager').map(m=>`
+      ${MANAGERS.filter(m=>String((DB.users&&DB.users[m.id]&&DB.users[m.id].role)||m.role||'manager').toLowerCase()==='manager').map(m=>`
         <label class="f" style="margin-bottom:10px"><span>${esc(m.name)}</span>
           <input class="inp mono" data-plan="${m.id}" inputmode="numeric" value="${targetOf(m.id)||''}" placeholder="0"></label>`).join('')}
       <button class="btn pri" id="planSave">Сохранить планы</button>
@@ -7751,7 +7758,7 @@ function vPrice22(){
 }
 
 function ta22ClientStats(){const m=new Map();myOrders().filter(o=>o.status!=='Отменён').forEach(o=>{const k=norm(o.client||'');if(!k)return;let x=m.get(k);if(!x){x={key:k,name:o.client,phone:o.phone||'',orders:0,sales:0,debt:0,last:'',latest:null};m.set(k,x)}x.orders++;x.sales+=MONEY.net(o);x.debt+=MONEY.debt(o);if((o.shipDate||'')>(x.last||'')){x.last=o.shipDate||'';x.latest=o;if(o.phone)x.phone=o.phone}});return [...m.values()].sort((a,b)=>b.sales-a.sales)}
-function vClients22(){const arr=ta22ClientStats(),debt=arr.reduce((s,x)=>s+x.debt,0),sales=arr.reduce((s,x)=>s+x.sales,0),active=arr.filter(x=>x.last&&x.last.slice(0,7)===today().slice(0,7)).length;$('#view').innerHTML=`<div class="ta22-pagehead"><div><h2>Клиенты</h2><p>История заказов, оборот и дебиторка в одном месте</p></div><div class="actions"><button id="clientExport22">Excel</button><button class="pri" id="clientNewOrder22">+ Новый заказ</button></div></div><div class="ta22-statrow"><div class="ta22-stat"><u>Клиентов</u><b>${arr.length}</b><i>в истории продаж</i></div><div class="ta22-stat"><u>Активны в месяце</u><b>${active}</b><i>есть отгрузки</i></div><div class="ta22-stat"><u>Оборот</u><b>${money(sales)}</b><i>₸ за всю историю</i></div><div class="ta22-stat"><u>Дебиторка</u><b>${money(debt)}</b><i>₸ к получению</i></div></div><div class="ta22-catalogbar"><div class="ta22-search"><input id="clientQ22" placeholder="Поиск клиента или телефона"><button class="clear" hidden>×</button></div></div><div class="ta22-table"><div class="ta22-tr head"><div>Клиент</div><div>Заказов</div><div>Оборот</div><div>Долг</div><div></div></div><div id="clientRows22"></div></div>`;const paint=()=>{const q=norm($('#clientQ22').value),rows=arr.filter(x=>!q||norm(x.name+' '+x.phone).includes(q));$('#clientRows22').innerHTML=rows.map(x=>`<div class="ta22-tr"><div class="name"><b>${esc(x.name)}</b><span>${esc(x.phone||'нет телефона')} · последняя ${ruDate(x.last)||'—'}</span></div><div class="num">${x.orders}</div><div class="num">${money(x.sales)} ₸</div><div class="num ${x.debt?'debt':''}">${money(x.debt)} ₸</div><div><button data-client22="${esc(x.key)}">Открыть</button></div></div>`).join('')||'<div class="empty">Ничего не найдено</div>'};$('#clientQ22').oninput=paint;paint();$('#clientNewOrder22').onclick=()=>go('price');$('#clientExport22').onclick=async()=>{try{await saveXLSX('Trade Agent Manager — клиенты '+today()+'.xlsx',[{name:'Клиенты',rows:[['Клиент','Телефон','Заказов','Оборот','Долг','Последняя отгрузка'],...arr.map(x=>[x.name,x.phone,x.orders,x.sales,x.debt,ruDate(x.last)])]}]);toast('Excel сохранён')}catch(e){toast('Не удалось выгрузить Excel')}}}
+function vClients22(){const arr=ta22ClientStats(),debt=arr.reduce((s,x)=>s+x.debt,0),sales=arr.reduce((s,x)=>s+x.sales,0),active=arr.filter(x=>x.last&&x.last.slice(0,7)===today().slice(0,7)).length;$('#view').innerHTML=`<div class="ta22-pagehead"><div><h2>Клиенты</h2><p>История заказов, оборот и дебиторка в одном месте</p></div><div class="actions"><button id="clientExport22">Excel</button><button class="pri" id="clientNewOrder22">+ Новый заказ</button></div></div><div class="ta22-statrow"><div class="ta22-stat"><u>Клиентов</u><b>${arr.length}</b><i>в истории продаж</i></div><div class="ta22-stat"><u>Активны в месяце</u><b>${active}</b><i>есть отгрузки</i></div><div class="ta22-stat"><u>Оборот</u><b>${money(sales)}</b><i>₸ по заявкам в Manager</i></div><div class="ta22-stat"><u>Дебиторка</u><b>${money(debt)}</b><i>₸ к получению</i></div></div><div class="ta22-catalogbar"><div class="ta22-search"><input id="clientQ22" placeholder="Поиск клиента или телефона"><button class="clear" hidden>×</button></div></div><div class="ta22-table"><div class="ta22-tr head"><div>Клиент</div><div>Заказов</div><div>Оборот</div><div>Долг</div><div></div></div><div id="clientRows22"></div></div>`;const paint=()=>{const q=norm($('#clientQ22').value),rows=arr.filter(x=>!q||norm(x.name+' '+x.phone).includes(q));$('#clientRows22').innerHTML=rows.map(x=>`<div class="ta22-tr"><div class="name"><b>${esc(x.name)}</b><span>${esc(x.phone||'нет телефона')} · последняя ${ruDate(x.last)||'—'}</span></div><div class="num">${x.orders}</div><div class="num">${money(x.sales)} ₸</div><div class="num ${x.debt?'debt':''}">${money(x.debt)} ₸</div><div><button data-client22="${esc(x.key)}">Открыть</button></div></div>`).join('')||'<div class="empty">Ничего не найдено</div>'};$('#clientQ22').oninput=paint;paint();$('#clientNewOrder22').onclick=()=>go('price');$('#clientExport22').onclick=async()=>{try{await saveXLSX('Trade Agent Manager — клиенты '+today()+'.xlsx',[{name:'Клиенты',rows:[['Клиент','Телефон','Заказов','Оборот','Долг','Последняя отгрузка'],...arr.map(x=>[x.name,x.phone,x.orders,x.sales,x.debt,ruDate(x.last)])]}]);toast('Excel сохранён')}catch(e){toast('Не удалось выгрузить Excel')}}}
 var ta22OpenClient; /* v29.2.0: мёртвая копия функции убрана, имя сохранено */
 
 function ta22Suppliers(){return Array.isArray(DB.settings.suppliers)?DB.settings.suppliers:[]}
@@ -8593,7 +8600,8 @@ async function fbCreateManagerAccount(appId,password){
 /* Firebase users UI: no service email is shown to employees. Reset rotates to a fresh hidden Firebase alias. */
 vUsers22=function(){
   if(!isAdmin()){go('price');return}
-  const rows=MANAGERS.map(m=>{
+  /* 16.11: встроенный «Администратор» эпохи Google без выданного входа в списке команды не показываем (как и в списке входа, 35.2.1) */
+  const rows=MANAGERS.filter(m=>!(m.id==='admin'&&!DB.users['admin']&&!(FB_LOGIN_DIR&&FB_LOGIN_DIR['admin']))).map(m=>{
     const u=DB.users[m.id]||{}, linked=!!u.firebaseUid||!!(FB_LOGIN_DIR&&FB_LOGIN_DIR[m.id]);
     const role=String(u.role||m.role||'manager').toLowerCase();
     const pay=Array.isArray(u.pay)&&u.pay.length?u.pay:(Array.isArray(m.pay)?m.pay:[]);
@@ -8612,7 +8620,7 @@ ta22ResetUser=async function(id){
 /* Firestore audit instead of /audit Worker endpoint. */
 vAuditPage22=function(){
   if(!isAdmin()){go('price');return}auditEvent23('открыл журнал','система','','');
-  $('#view').innerHTML=`<div class="ta22-pagehead"><div><h2>Журнал действий</h2><p>Firestore audit · текущий и перенесенный журнал</p></div><div class="actions"><button id="auditReload22">↻ Обновить</button></div></div><div class="ta22-audit-toolbar"><input class="inp" id="auditQ22" placeholder="Поиск по заявке, клиенту, действию…"><select class="inp" id="auditUser22"><option value="">Все пользователи</option></select><select class="inp" id="auditAct22"><option value="">Все действия</option></select><span></span></div><div id="auditState22" class="empty"><b>Загружаю журнал…</b></div>`;
+  $('#view').innerHTML=`<div class="ta22-pagehead"><div><h2>Журнал действий</h2><p>Кто, что и когда сделал в Manager</p></div><div class="actions"><button id="auditReload22">↻ Обновить</button></div></div><div class="ta22-audit-toolbar"><input class="inp" id="auditQ22" placeholder="Поиск по заявке, клиенту, действию…"><select class="inp" id="auditUser22"><option value="">Все пользователи</option></select><select class="inp" id="auditAct22"><option value="">Все действия</option></select><span></span></div><div id="auditState22" class="empty"><b>Загружаю журнал…</b></div>`;
   const loadAudit=async()=>{try{const q=await FBDB.collection('audit').orderBy('at','desc').limit(700).get(),log=q.docs.map(d=>d.data());TA22.auditCache=log;const users=[...new Set(log.map(x=>x.name).filter(Boolean))].sort(),acts=[...new Set(log.map(x=>x.act).filter(Boolean))].sort();$('#auditUser22').innerHTML='<option value="">Все пользователи</option>'+users.map(x=>`<option>${esc(x)}</option>`).join('');$('#auditAct22').innerHTML='<option value="">Все действия</option>'+acts.map(x=>`<option>${esc(x)}</option>`).join('');const paint=()=>{const qq=norm($('#auditQ22').value),u=$('#auditUser22').value,a=$('#auditAct22').value,arr=log.filter(x=>(!u||x.name===u)&&(!a||x.act===a)&&(!qq||norm([x.act,x.entity,x.id,x.name,x.info].join(' ')).includes(qq)));$('#auditState22').className='ta22-audit-list';$('#auditState22').innerHTML=arr.map(x=>`<div class="ta22-audit-row"><span class="dot"></span><div><b>${esc(x.act||'')}</b><span>${esc(x.entity||'')}${x.id?' · '+esc(x.id):''}${x.info?' · '+esc(x.info):''}</span></div><em>${esc(x.name||x.appId||'')}</em><time>${new Date(x.at||Date.now()).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</time></div>`).join('')||'<div class="empty">Ничего не найдено</div>'};['auditQ22','auditUser22','auditAct22'].forEach(id=>$('#'+id).addEventListener(id==='auditQ22'?'input':'change',paint));paint()}catch(e){$('#auditState22').className='empty err';$('#auditState22').innerHTML='<b>Не удалось загрузить журнал</b><span>'+esc(taFriendlyErr(e))+'</span>'}};$('#auditReload22').onclick=loadAudit;loadAudit();
 };
 /* Firebase-aware logout. */
@@ -8654,7 +8662,7 @@ async function fbFinishExplicitLogin(user,id,pass,email,bootstrap){
       try{fbListen()}catch(_){}
       fbSetStatus(true);
       if(isAdmin())setTimeout(()=>fbMigrateLegacyPhotos().catch(()=>{}),1800);
-      if(isAdmin())setTimeout(async()=>{try{const m=await FBDB.collection('state').doc('meta').get(),x=m.exists?m.data()||{}:{};if(!x.legacyMigrated&&(DB.orders||[]).length===0)toast('Старая история еще не перенесена · Админка → Восстановить старую базу')}catch(_){}},2200);
+      /* 16.11: подсказка «Старая история ещё не перенесена» убрана — телефоны работают через свой сервер компании, переносить из Google нечего (решение владельца 10.11) */
     }catch(syncErr){fbSetStatus(false,syncErr&&syncErr.message)}
   });
 }
@@ -8966,7 +8974,7 @@ function ta252HomeAction(a){
   if(a==='attention')return vAttention();if(a==='pay')return vAttentionPayments();if(a==='low')return vAttentionLow();if(a==='overdue')return vAttentionOverdue();if(a==='returns')return vAttentionReturns();
 }
 function vHome252(){
-  const m=ta252Metrics(),a=attentionData(),st=syncState(),draftN=ta25DraftCount(),draftT=MONEY.totals(cartLines()),recent=ta252RecentOrders(5),first=(ME.name||'').split(' ')[0]||ME.name,stock=ta23StockCounts();
+  const m=ta252Metrics(),a=attentionData(),st=syncState(),draftN=ta25DraftCount(),draftT=MONEY.totals(cartLines()),recent=ta252RecentOrders(5),first=taFirstName(ME.name),stock=ta23StockCounts();
   const last=m.all.slice().sort((x,y)=>(+y.updatedAt||0)-(+x.updatedAt||0))[0]||null;
   $('#view').innerHTML=`<div class="ta252-home">
     <section class="ta252-hero"><div class="ta252-eyebrow"><i></i>${esc(String(st.txt||'').toUpperCase())}</div><h2>${esc(first)}, рабочий центр</h2><p>${isAdmin()?'Сводка по системе, продажам и контрольным точкам':'Ваши продажи, заявки и клиенты в одном месте'}</p><div class="ta252-hero-actions"><button class="pri" data-home252="catalog">＋ Открыть каталог</button><button data-home252="search">⌕ Быстрый поиск</button><button data-home252="sync">↻ Синхронизация</button></div></section>
@@ -8986,7 +8994,7 @@ function vHome252(){
    Keeps v25.2.0 data, auth, sync and navigation contracts intact.
    ===================================================================== */
 function vHome253(){
-  const m=ta252Metrics(),a=attentionData(),st=syncState(),draftN=ta25DraftCount(),draftT=MONEY.totals(cartLines()),recent=ta252RecentOrders(3),first=(ME.name||'').split(' ')[0]||ME.name,stock=ta23StockCounts();
+  const m=ta252Metrics(),a=attentionData(),st=syncState(),draftN=ta25DraftCount(),draftT=MONEY.totals(cartLines()),recent=ta252RecentOrders(3),first=taFirstName(ME.name),stock=ta23StockCounts();
   const last=m.all.slice().sort((x,y)=>(+y.updatedAt||0)-(+x.updatedAt||0))[0]||null;
   const attentionTotal=(+a.waitingPay||0)+(a.overdue?.length||0)+(+a.low||0)+(+a.waitingRet||0);
   $('#view').innerHTML=`<div class="ta253-home">
@@ -9028,7 +9036,7 @@ paintTop=function(){const titles={home:'Главная',price:'Каталог',c
 function ta252Nav(){const base=[['home','Главная','home'],['price','Каталог','price'],['cart','Заказ','order'],['orders','Заявки','list'],['debts','Долги','debt'],['clients','Клиенты','clients'],['ret','Возвраты','back'],['reports','Отчёты','report']];if(isAdmin())base.push(['users','Пользователи','users'],['audit','Журнал действий','audit'],['admin','Настройки','settings']);return base}
 paintTabs=function(){if(!ME)return;const desktop=window.matchMedia&&window.matchMedia('(min-width:1024px)').matches;if(desktop){const n=ta252Nav();$('#tabs').innerHTML=`<div class="railbrand22"><span class="ta-brand-host">${TA23MARK}</span><div><b>TRADE AGENT</b><span>MANAGER</span></div></div>${n.map(([id,label,ic])=>`<button data-tab="${id}" class="${VIEW===id||(id==='reports'&&VIEW==='stats')?'on':''}"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${ICON[ic]}</svg></span><span>${label}</span></button>`).join('')}<button id="refCollapse"><span><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg></span><span>Свернуть</span></button>`;$('#refCollapse').onclick=()=>{const on=document.documentElement.classList.toggle('rail-collapsed');localStorage.setItem('ta23.rail',on?'1':'0')};return}const ids=[['home','Главная','home'],['price','Каталог','price'],['cart','Заказ','order'],['orders','Заявки','list'],['more','Меню','more']];const sec=['debts','ret','clients','reports','stats','users','audit','admin'].includes(VIEW);$('#tabs').innerHTML=ids.map(([id,label,ic])=>`<button data-tab="${id}" class="${id==='more'?sec:VIEW===id?'on':''}"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">${ICON[ic]}</svg></span><span>${label}</span></button>`).join('')};
 
-render=function(){if(!ME)return;if(VIEW==='suppliers')VIEW='home';keepFocus(()=>{paintTop();paintTabs();const map={home:vHome252,price:vPriceSafe23,cart:vCart,orders:vOrders,debts:vDebts,ret:vReturns,clients:vClients22,reports:vReports22,stats:vReports22,users:vUsers22,audit:vAuditPage22,admin:vAdmin};(map[VIEW]||vHome252)();paintFab()})};
+render=function(){if(!ME)return;if(VIEW==='suppliers')VIEW='home';if(VIEW==='admin'&&!isAdmin())VIEW='home';/* 16.11: настройки — только руководителю */keepFocus(()=>{paintTop();paintTabs();const map={home:vHome252,price:vPriceSafe23,cart:vCart,orders:vOrders,debts:vDebts,ret:vReturns,clients:vClients22,reports:vReports22,stats:vReports22,users:vUsers22,audit:vAuditPage22,admin:vAdmin};(map[VIEW]||vHome252)();paintFab()})};
 
 /* =====================================================================
    START — Firebase only
@@ -17266,6 +17274,8 @@ html.ta33-readonly #save,html.ta33-readonly #pOk,html.ta33-readonly #newClientSa
   'use strict';
   var HOLDER = 'Кудинов Артур Александрович';
   var PROD_KEY = 'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE2UtwSRnfBQw7BsN2146aFcscl+KyAuW/838wWLrmexB6/F/mtHQqc0wZGYk98b4q24tGxU1e4FM0EmNspUHtAg==';
+  /* 16.11.2026: every production key (the same list as LicenseKeys.ProductionAll in the server and Desktop) */
+  var PROD_KEYS = [PROD_KEY];
   var FORMAT = 'TradeAgentLicense/1';
   var APPS = ['server','desktop','manager'], KINDS = ['trial','perpetual','subscription'];
   var GRACE_AFTER = 7;   /* n9r20: days of full work after the end date (LicenseRules.ExpiredGraceDays) */
@@ -17326,7 +17336,7 @@ html.ta33-readonly #save,html.ta33-readonly #pOk,html.ta33-readonly #newClientSa
   function verify(fileText, app, opts){
     opts=opts||{};
     var subtle=opts.subtle||(root.crypto&&root.crypto.subtle);
-    var keys=opts.keys||[PROD_KEY];
+    var keys=opts.keys||PROD_KEYS;
     var doc, signed, sig;
     try{
       doc=JSON.parse(String(fileText||''));
@@ -17423,6 +17433,9 @@ html.ta33-readonly #save,html.ta33-readonly #pOk,html.ta33-readonly #newClientSa
   }
   function describe(s){
     if(!s) return null;
+    /* 16.11: сроки и загрузка лицензии — дело руководителя; торговому, водителю и кладовщику показываем только «Только просмотр» */
+    var boss=false; try{ boss=typeof isAdmin==='function'&&isAdmin(); }catch(_){}
+    if(!s.readOnly&&!boss) return null;
     if(s.readOnly) return {key:'ro',level:'problem',title:s.status==='revoked'?'Только просмотр: лицензия отозвана':'Только просмотр',text:s.roMessage+' Заказы, клиенты и оплаты сейчас не создаются, просмотр работает.'};
     /* n9r20: the 7 days of full work after the end date — the server's sentence says until when */
     if(s.status==='expired') return {key:'grace',level:'soon',title:'Срок лицензии истёк',text:s.message||'Продлите лицензию у правообладателя.'};
@@ -17462,6 +17475,9 @@ html.ta33-readonly #save,html.ta33-readonly #pOk,html.ta33-readonly #newClientSa
   function licCard(){
     var s=STATE;
     if(!s) return '';
+    /* 35.3.1: как и баннеры (35.2.3) — карточка лицензии в «Профиле» только у руководителя; остальным — лишь «Только просмотр» */
+    var boss=false; try{ boss=typeof isAdmin==='function'&&isAdmin(); }catch(_){}
+    if(!s.readOnly&&!boss) return '';
     var p=s.payload, chip=s.readOnly?['Только просмотр','bad']:s.status==='valid'?['Действует','ok']:s.status==='expiring'?['Заканчивается',s.level==='soon'?'warn':'acc']:
       s.status==='invalid'?['Не прошла проверку','warn']:['Не загружена','warn'];
     var line=p?(kindName(p.kind)+', '+(p.validTo?ru(p.validFrom)+' — '+ru(p.validTo):'бессрочно')):('Полная работа до '+ru(s.graceEndsOn));
@@ -18288,7 +18304,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   }
 
   /* ---------------------------------------------------------------- results from the server */
-  var KIND={assembly_scan:'Сборка',assembly_done:'Сборка',assembly_partial:'Сборка',receipt:'Приём',inventory_count:'Пересчёт',transfer:'Перемещение',pdf:'PDF'};
+  var KIND={assembly_scan:'Сборка',assembly_done:'Сборка',assembly_partial:'Сборка',assembly_problem:'Сборка',receipt:'Приём',inventory_count:'Пересчёт',transfer:'Перемещение',pdf:'PDF'};
   function onResult(op,res){
     var ok=!!res.ok, msg=String(res.msg||'');
     if(op.kind==='assembly_scan'){ if(!ok)bad(msg||'Сканирование не принято','Количество вернулось к данным сервера'); return; }
@@ -18738,7 +18754,8 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     if(!g&&!list.length)h+='<div class="wms-empty">'+ic('pick')+'<b>Всё собрано</b>Новые заказы появятся здесь сами, как только оператор их подтвердит.</div>';
     list.forEach(function(o){
       var s=orderSum(o), sent=orderSent(o);
-      h+='<button type="button" class="wms-card wring'+(sent?' dim':'')+'" data-a="open:order:'+o.id+'"><div class="wl1"><span class="wno">'+E(o.no)+'</span>'+shipBadge(o)+(o.st==='picking'?'<span class="wms-badge bg">собирается</span>':'')+'</div>'
+      var told=Q.ops.some(function(op){ return op.kind==='assembly_problem'&&op.docId===o.id&&op.state!=='error'&&Date.now()-num(op.createdAt)<864e5; });   /* 35.3.1 */
+      h+='<button type="button" class="wms-card wring'+(sent?' dim':'')+'" data-a="open:order:'+o.id+'"><div class="wl1"><span class="wno">'+E(o.no)+'</span>'+shipBadge(o)+(o.st==='picking'?'<span class="wms-badge bg">собирается</span>':'')+(told?'<span class="wms-badge bm">оператору сообщено</span>':'')+'</div>'
         +'<div class="wwho">'+E(o.client||'')+'</div><div class="wm">'+s.lines+' '+plural(s.lines,'строка','строки','строк')+' · '+q(s.got)+' из '+q(s.need)+' шт'+(o.whName?' · '+E(o.whName):'')+(sent?' · отправлено':'')+'</div>'
         +'<span class="wms-ringw">'+ring(s.got,s.need,52)+'</span></button>';
     });
@@ -18865,8 +18882,9 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
 
   /* ================================================================ MOVE */
   function vMove(){
-    var t=T(), mv=W().move, from=t.from||[], to=(t.to||[]).filter(function(w){ return w.id!==mv.from; });
+    var t=T(), mv=W().move, from=t.from||[];
     if(!mv.from&&from.length===1){ mv.from=from[0].id; saveWork(); }
+    var to=(t.to||[]).filter(function(w){ return w.id!==mv.from; });   /* 35.3.0: the only source is chosen first, then left out of «Куда» */
     if(mv.to===mv.from){ mv.to=''; saveWork(); }
     var h=gate();
     if(!from.length&&!gate())h+='<div class="wms-note wwarn"><b>Нет склада для перемещения</b>У вашего сотрудника нет права отправлять товар со склада. Обратитесь к администратору.</div>';
@@ -19054,16 +19072,19 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     var reasons=['Нет на складе','Нет на полке','Брак','Пересорт'], chosen='';
     sheet('<h3>'+(partial?'Собрано частично':'Собрано не всё')+'</h3><p>'+(s.got?'Собрано '+q(s.got)+' из '+q(s.need)+' шт. Не хватает:':'Ещё ничего не отсканировано.')+'</p>'
       +(missing.length?'<div class="wms-miss-list">'+missing.slice(0,8).map(function(l){ return '<div><span>'+E(l.n)+'</span><b>−'+q(num(l.q)-scanned(o,l))+'</b></div>'; }).join('')+(missing.length>8?'<div><span>и ещё '+(missing.length-8)+'</span><b></b></div>':'')+'</div>':'')
-      +(s.got?'<div class="wms-lbl">Причина</div><div class="wms-opt">'+reasons.map(function(r){ return '<button type="button" data-r="'+E(r)+'">'+E(r)+'</button>'; }).join('')+'</div>'
-        +'<label class="wf"><span>Или своими словами</span><input class="in" id="wmsReason" maxlength="200" placeholder="Например: остаток на складе 3 шт"></label>':'')
-      +'<div class="acts"><button type="button" class="wms-btn" id="wmsCont">Досканировать</button>'+(s.got?'<button type="button" class="wms-btn wpri" id="wmsPart" disabled>Собрано частично</button>':'')+'</div>',function(sh){
+      +'<div class="wms-lbl">Причина</div><div class="wms-opt">'+reasons.map(function(r){ return '<button type="button" data-r="'+E(r)+'">'+E(r)+'</button>'; }).join('')+'</div>'
+        +'<label class="wf"><span>Или своими словами</span><input class="in" id="wmsReason" maxlength="200" placeholder="Например: остаток на складе 3 шт"></label>'
+      +(s.got?'':'<p class="wms-lab-note">Собрать нечего — оператор получит сообщение с причиной и решит: подождать, заменить товар или отменить заказ.</p>')   /* 35.3.1 */
+      +'<div class="acts"><button type="button" class="wms-btn" id="wmsCont">Досканировать</button><button type="button" class="wms-btn wpri" id="wmsPart" disabled>'+(s.got?'Собрано частично':'Сообщить оператору')+'</button></div>',function(sh){
       sh.querySelector('#wmsCont').onclick=function(){ closeSheet2(); };
       var go=sh.querySelector('#wmsPart'), inp=sh.querySelector('#wmsReason');
       if(!go)return;
       function upd(){ var r=(inp.value||'').trim()||chosen; go.disabled=r.length<3; }
       sh.querySelectorAll('[data-r]').forEach(function(b){ b.onclick=function(){ chosen=b.getAttribute('data-r'); sh.querySelectorAll('[data-r]').forEach(function(x){ x.classList.toggle('on',x===b); }); upd(); }; });
       inp.oninput=upd;
-      go.onclick=function(){ var r=(inp.value||'').trim()||chosen; if(r.length<3)return; flushPick(o.id); enqueue('assembly_partial',o.id,[],{reason:r}); closeSheet2(); good();
+      go.onclick=function(){ var r=(inp.value||'').trim()||chosen; if(r.length<3)return; flushPick(o.id);
+        if(!s.got){ enqueue('assembly_problem',o.id,[],{reason:r}); closeSheet2(); good(); toast('Оператору: '+o.no+' не собран',r,'ok'); goUp(); return; }   /* 35.3.1 */
+        enqueue('assembly_partial',o.id,[],{reason:r}); closeSheet2(); good();
         toast('Отправлено: '+o.no+' собран частично',r,'ok'); goUp(); };
     });
   }
@@ -21009,7 +21030,9 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   function pmText(m,how){ m=pmNorm(m); var x=PM.find(function(p){ return p[0]===m; }); return x?(how?x[2]:x[1]):''; }
   function howText(h){ return h==='bank'?'банком':isKaspi(h)?pmText(h,true):'наличными'; }
   function pmTotals(list){ var t={cash:0,kaspi:0,kaspi_inv:0}; list.forEach(function(p){ if(p&&p.sum>0)t[pmNorm(p.m)||'cash']+=p.sum; }); return t; }
-  function pmLine(t){ return 'наличными <b>'+tg(t.cash)+'</b>, Kaspi перевод <b>'+tg(t.kaspi)+'</b>, Kaspi счёт <b>'+tg(t.kaspi_inv)+'</b>'; }
+  function pmLine(t){   /* 35.3.1: only what the driver holds (no «0 ₸» parts); nothing at all — «денег пока нет» */
+    var parts=[['наличными',t.cash],['Kaspi перевод',t.kaspi],['Kaspi счёт',t.kaspi_inv]].filter(function(x){ return num(x[1])>0; });
+    return parts.length?parts.map(function(x){ return x[0]+' <b>'+tg(x[1])+'</b>'; }).join(', '):'денег пока нет'; }
   /* 34.9.0: the client's whole open debt (a newer server sends owedAll beside owed — this invoice); null = an older server: as before */
   function owedAllOf(s){ return s&&s.owed!=null&&s.owedAll!=null&&isFinite(num(s.owedAll))?Math.max(num(s.owedAll),num(s.owed)):null; }
   function r2(x){ return Math.round(num(x)*100)/100; }
@@ -21064,7 +21087,8 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     if(!s.cancelled){
       acts+=(tel?'<a class="v20g-btn v20g-small" href="tel:'+E(tel)+'">Позвонить</a>':'');
       acts+=(s.lat!=null&&s.lon!=null?'<button class="v20g-small" data-g="go:'+E(s.id)+'">Ехать</button>'
-        :'<button class="v20g-small" data-g="place:'+E(s.id)+'"'+(off?' disabled':'')+'>Место клиента</button>');
+        :(s.ad?'<button class="v20g-small" data-g="addr:'+E(s.id)+'">Ехать по адресу</button>':'')   /* 35.3.0: no point on the map yet — the navigator finds the address */
+          +'<button class="v20g-small" data-g="place:'+E(s.id)+'"'+(off?' disabled':'')+'>Место клиента</button>');
     }
     if(!off&&!s.cancelled){
       if(!done&&st!=='refused')acts+='<button class="v20g-small pri" data-g="deliver:'+E(s.id)+'">Доставлено</button>';
@@ -21118,9 +21142,10 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       h+='<div class="v20g-card"><div class="v20g-sum">'
         +'<div><u>Точек</u><b>'+delivered+' из '+stops.length+'</b></div>'
         +'<div><u>Забрать</u><b>'+tg(collect)+'</b></div>'
-        +'<div><u>Путь</u><b>'+(num(r.km)>0?'≈ '+E(String(num(r.km)).replace('.',','))+' км':'—')+'</b></div></div>'
-        +'<div class="v20g-note">У меня: '+pmLine(tot)+'</div>'
-        +(function(){ var rt=retItems(r,false); return '<div class="v20x-ret"><span>Вернуть на склад: <b>'+(rt.length?rt.length+' поз.':'нет')+'</b></span>'
+        +(num(r.km)>0?'<div><u>Путь</u><b>≈ '+E(String(num(r.km)).replace('.',','))+' км</b></div>'
+          :'<div><u>Осталось</u><b>'+stops.filter(function(s){ return !s.cancelled&&!stState(s); }).length+'</b></div>')+'</div>'   /* 35.3.0: no «Путь —» without a map */
+        +'<div class="v20g-note">У меня: '+(num(tot.cash)+num(tot.kaspi)+num(tot.kaspi_inv)>0?pmLine(tot):'денег пока нет')+'</div>'
+        +(function(){ var rt=retItems(r,false); return '<div class="v20x-ret"><span>Вернуть на склад: <b'+(rt.length?'':' style="color:var(--c-ink2,inherit)"')+'>'+(rt.length?rt.length+' поз.':'нет')+'</b></span>'
           +(rt.length?'<button data-g="ret">Показать</button>':'')+'</div>'; })()   /* 34.10.0 */
         +'<div class="v20g-acts"><button data-g="navi">Весь маршрут в навигатор</button>'
         +(canOrder(r)?'<button data-g="order">Порядок</button>':'')   /* 34.11.0 */
@@ -21348,6 +21373,18 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       });
   }
 
+  /* 35.3.0: «Ехать по адресу» — the client has no point on the map yet; the navigator searches the address (the city first) */
+  function openAddr(s){
+    var q=encodeURIComponent(String(s.ad||'').trim()); if(!q)return;
+    modal('Ехать по адресу',s.cn+' — '+s.ad,'<div class="v20g-note">Навигатор найдёт адрес сам. Когда приедете, нажмите «Место клиента» — в следующий раз маршрут построится точно.</div>'
+      +'<div class="acts" style="flex-direction:column"><button class="pri" data-x="2gis">2ГИС</button><button data-x="ynavi">Яндекс Навигатор</button><button data-x="ymaps">Яндекс Карты</button></div>',
+      function(m){
+        m.querySelector('[data-x="2gis"]').onclick=function(){ closeModal(); appOrWeb('dgis://2gis.ru/search/'+q,'https://2gis.kz/search/'+q); };
+        m.querySelector('[data-x=ynavi]').onclick=function(){ closeModal(); appOrWeb('yandexnavi://map_search?text='+q,'https://yandex.kz/maps/?text='+q); };
+        m.querySelector('[data-x=ymaps]').onclick=function(){ closeModal(); openUrl('https://yandex.kz/maps/?text='+q); };
+      });
+  }
+
   function openNavi(){
     var r=route(); if(!r)return;
     var all=ordered(r);   /* 34.11.0: the order on screen (the driver's own one while the server has not answered) */
@@ -21388,6 +21425,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     if(k==='pick'){ pickUp(s,b.getAttribute('data-p')); return; }
     if(k==='lines'){ G.open[s.id]=!G.open[s.id]; paintDriver(); return; }
     if(k==='go'){ openGo(s); return; }
+    if(k==='addr'){ openAddr(s); return; }   /* 35.3.0 */
     if(k==='place'){ placeHere(s); return; }
     if(k==='deliver'){ openDeliver(s); return; }
     if(k==='pay'){ openPay(s); return; }
@@ -24015,7 +24053,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       if(s){
         var tel=String(s.ph||'').replace(/[^\d+]/g,''), col=num(s.col)>0?'Забрать '+tg(s.col)+' '+(s.how==='bank'?'банком':/^kaspi/.test(String(s.how||''))?((s.how==='kaspi_invoice'||s.how==='kaspi_inv')?'по Kaspi счёту':'Kaspi переводом'):'наличными'):'';
         var acts=(tel?'<a class="v20g-btn" href="tel:'+E(tel)+'">Позвонить</a>':'')
-          +(s.lat!=null&&s.lon!=null?'<button data-g="go:'+E(s.id)+'">Ехать</button>':'')
+          +(s.lat!=null&&s.lon!=null?'<button data-g="go:'+E(s.id)+'">Ехать</button>':(s.ad?'<button data-g="addr:'+E(s.id)+'">Ехать по адресу</button>':''))   /* 35.3.0 */
           +'<button class="pri" data-g="deliver:'+E(s.id)+'">Доставлено</button>';
         var pin='<div class="v20g-card v20w-nextcard"><div class="v20w-next-tag">Следующая точка · №'+E(s.seq)+'</div><div class="v20g-cn">'+E(s.cn||'')+'</div>'
           +(s.ad?'<div class="v20g-ad">'+E(s.ad)+'</div>':'')+(col?'<div class="v20g-col">'+E(col)+'</div>':'')+'<div class="v20g-acts">'+acts+'</div></div>';
@@ -27433,5 +27471,31 @@ html:not(#ta35s1):not(#ta35s2):not(#ta35s3) body label.wms-search,
 html:not(#ta35s1):not(#ta35s2):not(#ta35s3) body a.v20g-btn,
 html:not(#ta35s1):not(#ta35s2):not(#ta35s3) body label.v20g-file{border-radius:12px!important}
 </style>
+<style id="ta353-roles-style">
+/* 35.3.0 (17.11, владелец: «улучши визуал для кладовщика, водителя и менеджера»).
+   • Шапка телефона: две точки без подписи («дата остатков» и «связь») — дата остатков уходит (она есть в каталоге:
+     «обновлено …»), точка связи остаётся (зелёная / красная).
+   • Склад: у плитки без заданий не горит «0». */
+@media(max-width:430px){ html body #top .who #stockPill{display:none!important} }
+html body .wms-tile .wn.z{display:none!important}
+
+</style>
+<script id="ta353-roles">
+/* 35.3.0: на главной график «по дням» не рисуется, когда за 12 дней нет ни одной продажи / оплаты (раньше — ровная линия
+   с точкой на конце, похожая на заполненную полосу), и у «Продажи месяца» (там не было данных — линия всегда ровная). */
+(function(){
+  function tidy(){
+    try{
+      document.querySelectorAll('#view .ta253-kpi .ta303-band').forEach(function(band){
+        var tile=band.closest('.ta253-kpi'), lab=((tile&&tile.querySelector('u')||{}).textContent||'').trim().toLowerCase();
+        var svg=band.querySelector('svg[aria-label]'), flat=svg&&!/максимум/.test(svg.getAttribute('aria-label')||'')&&svg.querySelector('.ta303-line');
+        if(lab.indexOf('продажи месяца')===0||flat)band.remove();
+      });
+    }catch(_){}
+  }
+  if(typeof render==='function'){ var rb=render; render=function(){ var r=rb.apply(this,arguments); tidy(); return r; }; }
+  window.ta353Tidy=tidy;
+})();
+</script>
 </body>
 </html>
