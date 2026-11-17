@@ -9,14 +9,14 @@
 <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control"/>
 <meta content="no-cache" http-equiv="Pragma"/>
 <meta content="0" http-equiv="Expires"/>
-<meta content="35.3.1" name="app-version"/>
+<meta content="35.4.0" name="app-version"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="Trade Agent Manager" name="apple-mobile-web-app-title"/>
-<link href="./apple-touch-icon.png?v=35.3.1" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./favicon.svg?v=35.3.1" rel="icon" type="image/svg+xml"/>
-<link href="./favicon-32.png?v=35.3.1" rel="icon" sizes="32x32" type="image/png"/>
-<link href="./manifest.webmanifest?v=35.3.1" rel="manifest"/>
+<link href="./apple-touch-icon.png?v=35.4.0" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./favicon.svg?v=35.4.0" rel="icon" type="image/svg+xml"/>
+<link href="./favicon-32.png?v=35.4.0" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./manifest.webmanifest?v=35.4.0" rel="manifest"/>
 <meta content="Артур Кудинов" name="author"/>
 <meta content="© 2026 Артур Кудинов. All rights reserved." name="copyright"/>
 <meta content="Trade Agent Manager" name="application-name"/>
@@ -3986,7 +3986,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="ref-login-brand">
 <div class="ref-login-mini"></div>
 <div class="ref-login-word"><b>TRADE AGENT</b><span>MANAGER</span></div>
-<i id="loginVersion">v35.3.1</i>
+<i id="loginVersion">v35.4.0</i>
 </div>
 <div class="ref-login-hero">
 <div class="ref-orbit orbit-a"></div><div class="ref-orbit orbit-b"></div><div class="ref-orbit-runner runner-a"><span class="ref-orbit-dot d1"></span></div><div class="ref-orbit-runner runner-b"><span class="ref-orbit-dot d2"></span></div>
@@ -4011,7 +4011,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <button class="lbtn loff hide" id="lOffline">Продолжить офлайн</button>
 <button class="login-config" id="lCfg">Настроить базу</button>
 </div>
-<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.3.1</span></div>
+<div class="ref-login-foot"><span>© 2026 Trade Agent. Все права защищены.</span><span>Trade Agent Manager v35.4.0</span></div>
 </div>
 </div>
 <script id="ta2538-login-x-gesture-lock">
@@ -4098,7 +4098,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 <div class="dvpage" id="dvPage"></div>
 </div>
 <!-- documents and sign-in on our own server (docs/OWN_SERVER_PHONES.md); Google's libraries only for notifications -->
-<script src="./ta-store.js?v=35.3.1"></script>
+<script src="./ta-store.js?v=35.4.0"></script>
 <script>
 /* =====================================================================
    ДАННЫЕ ПРАЙСА (вшиты в файл)
@@ -4107,7 +4107,7 @@ const CATALOG = {"cats":[],"prods":[]};
 const SNAPSHOT = {"date":"","map":{}};
 
 const VERSION_META=document.querySelector('meta[name=\"app-version\"]');
-let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.3.1';
+let VERSION=(VERSION_META&&VERSION_META.content?VERSION_META.content.trim():'')||'35.4.0';
 const SCHEMA=2;
 const APP_OWNER='Артур Кудинов';
 const APP_FAMILY='Trade Agent Manager · Trade Agent · Flow System';
@@ -27495,6 +27495,165 @@ html body .wms-tile .wn.z{display:none!important}
   }
   if(typeof render==='function'){ var rb=render; render=function(){ var r=rb.apply(this,arguments); tidy(); return r; }; }
   window.ta353Tidy=tidy;
+})();
+</script>
+<style id="ta354-approvals-style">
+/* 35.4.0 (17.11, владелец: «у руководителя, поддержки и согласующего — свой доступ к приложению… согласования»).
+   «Согласования» на телефоне: кнопка над нижним меню, пока есть заявки на решение, пункт в «Меню», окно со списком. */
+#ta354Pill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh,64px) + 14px + env(safe-area-inset-bottom,0px));z-index:60;
+  display:none;align-items:center;gap:8px;padding:10px 16px;border:0;border-radius:12px;background:var(--acc);color:var(--acc-t);
+  font:600 14px/1.2 inherit;box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer}
+#ta354Pill.on{display:inline-flex}
+#ta354Pill b{min-width:22px;height:22px;border-radius:11px;background:var(--acc-t);color:var(--acc);display:inline-flex;align-items:center;justify-content:center;font-size:12px;padding:0 6px}
+.ta354-list{display:flex;flex-direction:column;gap:12px}
+.ta354-item{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px}
+.ta354-item h4{margin:0 0 4px;font-size:15px;color:var(--ink);line-height:1.35}
+.ta354-meta{font-size:12.5px;color:var(--mut);line-height:1.45}
+.ta354-sum{font-size:18px;font-weight:700;color:var(--ink);margin:8px 0 2px}
+.ta354-kind{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:8px;background:var(--acc-w);color:var(--acc);margin-bottom:6px}
+.ta354-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ta354-btns button{flex:1 1 30%;min-height:42px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:600}
+.ta354-btns button.ok{background:var(--acc);color:var(--acc-t);border-color:var(--acc)}
+.ta354-btns button.no{color:var(--red);border-color:var(--red)}
+.ta354-why{width:100%;margin-top:10px;min-height:70px;padding:10px;background:var(--card);color:var(--ink);border:1px solid var(--line);box-sizing:border-box;font:inherit}
+.ta354-empty{padding:26px 8px;text-align:center;color:var(--mut);line-height:1.5}
+.ta354-done{font-size:13px;margin-top:8px;color:var(--acc)}
+.ta354-tabs{display:flex;gap:8px;margin-bottom:12px}
+.ta354-tabs button{flex:1;min-height:38px;border:1px solid var(--line);background:var(--card);color:var(--mut)}
+.ta354-tabs button.on{background:var(--acc-w);color:var(--acc);border-color:var(--acc)}
+</style>
+<script id="ta354-approvals">
+/* 35.4.0: «Согласования» — для того, у кого в программе право «Согласование» (роль «Согласующий»; руководитель, поддержка).
+   Сервер: api/mgr/v1/approvals (list / decide / file) — тот же порядок, что в программе и в Telegram: «Согласовать» сразу
+   проводит операцию от имени сотрудника, «Отклонить» — только с причиной, которую он увидит. У кого права нет — ничего не видно. */
+(function(){
+  var A={can:false,pending:0,items:[],tab:'pending',busy:false,at:0};
+  var PEN='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/><path d="M14 20h6"/></svg>';   /* no emoji: its colours are not the program's */
+  function esc2(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function msg(t){ try{ if(typeof toast==='function')toast(t); }catch(_){} }
+  function call(path,body){
+    var st=window.TA_STORE, s=st&&st.session&&st.session();
+    if(!s||!s.token)return Promise.reject(new Error('signed out'));
+    return fetch(st.server()+'/api/mgr/v1/approvals/'+path,{method:'POST',cache:'no-store',
+      headers:{'Content-Type':'application/json','X-TA-Session':s.token},body:JSON.stringify(body||{})})
+      .then(function(r){
+        if(r.status===404&&path==='list')return null;   // an older server: no section
+        return r.json().catch(function(){return {};}).then(function(j){ if(!r.ok){ var e=new Error((j&&j.message)||('Ошибка '+r.status)); e.status=r.status; throw e; } return j; });
+      });
+  }
+  function money(v){ try{ return Number(v||0).toLocaleString('ru-RU',{maximumFractionDigits:2})+' ₸'; }catch(_){ return v+' ₸'; } }
+  function when(v){ try{ var d=new Date(v); return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}); }catch(_){ return ''; } }
+  function pill(){
+    var p=document.getElementById('ta354Pill');
+    if(!p){ p=document.createElement('button'); p.id='ta354Pill'; p.type='button'; p.onclick=function(){ open('pending'); }; document.body.appendChild(p); }
+    p.innerHTML=PEN+'Согласования <b>'+A.pending+'</b>';
+    var sheetOn=false; try{ sheetOn=document.getElementById('sheet').classList.contains('on'); }catch(_){}
+    p.classList.toggle('on',A.can&&A.pending>0&&!sheetOn);
+  }
+  async function refresh(force){
+    if(!window.TA_STORE||(!force&&Date.now()-A.at<20000))return;
+    A.at=Date.now();
+    try{
+      var r=await call('list',{status:'pending'});
+      if(!r){ A.can=false; A.pending=0; pill(); return; }
+      A.can=!!r.canDecide; A.pending=r.pending||0; if(A.tab==='pending')A.items=r.items||[];
+    }catch(e){ if(e&&e.status===401){ A.can=false; A.pending=0; } }
+    pill();
+  }
+  function card(it){
+    var pend=it.status==='pending';
+    var state=it.status==='approved'||it.status==='used'?'Согласовано':it.status==='rejected'?'Отклонено':it.status==='cancelled'?'Отменено':'Ждёт решения';
+    return '<div class="ta354-item" data-id="'+esc2(it.id)+'">'+
+      '<span class="ta354-kind">'+esc2(it.kindText||'')+'</span>'+
+      '<h4>'+esc2(it.title||'')+'</h4>'+
+      (it.amount!=null?'<div class="ta354-sum">'+money(it.amount)+'</div>':'')+
+      '<div class="ta354-meta">'+esc2(it.requestedBy||'')+' · '+when(it.requestedAt)+(pend?'':' · '+state+(it.decidedBy?' — '+esc2(it.decidedBy):''))+
+      (it.reason?'<br>Причина: '+esc2(it.reason):'')+(it.postResult?'<br>'+esc2(it.postResult):'')+'</div>'+
+      '<div class="ta354-btns">'+(it.hasFile||!pend?'<button type="button" data-a="file">📄 Документ</button>':'')+
+      (pend?'<button type="button" class="ok" data-a="yes">Согласовать</button><button type="button" class="no" data-a="no">Отклонить</button>':'')+'</div></div>';
+  }
+  function paint(body){
+    var tabs='<div class="ta354-tabs"><button type="button" data-t="pending" class="'+(A.tab==='pending'?'on':'')+'">Ждут решения'+(A.pending?' · '+A.pending:'')+'</button>'+
+      '<button type="button" data-t="recent" class="'+(A.tab==='recent'?'on':'')+'">За 30 дней</button></div>';
+    var list=A.items.length?'<div class="ta354-list">'+A.items.map(card).join('')+'</div>'
+      :'<div class="ta354-empty">'+(A.tab==='pending'?'Решений не ждёт ничего ✓<br>Новые заявки появятся здесь и придут в Telegram.':'За 30 дней заявок не было.')+'</div>';
+    body.innerHTML=tabs+list;
+    body.querySelectorAll('[data-t]').forEach(function(b){ b.onclick=function(){ A.tab=b.dataset.t; load(body); }; });
+    body.querySelectorAll('.ta354-item').forEach(function(box){
+      var id=box.dataset.id;
+      box.querySelectorAll('[data-a]').forEach(function(b){ b.onclick=function(){ act(body,box,id,b.dataset.a,b); }; });
+    });
+  }
+  async function load(body){
+    body.innerHTML='<div class="ta354-empty">Загружаю…</div>';
+    try{
+      var r=await call('list',{status:A.tab});
+      if(!r||!r.canDecide){ body.innerHTML='<div class="ta354-empty">Согласовывать может только сотрудник с правом «Согласование» (роль «Согласующий»). Его назначают в программе: Администрирование → Согласования.</div>'; return; }
+      A.items=r.items||[]; if(A.tab==='pending'){ A.pending=r.pending||0; } paint(body);
+    }catch(e){ body.innerHTML='<div class="ta354-empty">Не загрузилось: '+esc2(e.message||'нет связи')+'<br><br><button type="button" class="btn" id="ta354Again">Ещё раз</button></div>';
+      var again=body.querySelector('#ta354Again'); if(again)again.onclick=function(){ load(body); }; }
+    pill();
+  }
+  async function act(body,box,id,a,btn){
+    if(A.busy)return;
+    if(a==='file'){
+      A.busy=true; btn.disabled=true; var t=btn.textContent; btn.textContent='Готовлю…';
+      try{
+        var f=await call('file',{id:id});
+        var bin=atob(f.b64), arr=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+        var name=String(f.name||'Документ.pdf').replace(/[\\/:*?"<>|]+/g,' '), blob=new Blob([arr],{type:'application/pdf'});
+        try{ var file=new File([blob],name,{type:'application/pdf'});
+          if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){ await navigator.share({files:[file],title:name}); return; } }catch(e){ if(e&&e.name==='AbortError')return; }
+        var url=URL.createObjectURL(blob), l=document.createElement('a'); l.href=url; l.download=name; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+      }catch(e){ msg(e.message||'Документ не открылся'); }
+      finally{ A.busy=false; btn.disabled=false; btn.textContent=t; }
+      return;
+    }
+    if(a==='no'&&!box.querySelector('.ta354-why')){
+      box.insertAdjacentHTML('beforeend','<textarea class="ta354-why" maxlength="500" placeholder="Причина отказа — её увидит сотрудник"></textarea>');
+      var ta=box.querySelector('.ta354-why'); ta.focus(); btn.textContent='Отклонить с причиной'; return;
+    }
+    var why=a==='no'?(box.querySelector('.ta354-why').value||'').trim():null;
+    if(a==='no'&&!why){ msg('Напишите причину отказа'); return; }
+    A.busy=true; box.querySelectorAll('button').forEach(function(b){ b.disabled=true; });
+    try{
+      var r=await call('decide',{id:id,approve:a==='yes',reason:why});
+      box.insertAdjacentHTML('beforeend','<div class="ta354-done">'+(a==='yes'?'✓ Согласовано'+(r&&r.postResult?' · '+esc2(r.postResult):''):'Отклонено — сотрудник получит причину')+'</div>');
+      msg(a==='yes'?'Согласовано':'Отклонено');
+      setTimeout(function(){ A.busy=false; refresh(true); load(body); },1200);
+    }catch(e){ A.busy=false; box.querySelectorAll('button').forEach(function(b){ b.disabled=false; }); msg(e.message||'Не получилось — попробуйте ещё раз'); }
+  }
+  function open(tab){
+    A.tab=tab||'pending';
+    if(typeof sheet!=='function')return;
+    sheet('Согласования','<div id="ta354Body"></div>',function(el){ var b=el.querySelector('#ta354Body'); pill(); load(b); });
+    setTimeout(pill,50);
+  }
+  window.ta354Open=open;
+  // «Меню»: the item «Согласования» at the top of «Контроль» (only for who may decide)
+  if(typeof window.moreNav==='function'&&!window.moreNav.__ta354){
+    var base=window.moreNav;
+    var wrapped=function(){
+      var r=base.apply(this,arguments);
+      try{
+        if(A.can){
+          var grid=document.querySelector('#shBody .ta26-menu-group:nth-child(2) .ta26-menu-grid')||document.querySelector('#shBody .ta26-menu-grid');
+          if(grid&&!grid.querySelector('[data-ta354]')){
+            grid.insertAdjacentHTML('afterbegin','<button class="ta26-menu-card" data-ta354="1"><span class="ta26-menu-ico">'+PEN+(A.pending?'<i class="ta26-menu-badge">'+A.pending+'</i>':'')+'</span><span class="ta26-menu-copy"><b>Согласования</b><span>Расходы, возвраты, списания — решить сейчас</span></span></button>');
+            grid.querySelector('[data-ta354]').onclick=function(){ try{ closeSheet(); }catch(_){} setTimeout(function(){ open('pending'); },90); };
+          }
+        }
+      }catch(_){}
+      return r;
+    };
+    wrapped.__ta354=true; window.moreNav=wrapped; try{ moreNav=wrapped; }catch(_){}
+  }
+  // the pill hides while any window is open
+  try{ new MutationObserver(function(){ pill(); }).observe(document.getElementById('sheet'),{attributes:true,attributeFilter:['class']}); }catch(_){}
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible')refresh(true); });
+  window.addEventListener('online',function(){ refresh(true); });
+  setInterval(function(){ if(document.visibilityState==='visible')refresh(false); },60000);
+  setTimeout(function(){ refresh(true); },4000);
 })();
 </script>
 </body>
