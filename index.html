@@ -5564,7 +5564,8 @@ function payClient(r){
       if(s>r.debt&&!confirm('Сумма больше долга на '+money(s-r.debt)+'. Продолжить?')) return;
       const d=$('#pcDate').value||today();
       const queue=r.orders.filter(o=>MONEY.debt(o)>0)
-        .sort((a,b)=>MONEY.dueOf(a).localeCompare(MONEY.dueOf(b)));
+        /* 187 (как в 1С): с самой старой заявки — по дню отгрузки, затем по номеру, а не по сроку оплаты */
+        .sort((a,b)=>(MONEY.shipDay(a)||"").localeCompare(MONEY.shipDay(b)||"")||String(a.no||"").localeCompare(String(b.no||""),undefined,{numeric:true}));
       let closed=0;
       for(const o of queue){
         if(s<=0) break;
