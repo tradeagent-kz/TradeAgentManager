@@ -256,6 +256,8 @@
     observe(lang === 'kk');
     window.TA_KK_SWITCH_MS = performance.now() - t0;
     attachSwitches();
+    // texts built in code for the current language (the date on the sign-in screen etc.) are rebuilt by their owners
+    try { document.dispatchEvent(new CustomEvent('ta:lang', { detail: lang })); } catch (_) {}
   }
 
   window.TA_LANG = { get: function () { return lang; }, set: setLang, t: function (s) { return lang === 'kk' ? (tr(s) || s) : s; } };
