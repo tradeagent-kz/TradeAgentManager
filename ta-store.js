@@ -4,49 +4,65 @@
    limit / get / set / update / delete / onSnapshot / batch / runTransaction), so the rest of the page does not change. Everything
    goes to the server's phones' API (api/mgr/v1); the server checks every read and write by the same rules Firebase had.
    Notifications (FCM) are not here: the page loads Google's messaging library on its own (window.TA_FB_REAL).
-   Server address: https://agent.italcolours.kz, or ?server=… once (remembered), or localStorage «ta.server». */
+   Server address: the one chosen on the sign-in screen («Сервер компании», with a confirmation), kept in localStorage
+   «ta.server». IsTek (22.11.2026): no company's address is built in; with the domain of IsTek (window.TA_ESEP_DOMAIN, ONE value
+   in index.html) the code of the company is enough: «alfa» → https://alfa.<domain>. A phone that was already signed in to its
+   server keeps that server. 202 (security audit 11.2026, SEC-002): the address in the page link (?server=) is not taken any
+   more; only https (http only for this computer — tests); the session is kept together with its server and its token is never
+   sent to another address; changing the server ends the session. */
 (function () {
   'use strict';
   if (window.TA_STORE) return;
   // the demo / test base (debug APK demo mode, tests/manager-smoke.mjs) is already in place: it stays the page's «firebase»
   if (window.firebase && window.firebase.__fake) return;
 
-  var DEFAULT_SERVER = 'https://agent.italcolours.kz';
+  var DEFAULT_SERVER = '';
   var SESSION_KEY = 'ta.mgr.session';
+  var COMPANY_KEY = 'ta.company';
+  var ESEP_DOMAIN = String(window.TA_ESEP_DOMAIN || '').trim().toLowerCase().replace(/^\.+|\.+$/g, '');
 
   function lsGet(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }
   function lsSet(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (_) {} }
 
-  (function serverFromUrl() {
-    try {
-      var m = /[?&]server=([^&#]+)/.exec(location.search);
-      if (m) {
-        var u = decodeURIComponent(m[1]).replace(/\/+$/, '');
-        if (/^https?:\/\/[a-z0-9.-]+(:\d+)?$/i.test(u)) lsSet('ta.server', u);
-      }
-    } catch (_) {}
+  // https://host[:port]; http only for this computer itself (tests, a developer)
+  var SERVER_RE = /^(https:\/\/[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+(:\d{1,5})?|http:\/\/(localhost|127\.0\.0\.1)(:\d{1,5})?)$/i;
+  function cleanServer(u) { u = String(u || '').trim().replace(/\/+$/, ''); return SERVER_RE.test(u) ? u.toLowerCase() : null; }
+  // «alfa» (the code of the company on the IsTek server) → https://alfa.<domain>; anything else is an address as before
+  function companyServer(u) {
+    var c = String(u || '').trim().toLowerCase();
+    return ESEP_DOMAIN && /^[a-z][a-z0-9]{1,19}$/.test(c) ? 'https://' + c + '.' + ESEP_DOMAIN : null;
+  }
+  // a phone signed in before the server address stopped being built in keeps the server of its session
+  (function () {
+    if (cleanServer(lsGet('ta.server'))) return;
+    try { var old = JSON.parse(lsGet(SESSION_KEY) || 'null'); if (old && old.token && cleanServer(old.server)) lsSet('ta.server', cleanServer(old.server)); } catch (_) {}
   })();
-  function server() { return (lsGet('ta.server') || DEFAULT_SERVER).replace(/\/+$/, ''); }
+  function server() { return cleanServer(lsGet('ta.server')) || DEFAULT_SERVER; }
   function api(p) { return server() + '/api/mgr/v1/' + p; }
 
   // ------------------------------------------------------------------ errors (Firebase-like: .code, .message)
   function fail(code, message) { var e = new Error(message || code); e.code = code; e.name = 'FirebaseError'; return e; }
 
-  var session = null;   // {uid, email, token}
+  var session = null;   // {uid, email, token, server}
   try { session = JSON.parse(lsGet(SESSION_KEY) || 'null'); } catch (_) { session = null; }
+  // a session belongs to the server that gave it: a session of another (or unknown) server is dropped, never sent anywhere
+  if (session && (!session.token || session.server !== server())) { session = null; lsSet(SESSION_KEY, null); }
+  function token() { return session && session.token && session.server === server() ? session.token : null; }
 
   function call(path, body, opts) {
     opts = opts || {};
+    if (!server()) return Promise.reject(fail('unavailable', 'Укажите сервер компании: кнопка «Сервер компании» на экране входа.'));
     var headers = { 'Content-Type': 'application/json' };
-    var s = opts.session === undefined ? session : opts.session;
-    if (s && s.token) headers['X-TA-Session'] = s.token;
+    var t = opts.session === null ? null : token();
+    if (t) headers['X-TA-Session'] = t;
     var ctl = typeof AbortController === 'function' ? new AbortController() : null;
     var timer = ctl ? setTimeout(function () { ctl.abort(); }, opts.timeout || 20000) : null;
     return fetch(api(path), { method: 'POST', headers: headers, body: JSON.stringify(body || {}), signal: ctl ? ctl.signal : undefined, cache: 'no-store' })
       .then(function (r) {
         return r.text().then(function (t) {
           var j = null; try { j = t ? JSON.parse(t) : {}; } catch (_) { j = {}; }
-          if (!r.ok) throw fail((j && j.code) || (r.status === 403 ? 'permission-denied' : r.status === 404 ? 'not-found' : 'unavailable'), (j && j.message) || ('HTTP ' + r.status));
+          if (r.status === 401 && t) expired();
+          if (!r.ok) { var er = fail((j && j.code) || (r.status === 403 ? 'permission-denied' : r.status === 404 ? 'not-found' : r.status === 401 ? 'unauthenticated' : 'unavailable'), (j && j.message) || ('HTTP ' + r.status)); er.data = j; throw er; }
           return j;
         });
       }, function (e) {
@@ -235,9 +251,22 @@
     var db = this.firestore;
     return new QuerySnapshot(this, (list || []).map(function (raw) { return new DocumentSnapshot(new DocumentReference(db, raw.path), raw); }), previous);
   };
+  // the server answers at most 500 documents at a time and says where to continue («next»)
+  function queryAll(body) {
+    var all = [], want = body.limit || Infinity;
+    function page(after, n) {
+      var b = Object.assign({}, body); if (after) b.after = after;
+      return call('docs/query', b).then(function (j) {
+        all = all.concat(j.docs || []);
+        if (j.next && all.length < want && n < 40) return page(j.next, n + 1);
+        return { docs: all.length > want ? all.slice(0, want) : all };
+      });
+    }
+    return page(null, 0);
+  }
   Query.prototype.get = function () {
     var q = this;
-    return call('docs/query', q._body()).then(function (j) { queryCache[q._key()] = j.docs || []; return q._snap(j.docs); }, function (e) {
+    return queryAll(q._body()).then(function (j) { queryCache[q._key()] = j.docs || []; return q._snap(j.docs); }, function (e) {
       if (e.code === 'unavailable' && queryCache[q._key()]) { var s = q._snap(queryCache[q._key()]); s.metadata.fromCache = true; return s; }
       throw e;
     });
@@ -278,7 +307,9 @@
   var docCache = {}, queryCache = {};
   function cacheDoc(path, raw) { if (raw) docCache[path] = raw; }
 
-  var hub = { targets: {}, seq: 0, ctl: null, timer: null, failures: 0 };
+  // the server takes at most 20 targets per stream: more targets → several streams (each its own connection)
+  var MAX_TARGETS = 20;
+  var hub = { targets: {}, seq: 0, ctls: [], timer: null, failures: 0, gen: 0 };
   function listen(target, onMessage, onOffline) {
     var id = 't' + (++hub.seq);
     hub.targets[id] = { t: target, on: onMessage, off: onOffline, last: null, got: false };
@@ -288,28 +319,37 @@
   function restart(ms) { clearTimeout(hub.timer); hub.timer = setTimeout(connect, ms); }
   function reopenAll() { hub.failures = 0; Object.keys(hub.targets).forEach(function (k) { hub.targets[k].last = null; }); restart(30); }
   function connect() {
-    if (hub.ctl) { try { hub.ctl.abort(); } catch (_) {} hub.ctl = null; }
+    hub.ctls.forEach(function (c) { try { c.abort(); } catch (_) {} });
+    hub.ctls = [];
+    var gen = ++hub.gen;
     var ids = Object.keys(hub.targets);
-    if (!ids.length) return;
-    var ctl = typeof AbortController === 'function' ? new AbortController() : null;
-    hub.ctl = ctl || {};
-    var headers = { 'Content-Type': 'application/json' };
-    if (session && session.token) headers['X-TA-Session'] = session.token;
-    var body = JSON.stringify({ targets: ids.map(function (id) { var t = hub.targets[id].t; return t.doc ? { id: id, doc: t.doc } : { id: id, q: t.q }; }) });
-    fetch(api('listen'), { method: 'POST', headers: headers, body: body, signal: ctl ? ctl.signal : undefined, cache: 'no-store' })
-      .then(function (r) {
-        if (!r.ok || !r.body || !r.body.getReader) throw fail('unavailable', 'HTTP ' + r.status);
-        hub.failures = 0;
-        return read(r.body.getReader());
-      })
-      .then(function () { if (hub.ctl === (ctl || hub.ctl)) { hub.ctl = null; restart(500); } })   // the server ends a stream after 25 min
-      .catch(function () {
-        if (ctl && ctl.signal.aborted) return;
-        hub.ctl = null;
-        Object.keys(hub.targets).forEach(function (k) { var x = hub.targets[k]; if (!x.got && x.off) { x.got = true; try { x.off(); } catch (_) {} } });
-        hub.failures++;
-        restart(Math.min(30000, 1000 * Math.pow(2, Math.min(hub.failures, 5))) + (navigator.onLine === false ? 4000 : 0));
-      });
+    var t = token();
+    if (!ids.length || !t) return;   // no session: nothing to listen to (the server would answer 401)
+    var chunks = [];
+    for (var i = 0; i < ids.length; i += MAX_TARGETS) chunks.push(ids.slice(i, i + MAX_TARGETS));
+    var ended = false;
+    function again(ms) { if (!ended && gen === hub.gen) { ended = true; restart(ms); } }
+    chunks.forEach(function (part) {
+      var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+      if (ctl) hub.ctls.push(ctl);
+      var headers = { 'Content-Type': 'application/json', 'X-TA-Session': t };
+      var body = JSON.stringify({ targets: part.map(function (id) { var x = hub.targets[id].t; return x.doc ? { id: id, doc: x.doc } : { id: id, q: x.q }; }) });
+      fetch(api('listen'), { method: 'POST', headers: headers, body: body, signal: ctl ? ctl.signal : undefined, cache: 'no-store' })
+        .then(function (r) {
+          if (r.status === 401) { expired(); throw fail('unauthenticated', 'HTTP 401'); }
+          if (!r.ok || !r.body || !r.body.getReader) throw fail('unavailable', 'HTTP ' + r.status);
+          hub.failures = 0;
+          return read(r.body.getReader());
+        })
+        .then(function () { again(500); })   // the server ends a stream after 25 min
+        .catch(function (e) {
+          if ((ctl && ctl.signal.aborted) || gen !== hub.gen) return;
+          if (e && e.code === 'unauthenticated') return;
+          part.forEach(function (k) { var x = hub.targets[k]; if (x && !x.got && x.off) { x.got = true; try { x.off(); } catch (_) {} } });
+          hub.failures++;
+          again(Math.min(30000, 1000 * Math.pow(2, Math.min(hub.failures, 5))) + (navigator.onLine === false ? 4000 : 0));
+        });
+    });
   }
   function read(reader) {
     var dec = new TextDecoder(), buf = '';
@@ -323,6 +363,7 @@
           chunk.split('\n').forEach(function (line) {
             if (line.indexOf('data: ') !== 0) return;
             var msg; try { msg = JSON.parse(line.slice(6)); } catch (_) { return; }
+            if (msg.error === 'unauthenticated') { expired(); return; }
             var x = hub.targets[msg.id]; if (!x) return;
             var sig = line; if (x.last === sig) return;
             x.last = sig; x.got = true;
@@ -444,27 +485,32 @@
     this.uid = s.uid; this.email = s.email || null; this.displayName = null; this.isAnonymous = false;
     this._auth = auth;
   }
-  User.prototype.getIdToken = function () { return Promise.resolve(session && session.token || ''); };
+  User.prototype.getIdToken = function () { return Promise.resolve(token() || ''); };
+  // the current code is checked by the server together with the new one (auth/password): here it is only kept
   User.prototype.reauthenticateWithCredential = function (cred) {
-    var u = this;
-    return call('auth/signin', { email: u.email, password: cred && cred.password }, { session: null }).then(function () {
-      u._old = cred.password; return { user: u };
-    }, function (e) { if (e.code === 'auth/wrong-password') throw fail('auth/wrong-password', 'Неверный текущий код.'); throw e; });
+    this._old = code(cred && cred.password); return Promise.resolve({ user: this });
   };
   User.prototype.updatePassword = function (p) {
     var u = this;
     if (!u._old) return Promise.reject(fail('auth/requires-recent-login', 'Введите текущий код ещё раз.'));
-    return call('auth/password', { old: u._old, password: p }).then(function () { u._old = null; });
+    p = code(p);
+    if (p.length < 8) return Promise.reject(fail('auth/weak-password', 'Новый код — от 8 символов: буквы и цифры.'));
+    return call('auth/password', { old: u._old, password: p }).then(function (j) {
+      u._old = null;
+      if (j && j.token) setSession(j);   // the new code ended every earlier session: this phone gets the new one
+    }, function (e) { u._old = null; if (e.code === 'auth/wrong-password') throw fail('auth/wrong-password', 'Неверный текущий код.'); throw e; });
   };
+  function code(p) { return String(p == null ? '' : p).replace(/\s+/g, ''); }
 
   function Auth(app) {
     this.app = app; this._main = app.name === '[DEFAULT]'; this._observers = [];
     this.currentUser = this._main && session ? new User(session, this) : null;
     var self = this;
+    if (this._main) mainAuth = this;
     if (this._main && session) {
-      // the session is checked with the server once at start; a sign-in switched off / expired → signed out
+      // the session is checked with the server once at start; a sign-in switched off / expired / a new code → signed out
       call('auth/refresh', {}).then(function (j) { setSession(j); }, function (e) {
-        if (e.code !== 'unavailable') { setSession(null); self._emit(); }
+        if (e.code !== 'unavailable') { setSession(null); self.currentUser = null; self._emit(); }
       });
     }
   }
@@ -478,9 +524,83 @@
     setTimeout(function () { try { fn(self.currentUser); } catch (_) {} }, 0);
     return function () { self._observers = self._observers.filter(function (x) { return x !== fn; }); };
   };
+  // ------------------------------------------------------------------ 209: second step of the sign-in (leaders, accounting)
+  // The server asks 6 digits of an authenticator after the right login code (auth/second-step-required with a 5-minute ticket); the
+  // layer below shows its own window over the page, sends the code (auth/second-step) and keeps «Этот телефон мой» (the trust key:
+  // the next sign-ins of this phone are not asked for 30 days). The page itself (index.html) does not change.
+  function trustKey(login) { return 'ta.mgr.trust.' + server() + '.' + String(login || '').toLowerCase(); }
+  function el(tag, css, text) { var e = document.createElement(tag); if (css) e.style.cssText = css; if (text != null) e.textContent = text; return e; }
+  function secondStep(login, challenge) {
+    return new Promise(function (resolve, reject) {
+      var ticket = challenge.ticket;
+      var wrap = el('div', 'position:fixed;inset:0;z-index:2147483000;background:rgba(10,14,13,.72);display:flex;align-items:center;justify-content:center;padding:16px');
+      wrap.setAttribute('role', 'dialog'); wrap.id = 'ta-second-step';
+      var card = el('div', 'width:100%;max-width:420px;background:var(--card,#272F2F);color:var(--ink,#F1EFE8);border:1px solid var(--line,#323E3E);border-radius:14px;padding:22px 18px;font-family:var(--sans,sans-serif);box-shadow:0 24px 48px -28px rgba(0,0,0,.95)');
+      card.appendChild(el('div', 'font-size:18px;font-weight:650;margin-bottom:6px', 'Второй шаг входа'));
+      card.appendChild(el('div', 'font-size:14px;color:var(--ink2,#C8D0CC);margin-bottom:12px', challenge.text || 'Введите 6 цифр из приложения-аутентификатора.'));
+      if (challenge.setup && challenge.secret) {
+        card.appendChild(el('div', 'font-size:13px;color:var(--mut,#98A69F)', 'Ключ для приложения-аутентификатора:'));
+        var key = el('div', 'font-family:var(--mono,monospace);font-size:16px;letter-spacing:.08em;word-break:break-all;padding:10px;margin:6px 0 4px;border-radius:10px;background:var(--bg2,#202828);user-select:all', String(challenge.secret).replace(/(.{4})/g, '$1 ').trim());
+        card.appendChild(key);
+        if (challenge.uri) {
+          var link = el('a', 'display:inline-block;font-size:14px;color:var(--acc,#76A38C);margin:4px 0 12px', 'Открыть в приложении-аутентификаторе');
+          link.href = challenge.uri; card.appendChild(link);
+        }
+      }
+      var input = el('input', 'width:100%;font-size:24px;letter-spacing:.3em;text-align:center;padding:12px;border-radius:10px;border:1px solid var(--line,#323E3E);background:var(--bg2,#202828);color:var(--ink,#F1EFE8);margin:6px 0 10px');
+      input.inputMode = 'numeric'; input.autocomplete = 'one-time-code'; input.maxLength = 8; input.placeholder = '000000';
+      card.appendChild(input);
+      var row = el('label', 'display:flex;gap:10px;align-items:center;font-size:14px;margin-bottom:12px');
+      var trust = el('input'); trust.type = 'checkbox'; trust.checked = true; trust.style.cssText = 'width:20px;height:20px;accent-color:var(--acc,#76A38C)';
+      row.appendChild(trust); row.appendChild(el('span', '', 'Этот телефон мой — не спрашивать код 30 дней'));
+      card.appendChild(row);
+      var msg = el('div', 'font-size:13.5px;color:var(--red,#E68B70);min-height:18px;margin-bottom:10px', '');
+      card.appendChild(msg);
+      var ok = el('button', 'display:block;width:100%;padding:13px;border-radius:10px;border:0;background:var(--acc,#76A38C);color:var(--acc-t,#141C18);font-size:15px;font-weight:650;margin-bottom:8px', 'Подтвердить и войти');
+      var cancel = el('button', 'display:block;width:100%;padding:12px;border-radius:10px;border:1px solid var(--line,#323E3E);background:transparent;color:var(--ink2,#C8D0CC);font-size:14px', 'Отмена');
+      card.appendChild(ok); card.appendChild(cancel);
+      wrap.appendChild(card);
+      document.body.appendChild(wrap);
+      setTimeout(function () { try { input.focus(); } catch (_) {} }, 50);
+      function close() { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); }
+      var busy = false;
+      function send() {
+        if (busy) return;
+        var digits = String(input.value || '').replace(/\D/g, '');
+        if (digits.length !== 6) { msg.textContent = 'Введите 6 цифр.'; return; }
+        busy = true; ok.disabled = true; msg.textContent = '';
+        call('auth/second-step', { ticket: ticket, code: digits, trust: !!trust.checked, device: (navigator.userAgent || '').slice(0, 80) }, { session: null })
+          .then(function (j) {
+            if (j && j.trust) lsSet(trustKey(login), j.trust);
+            close(); resolve(j);
+          }, function (e) {
+            busy = false; ok.disabled = false;
+            if (e.code === 'auth/second-step-expired') { close(); reject(e); return; }
+            msg.textContent = e.message || 'Код не подошёл.'; input.value = ''; try { input.focus(); } catch (_) {}
+          });
+      }
+      ok.addEventListener('click', send);
+      input.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') send(); });
+      cancel.addEventListener('click', function () { close(); reject(fail('auth/second-step-cancelled', 'Вход отменён.')); });
+    });
+  }
+
+  // 202: the phone signs in with its login (no list of logins before the sign-in); an alias e-mail still works
   Auth.prototype.signInWithEmailAndPassword = function (email, password) {
-    var self = this;
-    return call('auth/signin', { email: String(email || ''), password: String(password || '') }, { session: null }).then(function (j) {
+    var self = this, login = String(email || '').trim();
+    var body = login.indexOf('@') >= 0 ? { email: login } : { login: login };
+    body.password = code(password);
+    var trusted = lsGet(trustKey(login));
+    if (trusted) body.trust = trusted;
+    return call('auth/signin', body, { session: null }).catch(function (e) {
+      // 209: a leader / accountant — the second step (once per phone)
+      if (e && e.code === 'auth/second-step-required' && e.data && e.data.ticket) {
+        if (trusted) lsSet(trustKey(login), null);
+        return secondStep(login, e.data);
+      }
+      throw e;
+    }).then(function (j) {
+      if (self._main && login.indexOf('@') < 0) lsSet('ta.mgr.login', login);
       if (self._main) { setSession(j); self.currentUser = new User(session, self); reopenAll(); self._emit(); return { user: self.currentUser }; }
       self.currentUser = new User(j, self); return { user: self.currentUser };
     });
@@ -495,17 +615,45 @@
     });
   };
   Auth.prototype.signOut = function () {
-    if (this._main) { setSession(null); this.currentUser = null; reopenAll(); this._emit(); } else this.currentUser = null;
+    if (this._main) {
+      // the server ends the session (no copy of the token stays valid); the phone forgets it at once, even offline
+      if (token()) call('auth/signout', {}, { timeout: 8000 }).catch(function () {});
+      setSession(null); this.currentUser = null; reopenAll(); this._emit();
+    } else this.currentUser = null;
     return Promise.resolve();
   };
   Auth.prototype.sendPasswordResetEmail = function () {
-    return Promise.reject(fail('auth/operation-not-allowed', 'Новый код выдаёт администратор в Trade Agent Desktop: «Сотрудники» → карточка → «Новый код».'));
+    return Promise.reject(fail('auth/operation-not-allowed', 'Новый код выдаёт администратор в программе на компьютере: «Сотрудники» → карточка → «Новый код».'));
   };
   Auth.prototype.setPersistence = function () { return Promise.resolve(); };
 
   function setSession(j) {
-    session = j && j.token ? { uid: j.uid, email: j.email, token: j.token } : null;
+    session = j && j.token ? { uid: j.uid, email: j.email, token: j.token, server: server() } : null;
     lsSet(SESSION_KEY, session ? JSON.stringify(session) : null);
+    // the name of the company comes from its server (the heading of the phone's PDF documents)
+    if (j && j.token && typeof j.company === 'string' && j.company.trim()) lsSet(COMPANY_KEY, j.company.trim().slice(0, 200));
+  }
+
+  // the server said «sign in again» (a new code, sign-out on another phone, switched off, 90 days): the page goes to the sign-in
+  var mainAuth = null;
+  function expired() {
+    if (!session) return;
+    setSession(null);
+    if (mainAuth) { mainAuth.currentUser = null; mainAuth._emit(); }
+  }
+
+  /* «Сервер компании» (sign-in screen, with a confirmation): only https (http only for this computer); the session of the old
+     server is ended and forgotten — its token never goes to the new address. Returns false for a wrong address. */
+  function setServer(u) {
+    var v = companyServer(u) || cleanServer(u);
+    if (!v) return false;
+    if (v === server()) return true;
+    if (token()) call('auth/signout', {}, { timeout: 5000 }).catch(function () {});
+    session = null; lsSet(SESSION_KEY, null);
+    docCache = {}; queryCache = {};
+    lsSet(COMPANY_KEY, null);
+    lsSet('ta.server', v === DEFAULT_SERVER ? null : v);
+    return true;
   }
 
   // ------------------------------------------------------------------ the firebase namespace
@@ -548,6 +696,8 @@
   if (real && real.initializeApp && !real.__taStore) window.TA_FB_REAL = real;
   ns.__taStore = true;
   window.firebase = ns;
-  window.TA_STORE = { server: server, setServer: function (u) { lsSet('ta.server', u); }, session: function () { return session; },
+  window.TA_STORE = { server: server, defaultServer: DEFAULT_SERVER, validServer: function (u) { return companyServer(u) || cleanServer(u); },
+    setServer: setServer, esepDomain: ESEP_DOMAIN, company: function () { return lsGet(COMPANY_KEY) || ''; },
+    session: function () { return token() ? session : null; }, lastLogin: function () { return lsGet('ta.mgr.login') || ''; },
     targets: function () { return Object.keys(hub.targets).map(function (k) { var x = hub.targets[k]; return (x.t.doc || ('q:' + x.t.q.parent)) + (x.got ? ' ✓' : ' …'); }); } };
 })();

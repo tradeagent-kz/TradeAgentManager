@@ -10,7 +10,7 @@ self.addEventListener('push', function (e) {
   var p = {};
   try { p = e.data ? e.data.json() : {}; } catch (_) { try { p = { data: { body: e.data.text() } }; } catch (__) { p = {}; } }
   var d = p.data || {}, n = p.notification || {};
-  var title = String(d.title || n.title || 'Trade Agent');
+  var title = String(d.title || n.title || 'IsTek');
   var body = String(d.body || n.body || '');
   var opts = { body: body, icon: './icon-192.png', badge: './icon-96.png', data: d, silent: d.silent === '1' };
   if (d.mid) opts.tag = 'ta-' + d.mid;
