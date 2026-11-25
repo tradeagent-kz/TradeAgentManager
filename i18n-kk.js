@@ -31,6 +31,18 @@
 
   function upper(t) { var l = t.replace(/[^A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі]/g, ''); return l.length >= 2 && l === l.toUpperCase(); }
 
+  /* 229: a value that is a Russian sentence (an imperative, or two verb forms), not a name — same rule as KkDictionary.cs */
+  var RU_WORD = /[а-яё]{5,}/g, IMPER = /^[а-яё]{3,}(ите|йте)$/, VERB = /^[а-яё]{3,}(ет|ёт|ит|ут|ют|ат|ят|ется|ится|ются|ятся|ался|алась|ился|илась|лось|лись|ен|ён|ена|ено|ены|ан|ана|ано|аны)$/;
+  function ruPhrase(v, res) {
+    var words = String(v).match(RU_WORD) || [], verbs = 0;
+    for (var i = 0; i < words.length; i++) {
+      var w = words[i], at = String(v).indexOf(w), before = at > 0 ? String(v).charAt(at - 1) : '';
+      if (/[А-Яа-яЁёA-Za-z]/.test(before) || String(res).indexOf(w) < 0) continue;
+      if (IMPER.test(w)) return true;
+      if (VERB.test(w) && ++verbs >= 2) return true;
+    }
+    return false;
+  }
   function fromTemplate(t, d) {
     for (var i = 0; i < templates.length; i++) {
       var tp = templates[i];
@@ -38,6 +50,7 @@
       var m = tp.rx.exec(t);
       if (!m) continue;
       var vals = m.slice(1).map(function (v) { return compute(v, d + 1) || v; });
+      if (ruPhrase(m.slice(1).join(' '), vals.join(' '))) continue;   // 229: a Russian sentence in a broad template — it does not fit
       var r = tp.kk.replace(HOLE, function (h, n) { return vals[+n] != null ? vals[+n] : h; });
       if (r !== t) return r;
     }

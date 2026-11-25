@@ -17599,7 +17599,76 @@ html.ta33-readonly #save,html.ta33-readonly #pOk,html.ta33-readonly #newClientSa
 })(typeof window!=='undefined'?window:globalThis);
 /* ==== /v33 lic ==== */
 
+/* ==== 229 payslip ==== «Расчётный листок» сотрудника в «Профиле»: свой листок за месяц, ведомость которого подтверждена в программе.
+   Сервер: api/mgr/v1/payslip (только своя строка; черновик ведомости не показывается). Нет связи входа с сотрудником или старый
+   сервер — карточки нет. */
+(function(root){
+  'use strict';
+  function esc(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function money(v){ var n=Number(v)||0; return n.toLocaleString('ru-RU',{minimumFractionDigits:0,maximumFractionDigits:2})+' ₸'; }
+  function call(month){
+    var st=root.TA_STORE, s=st&&st.session&&st.session();
+    if(!s||!s.token)return Promise.resolve(null);
+    return fetch(st.server()+'/api/mgr/v1/payslip',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','X-TA-Session':s.token},
+      body:JSON.stringify({month:month||null})})
+      .then(function(r){ if(r.status===404&&!month||r.status===405||r.status===403)return null;
+        return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok){ var e=new Error((j&&j.message)||('Ошибка '+r.status)); e.status=r.status; throw e; } return j; }); });
+  }
+  function rows(list){ return (list||[]).map(function(x){ return '<div class="sums"><span>'+esc(x.title)+'</span><b>'+esc(money(x.amount))+'</b></div>'; }).join(''); }
+  function slipHtml(d){
+    var s=d.slip;
+    if(!s)return '<div class="empty"><b>Расчётного листка нет</b><span>'+esc(d.note||'')+'</span></div>';
+    var opts=(d.months||[]).map(function(m){ return '<option value="'+esc(m.month)+'"'+(m.month===s.month?' selected':'')+'>'+esc(m.title)+'</option>'; }).join('');
+    return '<div class="ta229-slip">'+
+      '<div class="note g"><b>'+esc(d.employee)+'</b>'+(s.position?'<br>'+esc(s.position):'')+'<br>'+esc(d.org)+'</div>'+
+      '<label class="ta229-month"><span>Месяц</span><select id="ta229Month">'+opts+'</select></label>'+
+      (Number(s.opening)?'<div class="card pad"><div class="sums"><span>Долг на начало месяца</span><b>'+esc(money(s.opening))+'</b></div></div>':'')+
+      '<div class="card pad"><b style="color:var(--ink)">Начислено</b>'+rows(s.accrued)+'<div class="sums"><span><b>Итого начислено</b></span><b>'+esc(money(s.accruedTotal))+'</b></div></div>'+
+      '<div class="card pad"><b style="color:var(--ink)">Удержано</b>'+(rows(s.withheld)||'<div class="sums"><span>Удержаний нет</span><b>0 ₸</b></div>')+
+        '<div class="sums"><span><b>Итого удержано</b></span><b>'+esc(money(s.withheldTotal))+'</b></div></div>'+
+      '<div class="card pad"><div class="sums"><span>Выплачено</span><b>'+esc(money(s.paid))+'</b></div>'+
+        '<div class="sums"><span><b>К выплате</b></span><b>'+esc(money(s.toPay))+'</b></div></div>'+
+      (s.confirmedAt?'<div class="ta229-foot"><span>Ведомость подтверждена</span> '+esc(s.confirmedAt)+'</div>':'')+
+    '</div>';
+  }
+  function open(month){
+    root.sheet('Расчётный листок','<div class="empty"><b>Загружаю расчётный листок…</b></div>');
+    call(month).then(function(d){
+      if(!d){ root.sheet('Расчётный листок','<div class="empty"><b>Расчётного листка нет</b><span>Вход не связан с сотрудником.</span></div>'); return; }
+      root.sheet('Расчётный листок',slipHtml(d),function(el){
+        var sel=el.querySelector('#ta229Month'); if(sel)sel.addEventListener('change',function(){ open(sel.value); });
+      });
+    }).catch(function(e){ var why=e&&e.status?(e.message||''):'Нет связи с сервером — попробуйте ещё раз';
+      root.sheet('Расчётный листок','<div class="empty"><b>Не удалось открыть</b><span>'+esc(why)+'</span></div>'); });
+  }
+  root.TA_PAYSLIP={open:open};
+  try{
+    var base=root.vProfile26;
+    if(typeof base==='function'&&!base.__ta229){
+      var wp=function(){ var r=base.apply(this,arguments);
+        call(null).then(function(d){
+          if(!d)return;
+          var box=document.querySelector('#shBody .ta26-profile'); if(!box||box.querySelector('#ta229Card'))return;
+          var s=d.slip;
+          var html='<div class="card pad" id="ta229Card" style="margin-top:10px"><div class="sums" style="align-items:flex-start"><span><b style="color:var(--ink)">Расчётный листок</b><br>'+
+            (s?'<span style="font-size:12px;color:var(--mut)">'+esc(s.title)+'</span><br><span style="font-size:12px;color:var(--mut)">К выплате</span> <b style="font-size:12px">'+esc(money(s.toPay))+'</b>'
+              :'<span style="font-size:12px;color:var(--mut)">'+esc(d.note||'')+'</span>')+'</span></div>'+
+            (s?'<button class="btn" id="ta229Open" style="margin-top:10px;width:100%">Открыть листок</button>':'')+'</div>';
+          var act=box.querySelector('.ta26-profile-actions');
+          if(act)act.insertAdjacentHTML('beforebegin',html); else box.insertAdjacentHTML('beforeend',html);
+          var b=box.querySelector('#ta229Open'); if(b)b.addEventListener('click',function(){ open(s.month); });
+        }).catch(function(){});
+        return r; };
+      wp.__ta229=true; wp.__ta33=base.__ta33; root.vProfile26=wp;
+    }
+  }catch(_){}
+})(typeof window!=='undefined'?window:globalThis);
+/* ==== /229 payslip ==== */
+
 </script>
+<style id="ta229-payslip">
+.ta229-slip .card{margin-top:10px}.ta229-slip .sums{margin-top:6px}.ta229-month{display:flex;align-items:center;gap:10px;margin-top:10px}.ta229-month span{color:var(--mut);font-size:13px}.ta229-month select{flex:1;min-height:42px}.ta229-foot{margin-top:10px;color:var(--mut);font-size:12px;text-align:center}
+</style>
 <style id="ta3301-fit">
 /* ==== v33.0.1 fit ==== phones: nothing cut, covered or squeezed (Android 320–412, iPhone with notch / home indicator,
    landscape). Presentation only, last style block of the page; the v33 look is kept. */
