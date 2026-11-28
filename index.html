@@ -4103,7 +4103,7 @@ html.ta297-on body #view .ref-grid .ref-step>button,html.ta297-on body #view .re
 </header>
 <main id="view"></main>
 <button id="fab"><b id="fabSum">0 ₸</b><span id="fabCnt"></span></button>
-<nav id="tabs"></nav>
+<div id="taTabsScrim" aria-hidden="true"></div><nav id="tabs"></nav>
 <div class="rail-signature" id="railSignature"><b>ISTEK / MANAGER</b><span>© 2026 · Private software</span></div>
 </div>
 <div class="sheet" id="sheet"><div class="shead"><h2 id="shTitle"></h2><button aria-label="Закрыть" class="x" id="shX">✕</button></div><div class="sbody" id="shBody"></div></div>
@@ -4589,6 +4589,11 @@ const MONEY={
     if(o.plan&&o.plan.length){ const n=MONEY.nextPart(o); if(n) return n.d; }
     /* срок денег считаем от фактической отгрузки, а не от плановой */
     if(o.fact&&o.payDays) return addDays(o.fact,+o.payDays);
+    /* fix3 (П-11): заказ ещё не отгружен и срок не записан — желаемая отгрузка + отсрочка, а не день отгрузки
+       («Отсрочка 14 дн · деньги 18.10» в день заказа) */
+    /* fix5 (П-11): a due date written as the day of the shipment itself while the order has a deferment («Отсрочка 14 дн · деньги
+       27.11» on the day of the order) is not the due date: the wanted shipment + the deferment */
+    if(o.shipDate&&+o.payDays>0&&(!o.dueDate||o.dueDate<=o.shipDate)) return addDays(o.shipDate,+o.payDays);
     return o.dueDate||o.shipDate||'';
   },
   /* Сколько частей графика уже закрыто */
@@ -5122,7 +5127,8 @@ function ordersFiltered(){
   /* Пока что-то набрано в поиске, период не ограничивает: иначе заявка
      прошлой недели «не находится», хотя лежит на месте. */
   const r=OF.q?null:ofRange();
-  if(r) list=list.filter(o=>(o.shipDate||'')>=r[0]&&(o.shipDate||'')<=r[1]);
+  /* fix5 (Н-6): the day of an order is the same as on «Главная» — the shipment (fact, else the wanted day) */
+  if(r) list=list.filter(o=>String(MONEY.shipDay(o)||'')>=r[0]&&String(MONEY.shipDay(o)||'')<=r[1]);
   if(OF.status==='debt') list=list.filter(o=>o.status!=='Отменён'&&debtOf(o)>0);
   if(DDUE){ const T=today(), t3=addDays(T,3);
     list=list.filter(o=>{ const due=MONEY.dueOf(o);
@@ -5181,7 +5187,8 @@ function paintDayStrip(){
 }
 function paintOchips(){
   const months=[...new Set(myOrders().map(o=>(o.shipDate||'').slice(0,7)).filter(Boolean))].sort().reverse();
-  const cnt=r=>{ const l=myOrders().filter(o=>o.status!=='Отменён'&&(o.shipDate||'')>=r[0]&&(o.shipDate||'')<=r[1]);
+  const gone=o=>typeof window.taOrderGone==='function'?window.taOrderGone(o):(o.status==='Отменён'||o.status==='Списан');
+  const cnt=r=>{ const l=myOrders().filter(o=>!gone(o)&&String(MONEY.shipDay(o)||'')>=r[0]&&String(MONEY.shipDay(o)||'')<=r[1]);
     return l.length?' <i>'+l.length+'</i>':''; };
   const T0=today();
   let h=`<button class="chip" data-f="preset:today"     aria-pressed="${OF.preset==='today'}">Сегодня${cnt([T0,T0])}</button>
@@ -5230,6 +5237,17 @@ function paintOrders(){
   box.innerHTML=list.length?list.map(orderCard).join('')
     :`<div class="empty"><b>Заявок нет</b>Измените фильтр или соберите заказ в каталоге</div>`;
 }
+/* fix6: «14 дн · отгрузка 27.11 · деньги 11.12» — the whole line in the language of the screen (the Kazakh phone kept
+   «желаемая отгрузка», «деньги», «дн» in Russian: parts glued in code are not in the dictionary) */
+function taKkOn(){ try{ return localStorage.getItem('ta.lang')==='kk'; }catch(_){ return false; } }
+function taKkTerms(o){
+  const kk=taKkOn();
+  return (o.payDays?' · '+o.payDays+(kk?'&nbsp;күн':'&nbsp;дн'):'')
+    +' · '+(kk?'жөнелту':'отгрузка')+' '+ruDate(o.shipDate)
+    +(o.payDays?' · '+(kk?'ақша':'деньги')+' '+ruDate(MONEY.dueOf(o)):'');
+}
+/* fix6: the lines built in code (the tabs, the terms of an order) follow the language at once when it is switched */
+document.addEventListener('ta:lang',function(){ try{ if(!ME)return; (window.render||render)(); }catch(_){} });
 function orderCard(o){
   const d=debtOf(o), cls=o.status==='Отменён'?'':(d<=0?'paid':(MONEY.dueOf(o)<today()?'debt':'due'));
   const u=DB.users[o.uid];
@@ -5239,7 +5257,7 @@ function orderCard(o){
       ${o.status==='Отменён'?'<span class="tag t-mut">отменён</span>':(d<=0?'<span class="tag t-ok">оплачен</span>':'')}
       <span class="sum">${money(o.total)} ${CFG.ВАЛЮТА}</span></div>
     <div class="cl">${esc(o.client)}</div>
-    <div class="m">${(o.items||[]).some(i=>i.bonus)?'<span class="tag t-warn">с бонусом</span> ':''}${(o.plan&&o.plan.length)?'<span class="tag t-acc">по графику</span> ':''}${esc(o.payType)}${o.payDays?' · '+o.payDays+' дн':''} · отгрузка ${ruDate(o.shipDate)}${o.payDays?' · деньги '+ruDate(MONEY.dueOf(o)):''}
+    <div class="m">${(o.items||[]).some(i=>i.bonus)?'<span class="tag t-warn">с бонусом</span> ':''}${(o.plan&&o.plan.length)?'<span class="tag t-acc">по графику</span> ':''}${esc(o.payType)}${taKkTerms(o)}
       ${isAdmin()?`<br>${esc(u?u.name:o.uid)}`:''}${d>0&&o.status!=='Отменён'?`<br>Долг: <b class="mono">${money(d)}</b>`:''}</div></button>`;
 }
 
@@ -5915,7 +5933,7 @@ function vStats(){
         ost.push([p.a,p.n,fl,USED[p.a]||0,stockOf(p.a)]); });
       await saveXLSX('приложение — отчёт '+today()+'.xlsx',[
         {name:'Заявки',rows:zayavki},{name:'Позиции',rows:pozicii},{name:'Возвраты',rows:vozvrat},
-        {name:'Дебиторка',rows:dolgi},{name:'План и факт',rows:plan},{name:'Остатки',rows:ost}]);
+        {name:'Долги клиентов',rows:dolgi},{name:'План и факт',rows:plan},{name:'Остатки',rows:ost}]);
       toast('Файл сохранён в «Загрузки» на телефоне');
     }catch(e){ toast('Не удалось: '+String(e.message||e).slice(0,60)); }
   });
@@ -7802,11 +7820,11 @@ function vPrice22(){
 }
 
 function ta22ClientStats(){const m=new Map();myOrders().filter(o=>o.status!=='Отменён').forEach(o=>{const k=norm(o.client||'');if(!k)return;let x=m.get(k);if(!x){x={key:k,name:o.client,phone:o.phone||'',orders:0,sales:0,debt:0,last:'',latest:null};m.set(k,x)}x.orders++;x.sales+=MONEY.net(o);x.debt+=MONEY.debt(o);if((o.shipDate||'')>(x.last||'')){x.last=o.shipDate||'';x.latest=o;if(o.phone)x.phone=o.phone}});return [...m.values()].sort((a,b)=>b.sales-a.sales)}
-function vClients22(){const arr=ta22ClientStats(),debt=arr.reduce((s,x)=>s+x.debt,0),sales=arr.reduce((s,x)=>s+x.sales,0),active=arr.filter(x=>x.last&&x.last.slice(0,7)===today().slice(0,7)).length;$('#view').innerHTML=`<div class="ta22-pagehead"><div><h2>Клиенты</h2><p>История заказов, оборот и дебиторка в одном месте</p></div><div class="actions"><button id="clientExport22">Excel</button><button class="pri" id="clientNewOrder22">+ Новый заказ</button></div></div><div class="ta22-statrow"><div class="ta22-stat"><u>Клиентов</u><b>${arr.length}</b><i>в истории продаж</i></div><div class="ta22-stat"><u>Активны в месяце</u><b>${active}</b><i>есть отгрузки</i></div><div class="ta22-stat"><u>Оборот</u><b>${money(sales)}</b><i>₸ по заявкам в Manager</i></div><div class="ta22-stat"><u>Дебиторка</u><b>${money(debt)}</b><i>₸ к получению</i></div></div><div class="ta22-catalogbar"><div class="ta22-search"><input id="clientQ22" placeholder="Поиск клиента или телефона"><button class="clear" hidden>×</button></div></div><div class="ta22-table"><div class="ta22-tr head"><div>Клиент</div><div>Заказов</div><div>Оборот</div><div>Долг</div><div></div></div><div id="clientRows22"></div></div>`;const paint=()=>{const q=norm($('#clientQ22').value),rows=arr.filter(x=>!q||norm(x.name+' '+x.phone).includes(q));$('#clientRows22').innerHTML=rows.map(x=>`<div class="ta22-tr"><div class="name"><b>${esc(x.name)}</b><span>${esc(x.phone||'нет телефона')} · последняя ${ruDate(x.last)||'—'}</span></div><div class="num">${x.orders}</div><div class="num">${money(x.sales)} ₸</div><div class="num ${x.debt?'debt':''}">${money(x.debt)} ₸</div><div><button data-client22="${esc(x.key)}">Открыть</button></div></div>`).join('')||'<div class="empty">Ничего не найдено</div>'};$('#clientQ22').oninput=paint;paint();$('#clientNewOrder22').onclick=()=>go('price');$('#clientExport22').onclick=async()=>{try{await saveXLSX('приложение — клиенты '+today()+'.xlsx',[{name:'Клиенты',rows:[['Клиент','Телефон','Заказов','Оборот','Долг','Последняя отгрузка'],...arr.map(x=>[x.name,x.phone,x.orders,x.sales,x.debt,ruDate(x.last)])]}]);toast('Excel сохранён')}catch(e){toast('Не удалось выгрузить Excel')}}}
+function vClients22(){const arr=ta22ClientStats(),debt=arr.reduce((s,x)=>s+x.debt,0),sales=arr.reduce((s,x)=>s+x.sales,0),active=arr.filter(x=>x.last&&x.last.slice(0,7)===today().slice(0,7)).length;$('#view').innerHTML=`<div class="ta22-pagehead"><div><h2>Клиенты</h2><p>История заказов, оборот и дебиторка в одном месте</p></div><div class="actions"><button id="clientExport22">Excel</button><button class="pri" id="clientNewOrder22">+ Новый заказ</button></div></div><div class="ta22-statrow"><div class="ta22-stat"><u>Клиентов</u><b>${arr.length}</b><i>в истории продаж</i></div><div class="ta22-stat"><u>Активны в месяце</u><b>${active}</b><i>есть отгрузки</i></div><div class="ta22-stat"><u>Оборот</u><b>${money(sales)}</b><i>₸ по заявкам в IsTek Агент</i></div><div class="ta22-stat"><u>Долг клиентов</u><b>${money(debt)}</b><i>₸ к получению</i></div></div><div class="ta22-catalogbar"><div class="ta22-search"><input id="clientQ22" placeholder="Поиск клиента или телефона"><button class="clear" hidden>×</button></div></div><div class="ta22-table"><div class="ta22-tr head"><div>Клиент</div><div>Заказов</div><div>Оборот</div><div>Долг</div><div></div></div><div id="clientRows22"></div></div>`;const paint=()=>{const q=norm($('#clientQ22').value),rows=arr.filter(x=>!q||norm(x.name+' '+x.phone).includes(q));$('#clientRows22').innerHTML=rows.map(x=>`<div class="ta22-tr"><div class="name"><b>${esc(x.name)}</b><span>${esc(x.phone||'нет телефона')} · последняя ${ruDate(x.last)||'—'}</span></div><div class="num">${x.orders}</div><div class="num">${money(x.sales)} ₸</div><div class="num ${x.debt?'debt':''}">${money(x.debt)} ₸</div><div><button data-client22="${esc(x.key)}">Открыть</button></div></div>`).join('')||'<div class="empty">Ничего не найдено</div>'};$('#clientQ22').oninput=paint;paint();$('#clientNewOrder22').onclick=()=>go('price');$('#clientExport22').onclick=async()=>{try{await saveXLSX('приложение — клиенты '+today()+'.xlsx',[{name:'Клиенты',rows:[['Клиент','Телефон','Заказов','Оборот','Долг','Последняя отгрузка'],...arr.map(x=>[x.name,x.phone,x.orders,x.sales,x.debt,ruDate(x.last)])]}]);toast('Excel сохранён')}catch(e){toast('Не удалось выгрузить Excel')}}}
 var ta22OpenClient; /* v29.2.0: мёртвая копия функции убрана, имя сохранено */
 
 function ta22Suppliers(){return Array.isArray(DB.settings.suppliers)?DB.settings.suppliers:[]}
-function vSuppliers22(){const list=ta22Suppliers();$('#view').innerHTML=`<div class="ta22-pagehead"><div><h2>Поставщики</h2><p>Единый справочник для Manager и будущего программа на компьютере</p></div><div class="actions">${isAdmin()?'<button class="pri" id="supplierAdd22">+ Добавить</button>':''}</div></div><div class="ta22-statrow"><div class="ta22-stat"><u>Поставщиков</u><b>${list.length}</b><i>в общей базе</i></div><div class="ta22-stat"><u>Контактов</u><b>${list.filter(x=>x.phone||x.contact).length}</b><i>заполнено</i></div><div class="ta22-stat"><u>Контур</u><b style="font-size:15px">LIVE</b><i>синхронизация</i></div><div class="ta22-stat"><u>Доступ</u><b style="font-size:15px">${isAdmin()?'EDIT':'READ'}</b><i>${isAdmin()?'можно менять':'только просмотр'}</i></div></div><div class="ta22-supplier-grid">${list.length?list.map(s=>`<div class="ta22-supplier"><div class="logo">${esc(ta22Initials(s.name))}</div><h3>${esc(s.name)}</h3><p>${esc([s.contact,s.phone].filter(Boolean).join(' · ')||'Контакты не указаны')}<br>${esc(s.note||'')}</p>${isAdmin()?`<footer><button data-supedit22="${esc(s.id)}">Изменить</button><button class="dz" data-supdel22="${esc(s.id)}">Удалить</button></footer>`:''}</div>`).join(''):'<div class="empty"><b>Справочник пока пуст</b><span>Администратор может добавить поставщиков. Данные будут синхронизированы через общую базу.</span></div>'}</div>`;$('#supplierAdd22')?.addEventListener('click',()=>ta22SupplierEdit());}
+function vSuppliers22(){const list=ta22Suppliers();$('#view').innerHTML=`<div class="ta22-pagehead"><div><h2>Поставщики</h2><p>Единый справочник для IsTek Агент и будущего программа на компьютере</p></div><div class="actions">${isAdmin()?'<button class="pri" id="supplierAdd22">+ Добавить</button>':''}</div></div><div class="ta22-statrow"><div class="ta22-stat"><u>Поставщиков</u><b>${list.length}</b><i>в общей базе</i></div><div class="ta22-stat"><u>Контактов</u><b>${list.filter(x=>x.phone||x.contact).length}</b><i>заполнено</i></div><div class="ta22-stat"><u>Контур</u><b style="font-size:15px">LIVE</b><i>синхронизация</i></div><div class="ta22-stat"><u>Доступ</u><b style="font-size:15px">${isAdmin()?'EDIT':'READ'}</b><i>${isAdmin()?'можно менять':'только просмотр'}</i></div></div><div class="ta22-supplier-grid">${list.length?list.map(s=>`<div class="ta22-supplier"><div class="logo">${esc(ta22Initials(s.name))}</div><h3>${esc(s.name)}</h3><p>${esc([s.contact,s.phone].filter(Boolean).join(' · ')||'Контакты не указаны')}<br>${esc(s.note||'')}</p>${isAdmin()?`<footer><button data-supedit22="${esc(s.id)}">Изменить</button><button class="dz" data-supdel22="${esc(s.id)}">Удалить</button></footer>`:''}</div>`).join(''):'<div class="empty"><b>Справочник пока пуст</b><span>Администратор может добавить поставщиков. Данные будут синхронизированы через общую базу.</span></div>'}</div>`;$('#supplierAdd22')?.addEventListener('click',()=>ta22SupplierEdit());}
 function ta22SupplierEdit(id){const old=ta22Suppliers().find(x=>x.id===id)||{id:'s'+Date.now(),name:'',contact:'',phone:'',note:''};sheet(id?'Поставщик':'Новый поставщик',`<label class="f"><span>Название</span><input class="inp" id="supName22" value="${esc(old.name)}"></label><label class="f"><span>Контакт</span><input class="inp" id="supContact22" value="${esc(old.contact||'')}"></label><label class="f"><span>Телефон</span><input class="inp" id="supPhone22" value="${esc(old.phone||'')}"></label><label class="f"><span>Комментарий</span><textarea class="inp" id="supNote22">${esc(old.note||'')}</textarea></label><button class="btn pri" id="supSave22">Сохранить</button>`,el=>$('#supSave22').onclick=()=>{const name=$('#supName22').value.trim();if(!name){toast('Укажите название');return}const list=ta22Suppliers().slice(),rec={id:old.id,name,contact:$('#supContact22').value.trim(),phone:$('#supPhone22').value.trim(),note:$('#supNote22').value.trim()};const i=list.findIndex(x=>x.id===old.id);if(i>=0)list[i]=rec;else list.unshift(rec);DB.settings.suppliers=list;save();enqueue('settings.set',{settings:DB.settings});closeSheet();go('suppliers');toast('Поставщик сохранён')})}
 function ta22SupplierDelete(id){if(!isAdmin())return;const x=ta22Suppliers().find(v=>v.id===id);if(!x||!confirm('Удалить поставщика «'+x.name+'»?'))return;DB.settings.suppliers=ta22Suppliers().filter(v=>v.id!==id);save();enqueue('settings.set',{settings:DB.settings});render();toast('Поставщик удалён')}
 
@@ -8667,7 +8685,7 @@ ta22ResetUser=async function(id){
 /* Firestore audit instead of /audit Worker endpoint. */
 vAuditPage22=function(){
   if(!isAdmin()){go('price');return}auditEvent23('открыл журнал','система','','');
-  $('#view').innerHTML=`<div class="ta22-pagehead"><div><h2>Журнал действий</h2><p>Кто, что и когда сделал в Manager</p></div><div class="actions"><button id="auditReload22">↻ Обновить</button></div></div><div class="ta22-audit-toolbar"><input class="inp" id="auditQ22" placeholder="Поиск по заявке, клиенту, действию…"><select class="inp" id="auditUser22"><option value="">Все пользователи</option></select><select class="inp" id="auditAct22"><option value="">Все действия</option></select><span></span></div><div id="auditState22" class="empty"><b>Загружаю журнал…</b></div>`;
+  $('#view').innerHTML=`<div class="ta22-pagehead"><div><h2>Журнал действий</h2><p>Кто, что и когда сделал в IsTek Агент</p></div><div class="actions"><button id="auditReload22">↻ Обновить</button></div></div><div class="ta22-audit-toolbar"><input class="inp" id="auditQ22" placeholder="Поиск по заявке, клиенту, действию…"><select class="inp" id="auditUser22"><option value="">Все пользователи</option></select><select class="inp" id="auditAct22"><option value="">Все действия</option></select><span></span></div><div id="auditState22" class="empty"><b>Загружаю журнал…</b></div>`;
   const loadAudit=async()=>{try{const q=await FBDB.collection('audit').orderBy('at','desc').limit(700).get(),log=q.docs.map(d=>d.data());TA22.auditCache=log;const users=[...new Set(log.map(x=>x.name).filter(Boolean))].sort(),acts=[...new Set(log.map(x=>x.act).filter(Boolean))].sort();$('#auditUser22').innerHTML='<option value="">Все пользователи</option>'+users.map(x=>`<option>${esc(x)}</option>`).join('');$('#auditAct22').innerHTML='<option value="">Все действия</option>'+acts.map(x=>`<option>${esc(x)}</option>`).join('');const paint=()=>{const qq=norm($('#auditQ22').value),u=$('#auditUser22').value,a=$('#auditAct22').value,arr=log.filter(x=>(!u||x.name===u)&&(!a||x.act===a)&&(!qq||norm([x.act,x.entity,x.id,x.name,x.info].join(' ')).includes(qq)));$('#auditState22').className='ta22-audit-list';$('#auditState22').innerHTML=arr.map(x=>`<div class="ta22-audit-row"><span class="dot"></span><div><b>${esc(x.act||'')}</b><span>${esc(x.entity||'')}${x.id?' · '+esc(x.id):''}${x.info?' · '+esc(x.info):''}</span></div><em>${esc(x.name||x.appId||'')}</em><time>${new Date(x.at||Date.now()).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</time></div>`).join('')||'<div class="empty">Ничего не найдено</div>'};['auditQ22','auditUser22','auditAct22'].forEach(id=>$('#'+id).addEventListener(id==='auditQ22'?'input':'change',paint));paint()}catch(e){$('#auditState22').className='empty err';$('#auditState22').innerHTML='<b>Не удалось загрузить журнал</b><span>'+esc(taFriendlyErr(e))+'</span>'}};$('#auditReload22').onclick=loadAudit;loadAudit();
 };
 /* Firebase-aware logout. */
@@ -8714,7 +8732,7 @@ async function fbFinishExplicitLogin(user,id,pass,email,bootstrap){
   });
 }
 
-const TA_NEWCODE='Новый код выдаёт руководитель в программе на компьютере: Сотрудники → карточка сотрудника → «Доступ в Manager» → «Новый код».';
+const TA_NEWCODE='Новый код выдаёт руководитель в программе на компьютере: Сотрудники → карточка сотрудника → «Доступ в IsTek Агент» → «Новый код».';
 doLogin=async function(){
   if(FB_LOGIN_ATTEMPTING)return;
   /* 202: the login is typed (#lLogin, layer ta360-login); the list of names is not shown before the sign-in any more */
@@ -9028,8 +9046,8 @@ function vHome252(){
   $('#view').innerHTML=`<div class="ta252-home">
     <section class="ta252-hero"><div class="ta252-eyebrow"><i></i>${esc(String(st.txt||'').toUpperCase())}</div><h2>${esc(first)}, рабочий центр</h2><p>${isAdmin()?'Сводка по системе, продажам и контрольным точкам':'Ваши продажи, заявки и клиенты в одном месте'}</p><div class="ta252-hero-actions"><button class="pri" data-home252="catalog">＋ Открыть каталог</button><button data-home252="search">⌕ Быстрый поиск</button><button data-home252="sync">↻ Синхронизация</button></div></section>
     ${draftN?`<div class="ta252-draft"><div class="ta252-draft-logo">${TA25_TMARK}</div><div><b>Есть незавершенный заказ</b><span>${draftN} ${plural(draftN,'позиция','позиции','позиций')} · ${draftT.units} шт · ${money(draftT.total)} ${CFG.ВАЛЮТА}</span></div><button data-home252="cart">Продолжить</button></div>`:''}
-    <div class="ta252-kpis"><div class="ta252-kpi lime"><u>Продажи сегодня</u><b>${money(m.salesDay)} ₸</b><em>${m.dayOrders.length} ${plural(m.dayOrders.length,'заявка','заявки','заявок')}</em></div><div class="ta252-kpi ok"><u>Оплаты сегодня</u><b>${money(m.paidDay)} ₸</b><em>подтверждено</em></div><div class="ta252-kpi ${m.debt?'hot':''}"><u>Дебиторка</u><b>${money(m.debt)} ₸</b><em>${m.overdue.length?'просрочено '+money(m.overdueSum)+' ₸':'без просрочки'}</em></div><div class="ta252-kpi"><u>Продажи месяца</u><b>${money(m.salesMonth)} ₸</b><em>${m.monthOrders.length} заяв.</em></div></div>
-    <section class="ta252-section"><div class="ta252-section-head"><h3>Быстрые действия</h3><span>${stock.avail} ${plural(stock.avail,'товар','товара','товаров')} доступно</span></div><div class="ta252-quick"><button data-home252="scan"><i>⌁</i><b>Сканер товара</b><span>найти и добавить</span></button><button data-home252="clients"><i>◎</i><b>Клиенты 360°</b><span>история и оборот</span></button><button data-home252="debts" class="${m.overdue.length?'bad':''}"><i>₸</i><b>Дебиторка</b><span>${m.overdue.length?m.overdue.length+' просрочено':'контроль оплат'}</span></button><button data-home252="orders"><i>↗</i><b>Заказы</b><span>открыть историю</span></button><button data-home252="reports"><i>⌗</i><b>Аналитика</b><span>продажи и товары</span></button><button data-home252="search"><i>⌕</i><b>Поиск по системе</b><span>товар · клиент · заказ</span></button></div></section>
+    <div class="ta252-kpis"><div class="ta252-kpi lime"><u>Продажи сегодня</u><b>${money(m.salesDay)} ₸</b><em>${m.dayOrders.length} ${plural(m.dayOrders.length,'заявка','заявки','заявок')}</em></div><div class="ta252-kpi ok"><u>Оплаты сегодня</u><b>${money(m.paidDay)} ₸</b><em>подтверждено</em></div><div class="ta252-kpi ${m.debt?'hot':''}"><u>Долг клиентов</u><b>${money(m.debt)} ₸</b><em>${m.overdue.length?'просрочено '+money(m.overdueSum)+' ₸':'без просрочки'}</em></div><div class="ta252-kpi"><u>Продажи месяца</u><b>${money(m.salesMonth)} ₸</b><em>${m.monthOrders.length} заяв.</em></div></div>
+    <section class="ta252-section"><div class="ta252-section-head"><h3>Быстрые действия</h3><span>${stock.avail} ${plural(stock.avail,'товар','товара','товаров')} доступно</span></div><div class="ta252-quick"><button data-home252="scan"><i>⌁</i><b>Сканер товара</b><span>найти и добавить</span></button><button data-home252="clients"><i>◎</i><b>Клиенты 360°</b><span>история и оборот</span></button><button data-home252="debts" class="${m.overdue.length?'bad':''}"><i>₸</i><b>Долги клиентов</b><span>${m.overdue.length?m.overdue.length+' просрочено':'контроль оплат'}</span></button><button data-home252="orders"><i>↗</i><b>Заказы</b><span>открыть историю</span></button><button data-home252="reports"><i>⌗</i><b>Аналитика</b><span>продажи и товары</span></button><button data-home252="search"><i>⌕</i><b>Поиск по системе</b><span>товар · клиент · заказ</span></button></div></section>
     <section class="ta252-section"><div class="ta252-section-head"><h3>Требуют внимания</h3><button data-home252="attention">Открыть центр →</button></div><div class="ta252-attention"><button data-home252="pay" class="${a.waitingPay?'warn':'ok'}"><b>${a.waitingPay}</b><span>оплаты на проверке</span></button><button data-home252="overdue" class="${a.overdue.length?'hot':'ok'}"><b>${a.overdue.length}</b><span>просроченные долги</span></button><button data-home252="low" class="${a.low?'warn':'ok'}"><b>${a.low}</b><span>низкие остатки</span></button><button data-home252="returns" class="${a.waitingRet?'warn':'ok'}"><b>${a.waitingRet}</b><span>возвраты на проверке</span></button></div></section>
     <section class="ta252-section"><div class="ta252-section-head"><h3>Последние заявки</h3><button data-home252="orders">Все заявки →</button></div><div class="ta252-list">${recent.length?recent.map(o=>{const d=MONEY.debt(o);return `<button class="ta252-order" data-home-order252="${esc(o.id)}"><span class="main"><b>${esc(o.client||'Без клиента')} <i class="badge">${esc(o.status||'Заявка')}</i></b><span>${esc(o.no||o.id)} · ${ruDate(MONEY.shipDay(o)||o.shipDate)||'без даты'} · ${esc(DB.users[o.uid]?.name||'')}</span></span><strong class="${d?'debt':''}">${money(d||MONEY.net(o))} ₸${d?' долг':''}</strong></button>`}).join(''):'<div class="ta252-empty">Заявок пока нет</div>'}</div></section>
     ${last?`<section class="ta252-section"><div class="ta252-section-head"><h3>Быстрый повтор</h3><span>последняя заявка</span></div><button class="ta252-order" data-home-repeat252="${esc(last.id)}"><span class="main"><b>${esc(last.client||'Без клиента')}</b><span>${(last.items||[]).length} ${plural((last.items||[]).length,'позиция','позиции','позиций')} · повтор создаст новый черновик</span></span><strong>Повторить →</strong></button></section>`:''}
@@ -9047,9 +9065,9 @@ function vHome253(){
   const last=m.all.slice().sort((x,y)=>(+y.updatedAt||0)-(+x.updatedAt||0))[0]||null;
   const attentionTotal=(+a.waitingPay||0)+(a.overdue?.length||0)+(+a.low||0)+(+a.waitingRet||0);
   $('#view').innerHTML=`<div class="ta253-home">
-    <section class="ta253-hero"><div class="ta253-hero-top"><div class="ta253-status"><i></i>${esc(String(st.txt||'').toUpperCase())}</div><div class="ta253-hero-mini"><button data-home252="search" aria-label="Поиск">⌕</button><button data-home252="sync" aria-label="Синхронизация">↻</button></div></div><h2>${esc(first)}</h2><p>${isAdmin()?'Контроль продаж, оплат, долгов и остатков в одном экране':'Ваши продажи, заявки, клиенты и контрольные точки'}</p></section>
+    <section class="ta253-hero"><div class="ta253-hero-top"><div class="ta253-status"><i></i>${esc(String(st.txt||'').toUpperCase())}</div><div class="ta253-hero-mini"><button data-home252="search" aria-label="Поиск">⌕</button><button data-home252="sync" aria-label="Синхронизация">↻</button></div></div><h2>${esc(String((ME&&ME.name)||first).trim()||first)}</h2><p>${isAdmin()?'Контроль продаж, оплат, долгов и остатков в одном экране':'Ваши продажи, заявки, клиенты и контрольные точки'}</p></section>
     ${draftN?`<div class="ta253-draft"><div class="mark">${TA25_TMARK}</div><div class="copy"><b>Незавершенный заказ</b><span>${draftN} ${plural(draftN,'позиция','позиции','позиций')} · ${draftT.units} шт · ${money(draftT.total)} ${CFG.ВАЛЮТА}</span></div><button data-home252="cart">Продолжить →</button></div>`:''}
-    <div class="ta253-kpis"><button class="ta253-kpi lime" data-home252="orders"><u>Продажи сегодня</u><b>${money(m.salesDay)} ₸</b><em>${m.dayOrders.length} ${plural(m.dayOrders.length,'заявка','заявки','заявок')}</em></button><button class="ta253-kpi ok" data-home252="pay"><u>Оплаты сегодня</u><b>${money(m.paidDay)} ₸</b><em>подтверждено</em></button><button class="ta253-kpi ${m.overdue.length?'hot':''}" data-home252="debts"><u>Дебиторка</u><b>${money(m.debt)} ₸</b><em>${m.overdue.length?'просрочено '+money(m.overdueSum)+' ₸':'без просрочки'}</em></button><button class="ta253-kpi" data-home252="reports"><u>Продажи месяца</u><b>${money(m.salesMonth)} ₸</b><em>${m.monthOrders.length} ${plural(m.monthOrders.length,'заявка','заявки','заявок')}</em></button></div>
+    <div class="ta253-kpis"><button class="ta253-kpi lime" data-home252="orders"><u>Продажи сегодня</u><b>${money(m.salesDay)} ₸</b><em>${m.dayOrders.length} ${plural(m.dayOrders.length,'заявка','заявки','заявок')}</em></button><button class="ta253-kpi ok" data-home252="pay"><u>Оплаты сегодня</u><b>${money(m.paidDay)} ₸</b><em>подтверждено</em></button><button class="ta253-kpi ${m.overdue.length?'hot':''}" data-home252="debts"><u>Долг клиентов</u><b>${money(m.debt)} ₸</b><em>${m.overdue.length?'просрочено '+money(m.overdueSum)+' ₸':'без просрочки'}</em></button><button class="ta253-kpi" data-home252="reports"><u>Продажи месяца</u><b>${money(m.salesMonth)} ₸</b><em>${m.monthOrders.length} ${plural(m.monthOrders.length,'заявка','заявки','заявок')}</em></button></div>
     <section class="ta253-section"><div class="ta253-section-head"><h3>Центр внимания</h3><button data-home252="attention">Открыть все →</button></div><button class="ta253-attn-summary ${attentionTotal?'bad':''}" data-home252="attention"><strong>${attentionTotal?attentionTotal+' требует внимания':'Все спокойно'}</strong><span>${attentionTotal?'контрольные точки системы':'критичных событий нет'}</span></button><div class="ta253-attention"><button data-home252="pay" class="${a.waitingPay?'warn':'ok'}"><b>${a.waitingPay}</b><span>оплаты на проверке</span></button><button data-home252="overdue" class="${a.overdue.length?'hot':'ok'}"><b>${a.overdue.length}</b><span>просроченные долги</span></button><button data-home252="low" class="${a.low?'warn':'ok'}"><b>${a.low}</b><span>низкие остатки</span></button><button data-home252="returns" class="${a.waitingRet?'warn':'ok'}"><b>${a.waitingRet}</b><span>возвраты на проверке</span></button></div></section>
     <section class="ta253-section"><div class="ta253-section-head"><h3>Быстрые действия</h3><span>${stock.avail} ${plural(stock.avail,'товар','товара','товаров')} доступно</span></div><div class="ta253-quick"><button data-home252="catalog"><i>＋</i><b>Каталог</b><span>товары и остатки</span></button><button data-home252="scan"><i>⌁</i><b>Сканер</b><span>найти товар</span></button><button data-home252="clients"><i>◎</i><b>Клиенты 360°</b><span>история и оборот</span></button><button data-home252="orders"><i>↗</i><b>Заказы</b><span>история продаж</span></button><button data-home252="reports"><i>⌗</i><b>Аналитика</b><span>продажи и товары</span></button><button data-home252="search"><i>⌕</i><b>Поиск</b><span>по всей системе</span></button></div></section>
     <section class="ta253-section"><div class="ta253-section-head"><h3>Последние заявки</h3><button data-home252="orders">Все заявки →</button></div><div class="ta253-list">${recent.length?recent.map(o=>{const d=MONEY.debt(o);return `<button class="ta253-order" data-home-order252="${esc(o.id)}"><span class="main"><b>${esc(o.client||'Без клиента')} <i class="badge">${esc(o.status||'Заявка')}</i></b><span>${esc(o.no||o.id)} · ${ruDate(MONEY.shipDay(o)||o.shipDate)||'без даты'} · ${esc(DB.users[o.uid]?.name||'')}</span></span><strong class="${d?'debt':''}">${money(d||MONEY.net(o))} ₸${d?' долг':''}</strong></button>`}).join(''):'<div class="ta253-empty">Заявок пока нет</div>'}</div></section>
@@ -9083,7 +9101,7 @@ const ta252EnsureChromeBase=ensureChrome22;
 ensureChrome22=function(){ta252EnsureChromeBase();const who=document.querySelector('#top .who');if(who&&!document.getElementById('ta252Search')){const b=document.createElement('button');b.id='ta252Search';b.setAttribute('aria-label','Поиск по системе');b.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${ICON.search}</svg>`;const bell=document.getElementById('ta22Bell');who.insertBefore(b,bell||who.firstChild);b.onclick=ta252GlobalSearch}}
 paintTop=function(){const titles={home:'Главная',price:'Каталог',cart:'Заказ',orders:'Заказы',debts:'Долги',ret:'Возвраты',clients:'Клиенты',reports:'Отчёты',stats:'Отчёты',users:'Команда',audit:'Журнал',admin:'Настройки'};$('#vTitle').textContent=titles[VIEW]||'IsTek';const sub=$('#topSub');if(sub){const st=syncState();sub.textContent=(isAdmin()?'ADMIN CONTROL':'FIELD SALES')+' · '+String(st.txt||'').toUpperCase()}$('#sDate').textContent=(DB.stock.date||'нет').replace(/^С\s+/i,'').replace(/\s*по\s+.*$/i,'');$('#sDot').className='dt'+(Date.now()-(DB.stock.at||0)>6048e5?' old':'');$('#meBtn').textContent=ME?(ME.id==='admin'?'АД':ta22Initials(ME.name)):'—';ensureChrome22();paintSync();document.documentElement.style.setProperty('--toph',$('#top').offsetHeight+'px')};
 function ta252Nav(){const base=[['home','Главная','home'],['price','Каталог','price'],['cart','Заказ','order'],['orders','Заказы','list'],['debts','Долги','debt'],['clients','Клиенты','clients'],['ret','Возвраты','back'],['reports','Отчёты','report']];if(isAdmin())base.push(['users','Пользователи','users'],['audit','Журнал действий','audit'],['admin','Настройки','settings']);return base}
-paintTabs=function(){if(!ME)return;const desktop=window.matchMedia&&window.matchMedia('(min-width:1024px)').matches;if(desktop){const n=ta252Nav();$('#tabs').innerHTML=`<div class="railbrand22"><span class="ta-brand-host">${TA23MARK}</span><div><b>ISTEK</b><span>MANAGER</span></div></div>${n.map(([id,label,ic])=>`<button data-tab="${id}" class="${VIEW===id||(id==='reports'&&VIEW==='stats')?'on':''}"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${ICON[ic]}</svg></span><span>${label}</span></button>`).join('')}<button id="refCollapse"><span><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg></span><span>Свернуть</span></button>`;$('#refCollapse').onclick=()=>{const on=document.documentElement.classList.toggle('rail-collapsed');localStorage.setItem('ta23.rail',on?'1':'0')};return}const ids=[['home','Главная','home'],['price','Каталог','price'],['cart','Заказ','order'],['orders','Заказы','list'],['more','Меню','more']];const sec=['debts','ret','clients','reports','stats','users','audit','admin'].includes(VIEW);$('#tabs').innerHTML=ids.map(([id,label,ic])=>`<button data-tab="${id}" class="${id==='more'?sec:VIEW===id?'on':''}"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">${ICON[ic]}</svg></span><span>${label}</span></button>`).join('')};
+paintTabs=function(){if(!ME)return;const desktop=window.matchMedia&&window.matchMedia('(min-width:1024px)').matches;if(desktop){const n=ta252Nav();$('#tabs').innerHTML=`<div class="railbrand22"><span class="ta-brand-host">${TA23MARK}</span><div><b>ISTEK</b><span>MANAGER</span></div></div>${n.map(([id,label,ic])=>`<button data-tab="${id}" class="${VIEW===id||(id==='reports'&&VIEW==='stats')?'on':''}"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${ICON[ic]}</svg></span><span>${label}</span></button>`).join('')}<button id="refCollapse"><span><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg></span><span>Свернуть</span></button>`;$('#refCollapse').onclick=()=>{const on=document.documentElement.classList.toggle('rail-collapsed');localStorage.setItem('ta23.rail',on?'1':'0')};return}const kk=taKkOn(),ids=[['home','Главная','home'],['price','Каталог','price'],['cart',kk?'Себет':'Заказ','order'],['orders',kk?'Тапсырыс':'Заказы','list'],['more','Меню','more']];/* fix6: in Kazakh «Заказ» and «Заказы» were «Тапсырыс» and «Тапсырыс…» side by side — two different short words */const sec=['debts','ret','clients','reports','stats','users','audit','admin'].includes(VIEW);$('#tabs').innerHTML=ids.map(([id,label,ic])=>`<button data-tab="${id}" class="${id==='more'?sec:VIEW===id?'on':''}"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">${ICON[ic]}</svg></span><span>${label}</span></button>`).join('')};
 
 render=function(){if(!ME)return;if(VIEW==='suppliers')VIEW='home';if(VIEW==='admin'&&!isAdmin())VIEW='home';/* 16.11: настройки — только руководителю */keepFocus(()=>{paintTop();paintTabs();const map={home:vHome252,price:vPriceSafe23,cart:vCart,orders:vOrders,debts:vDebts,ret:vReturns,clients:vClients22,reports:vReports22,stats:vReports22,users:vUsers22,audit:vAuditPage22,admin:vAdmin};(map[VIEW]||vHome252)();paintFab()})};
 
@@ -9244,7 +9262,7 @@ try{
   window.moreNav=function(){
     const att=attentionData().total;
     const card=(id,label,sub,ico,badge='')=>`<button class="ta26-menu-card" data-ta26-menu="${id}"><span class="ta26-menu-ico">${svg(ico)}${badge?`<i class="ta26-menu-badge">${badge}</i>`:''}</span><span class="ta26-menu-copy"><b>${label}</b><span>${sub}</span></span></button>`;
-    const work=[card('debts','Долги','Дебиторка и оплаты','debt'),card('clients','Клиенты','История, оборот, повтор заказа','clients'),card('ret','Возвраты','Проверка и история возвратов','returns',navBadge('ret')||''),card('reports','Отчёты','Продажи, товары и показатели','report')];
+    const work=[card('debts','Долги','Долги клиентов и оплаты','debt'),card('clients','Клиенты','История, оборот, повтор заказа','clients'),card('ret','Возвраты','Проверка и история возвратов','returns',navBadge('ret')||''),card('reports','Отчёты','Продажи, товары и показатели','report')];
     const control=isAdmin()?[card('attention','Центр внимания','События, требующие решения','attention',att||''),card('users','Команда','Сотрудники и доступ','users'),card('audit','Журнал действий','Кто и что изменял','audit'),card('admin','Настройки','Продажи, склад и система','settings')]:[card('attention','Центр внимания','Контрольные точки','attention',att||'')];
     const system=[card('search','Поиск по системе','Товар, клиент или заявка','search'),card('sync','Связь','Обмен данными и очередь','sync'),card('help','Справка','Быстрый старт и возможности','help'),card('about','О системе','Версия, обновление, экосистема','about')];
     sheet('Меню',`<div class="ta26-menu"><div class="ta26-menu-group"><div class="ta26-menu-title">Работа</div><div class="ta26-menu-grid">${work.join('')}</div></div><div class="ta26-menu-group"><div class="ta26-menu-title">Контроль</div><div class="ta26-menu-grid">${control.join('')}</div></div><div class="ta26-menu-group"><div class="ta26-menu-title">Система</div><div class="ta26-menu-grid">${system.join('')}</div></div></div>`,el=>el.querySelectorAll('[data-ta26-menu]').forEach(b=>b.onclick=()=>{const id=b.dataset.ta26Menu;closeSheet();if(id==='sync')return setTimeout(vSync,90);if(id==='search')return setTimeout(ta252GlobalSearch,90);if(id==='attention')return setTimeout(vAttention,90);if(id==='help')return setTimeout(vHelp26,90);if(id==='about')return setTimeout(vAbout,90);setTimeout(()=>go(id),70)}));
@@ -9258,7 +9276,7 @@ try{
       <button class="ta26-menu-card" data-q26="price"><span class="ta26-menu-ico">${svg('catalog')}</span><span class="ta26-menu-copy"><b>Каталог</b><span>Товар и остаток</span></span></button>
       <button class="ta26-menu-card" data-q26="clients"><span class="ta26-menu-ico">${svg('clients')}</span><span class="ta26-menu-copy"><b>Клиенты</b><span>История и оборот</span></span></button>
       <button class="ta26-menu-card" data-q26="attention"><span class="ta26-menu-ico">${svg('attention')}${a.total?`<i class="ta26-menu-badge">${a.total}</i>`:''}</span><span class="ta26-menu-copy"><b>Центр внимания</b><span>Контрольные точки</span></span></button>
-      <button class="ta26-menu-card" data-q26="debts"><span class="ta26-menu-ico">${svg('debt')}</span><span class="ta26-menu-copy"><b>Дебиторка</b><span>Контроль оплат</span></span></button>
+      <button class="ta26-menu-card" data-q26="debts"><span class="ta26-menu-ico">${svg('debt')}</span><span class="ta26-menu-copy"><b>Долги клиентов</b><span>Контроль оплат</span></span></button>
       <button class="ta26-menu-card" data-q26="reports"><span class="ta26-menu-ico">${svg('report')}</span><span class="ta26-menu-copy"><b>Аналитика</b><span>Продажи и товары</span></span></button>
     </div>`,el=>el.querySelectorAll('[data-q26]').forEach(b=>b.onclick=()=>{const id=b.dataset.q26;closeSheet();if(id==='search')return setTimeout(ta252GlobalSearch,80);if(id==='attention')return setTimeout(vAttention,80);setTimeout(()=>go(id),70)}));
   };
@@ -9284,7 +9302,7 @@ try{
       ['Клиенты','Оборот, средний чек, долг, популярные товары, последние заявки и быстрый повтор.'],
       ['Центр внимания','Оплаты на проверке, просроченные долги, низкие остатки и возвраты — все пункты кликабельны.'],
       ['Связь','Единственное место ручной проверки обмена. В обычной работе данные обновляются сами.'],
-      ['программа на компьютере','Основной контур для тяжелой офисной работы. Manager не должен дублировать весь Desktop.']
+      ['программа на компьютере','Основной контур для тяжелой офисной работы. IsTek Агент не должен дублировать весь Desktop.']
     ];
     sheet('Справка',`<div class="ta26-help-intro">приложение ${VERSION} · быстрый компаньон для управления и контроля.</div><div class="ta26-help-grid">${cards.map(([a,b])=>`<div class="ta26-help-card"><b>${a}</b><span>${b}</span></div>`).join('')}</div>`);
   };
@@ -9302,7 +9320,7 @@ try{
       const wrap=document.createElement('div');
       wrap.className='ta26-rail-system';
       wrap.innerHTML=`<button type="button" data-ta2603-system="sync"><span>${svg('sync')}</span><span>Связь</span></button>
-        <button type="button" data-ta2603-system="about"><span>${svg('about')}</span><span>О системе</span><i class="ta26-rail-version">v${esc(VERSION)}</i></button>`;
+        <button type="button" data-ta2603-system="about"><span>${svg('about')}</span><span>О системе</span><i class="ta26-rail-version">Версия ${esc(VERSION)}</i></button>`;
       tabs.insertBefore(wrap,collapse||null);
     }catch(e){console.warn('ta2603 rail',e)}
   };
@@ -9328,8 +9346,8 @@ try{
     const target=t=>/План продаж|Скидка|Отправка оператору/.test(t)?'sales':/Что берут|Остатки/.test(t)?'stock':/Пользователи/.test(t)?'team':/Восстановление/.test(t)?'advanced':'system';
     pairs.forEach(p=>{if(!skip.has(p.title))groups[target(p.title)].push(p)});
     const shell=document.createElement('div');shell.className='ta26-admin';
-    shell.innerHTML=`<div class="ta26-admin-head"><span>Администратор</span><h2>Настройки Manager</h2><p>Здесь только то, что нужно приложению на телефоне. Журнал, «Связь» и «О системе» — в Меню.</p></div><div class="ta26-admin-nav"><button class="on" data-a26="sales">Продажи</button><button data-a26="stock">Склад</button><button data-a26="team">Команда</button><button data-a26="system">Система</button><button data-a26="advanced">Расширенные</button></div>`;
-    const labels={sales:'Продажи',stock:'Склад и ассортимент',team:'Команда и доступ',system:'Данные Manager',advanced:'Расширенные инструменты'};
+    shell.innerHTML=`<div class="ta26-admin-head"><span>Администратор</span><h2>Настройки IsTek Агент</h2><p>Здесь только то, что нужно приложению на телефоне. Журнал, «Связь» и «О системе» — в Меню.</p></div><div class="ta26-admin-nav"><button class="on" data-a26="sales">Продажи</button><button data-a26="stock">Склад</button><button data-a26="team">Команда</button><button data-a26="system">Система</button><button data-a26="advanced">Расширенные</button></div>`;
+    const labels={sales:'Продажи',stock:'Склад и ассортимент',team:'Команда и доступ',system:'Данные IsTek Агент',advanced:'Расширенные инструменты'};
     Object.entries(groups).forEach(([key,arr])=>{const p=document.createElement('section');p.className='ta26-admin-panel'+(key==='sales'?' on':'');p.dataset.a26Panel=key;const h=document.createElement('div');h.className='sec';h.textContent=labels[key];p.appendChild(h);arr.forEach(x=>{p.appendChild(x.sec);p.appendChild(x.card)});shell.appendChild(p)});
     root.innerHTML='';root.appendChild(shell);
     shell.querySelectorAll('[data-a26]').forEach(b=>b.onclick=()=>{shell.querySelectorAll('[data-a26]').forEach(x=>x.classList.toggle('on',x===b));shell.querySelectorAll('[data-a26-panel]').forEach(x=>x.classList.toggle('on',x.dataset.a26Panel===b.dataset.a26))});
@@ -9344,7 +9362,7 @@ try{
     const tops=[...items.values()].sort((a,b)=>b.q-a.q).slice(0,5),recent=orders.slice(0,5),latest=orders[0]||x.latest;
     sheet('Клиент',`<div class="ta26-client"><div class="ta26-client-hero"><div class="eyebrow">Карточка клиента</div><h3>${esc(x.name)}</h3><p>${esc(x.phone||'Телефон не указан')} · последняя отгрузка ${ruDate(x.last)||'—'}</p>${ta29AddrLine(x.name)}</div>
       <div class="ta26-client-kpis"><div><u>Заказов</u><b>${x.orders}</b></div><div><u>Оборот</u><b>${money(x.sales)} ₸</b></div><div><u>Средний чек</u><b>${money(avg)} ₸</b></div><div><u>Долг</u><b class="${x.debt?'debt':''}">${money(x.debt)} ₸</b></div></div>
-      <div class="ta26-client-actions">${latest?'<button class="btn pri" data-c26="repeat">Повторить последний</button>':''}<button class="btn" data-c26="new">Новый заказ</button><button class="btn" data-c26="orders">Все заявки</button><button class="btn" data-c26="debt">Дебиторка</button>${x.phone?'<button class="btn" data-c26="wa">WhatsApp</button>':''}${ta29AddrOf(x.name)?'<button class="btn" data-c26="map">2GIS</button>':''}<button class="btn" data-c26="addr">${ta29AddrOf(x.name)?'Изменить адрес':'Добавить адрес'}</button></div>
+      <div class="ta26-client-actions">${latest?'<button class="btn pri" data-c26="repeat">Повторить последний</button>':''}<button class="btn" data-c26="new">Новый заказ</button><button class="btn" data-c26="orders">Все заявки</button><button class="btn" data-c26="debt">Долг</button>${x.phone?'<button class="btn" data-c26="wa">WhatsApp</button>':''}${ta29AddrOf(x.name)?'<button class="btn" data-c26="map">2GIS</button>':''}<button class="btn" data-c26="addr">${ta29AddrOf(x.name)?'Изменить адрес':'Добавить адрес'}</button></div>
       <div class="ta26-client-section"><h4>Чаще всего покупает</h4><div class="ta26-client-products">${tops.length?tops.map(i=>`<span>${esc(i.n)} · ${i.q} шт</span>`).join(''):'<span>Недостаточно истории</span>'}</div></div>
       <div class="ta26-client-section"><h4>Последние заявки</h4><div class="ta26-client-orders">${recent.length?recent.map(o=>`<button class="ta26-client-order" data-c26-order="${esc(o.id)}"><span><b>${esc(o.no||o.id)} · ${esc(o.status||'Заявка')}</b><span>${ruDate(MONEY.shipDay(o)||o.shipDate)||'без даты'} · ${(o.items||[]).length} поз.</span></span><strong>${money(MONEY.net(o))} ₸</strong></button>`).join(''):'<div class="empty">Заявок нет</div>'}</div></div></div>`,el=>{
       el.querySelectorAll('[data-c26]').forEach(b=>b.onclick=()=>{const a=b.dataset.c26;if(a==='map'){ta29OpenMap(x.name);return}if(a==='addr'){ta29EditAddr(x.name,key);return}if(a==='repeat'&&latest){closeSheet();return setTimeout(()=>repeatOrderToDraft(latest),70)}if(a==='orders'){OF={q:x.name,uid:'',status:'',preset:'all',date:'',month:''};closeSheet();return go('orders')}if(a==='debt'){DCLIENT=x.name;closeSheet();return go('debts')}if(a==='new'){closeSheet();go('cart');return setTimeout(()=>{const c=$('#fClient'),p=$('#fPhone');if(c){c.value=x.name;c.dispatchEvent(new Event('input',{bubbles:true}))}if(p&&x.phone){p.value=x.phone;p.dispatchEvent(new Event('input',{bubbles:true}))}try{persistFormDraft()}catch(_){}},100)}if(a==='wa'){let n=String(x.phone||'').replace(/\D/g,'');if(n.length===11&&n[0]==='8')n='7'+n.slice(1);if(n.length===10)n='7'+n;window.open('https://wa.me/'+n,'_blank')}});
@@ -9674,10 +9692,10 @@ try{
 
   window.vAbout=function(){
     const st=syncState();
-    sheet('О системе',`<div class="ta-brand-about"><div class="mark">${brandHero()}</div><div><h3>приложение</h3><p>Версия ${VERSION}<br>программа на компьютере — основная программа в офисе. Manager — приложение для телефона.</p></div></div>
+    sheet('О системе',`<div class="ta-brand-about"><div class="mark">${brandHero()}</div><div><h3>приложение</h3><p>Версия ${VERSION}<br>программа на компьютере — основная программа в офисе. IsTek Агент — приложение для телефона.</p></div></div>
       <div class="about-grid"><div><u>Правообладатель</u><b>${esc(APP_OWNER)}</b></div><div><u>Сборка</u><b>${esc(APP_BUILD)}</b></div><div><u>Связь</u><b>${esc(st.txt)}</b></div><div><u>Данные</u><b>общая база компании</b></div></div>
       <div class="ta-brand-lockup"><b>TRADE <em>AGENT</em></b><span>MARKETS WORK HARDER FOR YOU</span></div>
-      <div class="integration-card"><span class="ta-brand-host">${brandCompact()}</span><div><b>Единый master-знак</b><i>Outer Geometry V2 + Internal Facets V1 + Steel Glint Motion используются во всех branding-точках Manager.</i></div></div>
+      <div class="integration-card"><span class="ta-brand-host">${brandCompact()}</span><div><b>Единый master-знак</b><i>Outer Geometry V2 + Internal Facets V1 + Steel Glint Motion используются во всех branding-точках IsTek Агент.</i></div></div>
       <div class="legal-card"><b>© 2026 ${esc(APP_OWNER)}. Все права защищены.</b><p>${esc(APP_FAMILY)} — частный программный продукт.</p></div>`,mountBrand);
   };
 
@@ -11228,7 +11246,7 @@ button:active,.btn:active,.ref-cat:active,.ta25-quick-strip button:active,.round
 (function(){
   const m=document.querySelector('meta[name="app-version"]');
   if(m&&m.content!==VERSION) m.content=VERSION;
-  const lv=document.getElementById('loginVersion'); if(lv) lv.textContent='v'+VERSION; const lv2=document.getElementById('loginVersion2'); if(lv2) lv2.textContent='Версия '+VERSION;
+  const lv=document.getElementById('loginVersion'); if(lv) lv.textContent='Версия '+VERSION; /* fix5 (Н-14): one way to show the version — «Версия N», as on the computer */ const lv2=document.getElementById('loginVersion2'); if(lv2) lv2.textContent='Версия '+VERSION;
 })();
 
 /* v29.1.6: помечаем длинный заголовок шапки */
@@ -11896,13 +11914,37 @@ button:active,.btn:active,.ref-cat:active,.ref-tool:active{transform:scale(.972)
 
 <script id="ta292-features">
 /* ================= v29.2.0 — план месяца на главной, адрес клиента и 2GIS ================= */
+
+/* fix5 (Н-6): рабочие дни — как в программе на компьютере (производственный календарь РК, database/207): понедельник–пятница,
+   кроме праздников и переносов выходных. 2026 год — те же дни, что в календаре программы; другой год — праздники по закону
+   «О праздниках в Республике Казахстан» (праздник в выходной — выходной следующий рабочий день). Было «пн–сб»: в пятницу 27.11.2026
+   «3 рабочих дня» вместо 2 (27 и 30 ноября). */
+/* 253: День Конституции с 2026 года — 15 марта (Закон № 306-VIII от 11.06.2026), 30 августа больше не праздник: 31.08.2026 — рабочий
+   день; 2027 год — те же дни, что в календаре программы (database/219) */
+const TA29_OFF={2026:['01-01','01-02','01-07','03-09','03-23','03-24','03-25','05-01','05-07','05-11','05-27','07-06','10-26','12-16'],
+  2027:['01-01','01-04','01-07','03-08','03-15','03-22','03-23','03-24','05-03','05-07','05-10','07-06','10-25','12-16']};
+const TA29_LAW=['01-01','01-02','01-07','03-08','03-15','03-21','03-22','03-23','05-01','05-07','05-09','07-06','10-25','12-16'];
+function ta29WorkDay(x){
+  const z=n=>String(n).padStart(2,'0'), md=z(x.getMonth()+1)+'-'+z(x.getDate()), dow=x.getDay();
+  const off=TA29_OFF[x.getFullYear()];
+  if(off) return dow!==0&&dow!==6&&off.indexOf(md)<0;
+  if(dow===0||dow===6) return false;
+  if(TA29_LAW.indexOf(md)>=0) return false;
+  /* перенос: праздник в субботу или воскресенье — выходной ближайший понедельник (и вторник, если оба дня праздники) */
+  for(let k=1;k<=2;k++){ const p=new Date(x.getFullYear(),x.getMonth(),x.getDate()-k), pd=p.getDay(), pm=z(p.getMonth()+1)+'-'+z(p.getDate());
+    if(dow===1&&(pd===0||pd===6)&&TA29_LAW.indexOf(pm)>=0) return false; }
+  return true;
+}
+
 function ta29PlanData(){
   const m=today().slice(0,7);
-  const list=myOrders().filter(o=>o.status!=='Отменён'&&(o.shipDate||'').slice(0,7)===m);
+  /* fix5 (Н-6): the same orders as «Продажи месяца» on «Главная» (the shipment day, the same rule of a cancelled order) */
+  const gone=o=>typeof window.taOrderGone==='function'?window.taOrderGone(o):(o.status==='Отменён'||o.status==='Списан');
+  const list=myOrders().filter(o=>!gone(o)&&String(MONEY.shipDay(o)||'').slice(0,7)===m);
   const fact=list.reduce((s,o)=>s+MONEY.net(o),0);
   const plan=isAdmin()?MANAGERS.filter(x=>x.role==='manager').reduce((s,x)=>s+targetOf(x.id),0):targetOf(ME.id);
   const d=new Date(), last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate(); let wd=0;
-  for(let day=d.getDate();day<=last;day++){ if(new Date(d.getFullYear(),d.getMonth(),day).getDay()!==0) wd++; } /* рабочие дни: пн–сб */
+  for(let day=d.getDate();day<=last;day++){ if(ta29WorkDay(new Date(d.getFullYear(),d.getMonth(),day))) wd++; }
   return {fact,plan,left:Math.max(0,plan-fact),wd:Math.max(1,wd),pct:plan?Math.round(fact/plan*100):0};
 }
 function ta29PlanCard(){
@@ -11915,7 +11957,13 @@ function ta29PlanCard(){
   } else {
     const done=P.pct>=100, col=done?'ok':(P.pct>=70?'acc':'warn');
     const foot=done?`План выполнен${P.fact>P.plan?' · сверх плана '+money(P.fact-P.plan)+' ₸':''}`
-      :`Осталось ${money(P.left)}&nbsp;₸ · ${P.wd}&nbsp;${plural(P.wd,'рабочий&nbsp;день','рабочих&nbsp;дня','рабочих&nbsp;дней')} · ≈&nbsp;${money(Math.ceil(P.left/P.wd))}&nbsp;₸&nbsp;в&nbsp;день`;
+      :((()=>{ /* 28.11 (П-11): «≈ 125 / 000 ₸» не разрывается; на казахском — фраза целиком */
+        const nb=x=>money(x).replace(/\s/g,'&nbsp;'), per=nb(Math.ceil(P.left/P.wd));
+        let kk=false; try{ kk=localStorage.getItem('ta.lang')==='kk'; }catch(_){}
+        return kk
+          ? `${nb(P.left)}&nbsp;₸ қалды · ${P.wd}&nbsp;жұмыс&nbsp;күні · күніне ≈&nbsp;${per}&nbsp;₸`
+          : `Осталось ${nb(P.left)}&nbsp;₸ · ${P.wd}&nbsp;${plural(P.wd,'рабочий&nbsp;день','рабочих&nbsp;дня','рабочих&nbsp;дней')} · ≈&nbsp;${per}&nbsp;₸&nbsp;в&nbsp;день`;
+      })());
     html=`<section class="ta29-plan ${col}"><div class="ta29-plan-head"><u>План месяца${isAdmin()?' · команда':''}</u><b>${P.pct}%</b></div>
       <div class="ta29-bar"><i style="width:${Math.min(100,P.pct)}%"></i></div>
       <div class="ta29-plan-row"><span>Сделано</span><b>${money(P.fact)} ₸</b></div>
@@ -11927,6 +11975,10 @@ function ta29PlanCard(){
   anchor=anchor||v.querySelector('.ta252-kpis')||v.querySelector('.ta252-hero');
   if(anchor) anchor.insertAdjacentHTML('afterend',html); else v.insertAdjacentHTML('afterbegin',html);
   const b=v.querySelector('[data-ta29="setplan"]'); if(b) b.addEventListener('click',()=>go('admin'));
+  /* fix6: «Последние заявки» right under the figures of the day, above the plan — below it they stood under the bottom bar on the
+     first screen of both phones. Found by the list, not by the heading (in Kazakh the heading is already «Соңғы өтінімдер») */
+  try{ const plan=v.querySelector('.ta29-plan'), list=v.querySelector('.ta253-list'), sec=list&&list.closest('.ta253-section');
+    if(plan&&sec&&plan.parentNode&&(plan.compareDocumentPosition(sec)&4)) plan.parentNode.insertBefore(sec,plan); }catch(_){}
 }
 /* v29.2.0: высота шапки для закреплённой шапки и прилипающего поиска на компьютере */
 (function(){ const top=document.getElementById('top'); if(!top) return; const set=()=>{ const h=top.offsetHeight; if(h>0) document.documentElement.style.setProperty('--ta29-toph',h+'px'); };
@@ -13579,13 +13631,13 @@ html.ta297-on #view .ref-grid:not(.list) .ref-fav .ta298-ico svg{width:16px;heig
 .ta303-meter{display:flex;align-items:center;gap:8px;height:24px}
 .ta303-track{flex:1 1 auto;height:6px;border-radius:99px;background:rgba(210,205,184,.10);overflow:hidden}
 .ta303-fill{display:block;height:100%;border-radius:99px}
-.ta303-fill.ok{background:#AACA7D}
-.ta303-fill.warn{background:#89C5A7}
+.ta303-fill.ok{background:#E8957B}
+.ta303-fill.warn{background:#E8957B}
 .ta303-fill.bad{background:#E8957B}
 /* пустая часть шкалы — бледный шаг того же цвета, что и заливка:
    состояние читается по всей длине полосы, а не только по заливке */
-.ta303-meter.ok .ta303-track{background:rgba(170,202,125,.16)}
-.ta303-meter.warn .ta303-track{background:rgba(137,197,167,.16)}
+.ta303-meter.ok .ta303-track{background:rgba(232,149,123,.16)}
+.ta303-meter.warn .ta303-track{background:rgba(232,149,123,.16)}
 .ta303-meter.bad .ta303-track{background:rgba(232,149,123,.16)}
 .ta303-pct{flex:0 0 auto;font:700 10px var(--mono,ui-monospace,monospace);color:#C6CDCA;white-space:nowrap}
 
@@ -13681,10 +13733,10 @@ html.ta297-on #view .ref-grid:not(.list) .ref-fav .ta298-ico svg{width:16px;heig
 
   function meter(debt,over){
     var pct=debt>0?Math.round(over/debt*100):0;
-    var cls=pct<=20?'ok':(pct<=50?'warn':'bad');
+    var cls=pct<=0?'none':(pct<=20?'ok':(pct<=50?'warn':'bad'));
     /* плитка — это <button>, внутри допустимы только строчные элементы,
        поэтому обёртка шкалы — span, а не div */
-    return '<span class="ta303-meter '+cls+'" role="img" aria-label="Просрочено '+pct+'% дебиторки">'+
+    return '<span class="ta303-meter '+cls+'" role="img" aria-label="Просрочено '+pct+'% долга клиентов">'+
              '<span class="ta303-track"><span class="ta303-fill '+cls+'" style="width:'+Math.max(pct,pct>0?3:0)+'%"></span></span>'+
              '<span class="ta303-pct">'+pct+'%</span></span>';
   }
@@ -14724,7 +14776,7 @@ html body .empty:not([data-ta304-empty]){--ta304-rgb:168 206 90;--ta304-ei:url("
   function openNew(){
     var pays=ALL_PAY.map(function(p){return '<label class="nu-row"><input type="checkbox" class="nuPay" value="'+esc(p)+'" checked><span>'+esc(p)+'</span></label>'}).join('');
     sheet('Новый представитель',
-      '<div class="note g">Представитель будет входить в Manager: ввести свой логин и код. Email не нужен.</div>'
+      '<div class="note g">Представитель будет входить в IsTek Агент: ввести свой логин и код. Email не нужен.</div>'
       +'<label class="f"><span>ФИО</span><input class="inp" id="nuName" maxlength="80" placeholder="Например: Иванова Анна"></label>'
       +'<label class="f"><span>Код доступа (минимум 8 символов: буквы и цифры)</span><input class="inp" id="nuCode" type="password" minlength="8" autocapitalize="characters" autocomplete="new-password"></label>'
       +'<div class="sec" style="margin-top:6px">Способы оплаты в заявке</div>'+pays
@@ -14914,6 +14966,9 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
     return {st:queued(o)?'queued':'sent',td:false};
   }
   function effCancelled(o){ var s=effState(o).st; return s==='cancelled'||s==='cancelSent'; }
+  /* fix5 (Н-6): one rule «заявка не в продажах» for «Главная» and the chips of «Заказы» (the chip counted every «Отменён», the home
+     card kept the order whose cancellation the operator refused — «5 заявок» against «Сегодня 4») */
+  try{ window.taOrderGone=function(o){ return !o||o.status==='Списан'||effCancelled(o); }; }catch(_){}
   /* v32: the path uses the same words as программа на компьютере (Ждёт → Принят → Собирается → Собран → Отгружен).
      Display mapping only: the states come from tdRep.orders[].st exactly as before. k = stage 1..5 of the path. */
   function chipOf(e){
@@ -15349,7 +15404,7 @@ html.trp-rep #top .who #ta22Bell i[hidden]{display:none!important}
       var no=b.querySelector('.h .no'); if(no)no.insertAdjacentElement('afterend',chip); else b.prepend(chip);
       var cl=b.querySelector('.cl'); if(cl&&ch.k>=0)cl.insertAdjacentHTML('afterend',pathHtml(ch));
       var m=b.querySelector('.m');
-      if(m){ m.innerHTML=m.innerHTML.replace(/<br>\s*Долг:\s*<b class="mono">[^<]*<\/b>/,'').replace('· отгрузка ','· желаемая отгрузка ');
+      if(m){ m.innerHTML=m.innerHTML.replace(/<br>\s*Долг:\s*<b class="mono">[^<]*<\/b>/,'').replace('· отгрузка ','· желаемая отгрузка ').replace('· жөнелту ','· қалаған жөнелту күні ');
         var why=whyOf(o,e); if(why)m.insertAdjacentHTML('beforeend','<br><span class="trp-why">'+esc(why)+'</span>'); }
       b.classList.remove('paid','debt','due');
       if(e.st==='shipped')b.classList.add(e.paid?'paid':'due');
@@ -16109,7 +16164,8 @@ html.ta32 #view .ta253-kpi b{color:var(--p-ink)!important}
 html.ta32 #view .ta253-kpi.lime b{color:var(--p-lime)!important}
 html.ta32 #view .ta253-kpi em{color:var(--p-muted)!important;font-style:normal!important}
 html.ta32 #view .ta253-kpi.hot em{color:var(--p-coral-t)!important}
-html.ta32 #view .ta303-fill,html.ta32 #view .ta303-fill.ok{background:var(--p-lime)!important}
+/* 28.11 (третья проверка, П-11): шкала плитки «Долг клиентов» — доля ПРОСРОЧЕННОГО долга: красный цвет просрочки, не зелёный */
+html.ta32 #view .ta303-fill,html.ta32 #view .ta303-fill.ok{background:var(--p-coral)!important}html.ta32 #view .ta303-meter .ta303-track{background:var(--p-coral-bg)!important}html.ta32 #view .ta303-meter.none .ta303-track,.ta303-meter.none .ta303-track{background:rgba(210,205,184,.10)!important}
 html.ta32 #view .ta303-track{background:#283030!important}
 html.ta32 #view .ta303-band svg path{stroke:var(--p-lime)!important}
 html.ta32 #view .ta303-end{background:var(--p-lime)!important;box-shadow:0 0 0 4px rgba(119,180,150,.16)!important}
@@ -19466,7 +19522,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   wrap('fbPullUsersForAdmin',function(base){ return async function(){ var r=await base.apply(this,arguments); fixRoles(); return r; }; });
   function openNewKeeper(){
     sheetApp('Новый кладовщик',
-      '<div class="note g">Кладовщик входит в этот же Manager: вводит свой логин и код. На телефоне он видит только склад — сборку, приём, пересчёт, перемещение и остатки, без цен.</div>'
+      '<div class="note g">Кладовщик входит в этот же IsTek Агент: вводит свой логин и код. На телефоне он видит только склад — сборку, приём, пересчёт, перемещение и остатки, без цен.</div>'
       +'<label class="f"><span>ФИО</span><input class="inp" id="nkName" maxlength="80" placeholder="Например: Сериков Ерлан"></label>'
       +'<label class="f"><span>Код доступа (минимум 8 символов: буквы и цифры)</span><input class="inp" id="nkCode" type="password" minlength="8" autocapitalize="characters" autocomplete="new-password"></label>'
       +'<div class="note" style="margin:6px 0 14px">После создания в программе на компьютере («Торговые и доставка» → «Телефоны» → «Представители») выберите для него сотрудника с ролью «Склад».</div>'
@@ -19641,7 +19697,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     return null;
   }
   async function connect(pick){
-    if(!supported())throw new Error('Этот телефон или браузер не умеет печатать по Bluetooth. Откройте Manager в Chrome на Android или печатайте через RawBT.');
+    if(!supported())throw new Error('Этот телефон или браузер не умеет печатать по Bluetooth. Откройте IsTek Агент в Chrome на Android или печатайте через RawBT.');
     var saved=printer(), device=null;
     if(!pick&&BT.device&&BT.ch&&BT.device.gatt&&BT.device.gatt.connected)return BT.ch;
     if(!pick&&saved&&navigator.bluetooth.getDevices){
@@ -19735,7 +19791,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       +'</svg></div><div class="k">'+E(ME&&ME.name||'')+'</div>'
       +'<h3>'+(driver?'Экран водителя появится в следующем обновлении':'Экран для вашей роли появится в следующем обновлении')+'</h3>'
       +'<p>'+(driver?'Вход работает. Когда выйдет обновление, здесь будет ваш маршрут на день: адреса, звонок клиенту, «Доставлено» и оплата. Пока ничего делать не нужно.'
-                    :'Вход работает, но эта версия Manager ещё не умеет показывать экран для вашей роли. Обратитесь к администратору.')+'</p>'
+                    :'Вход работает, но эта версия IsTek Агент ещё не умеет показывать экран для вашей роли. Обратитесь к администратору.')+'</p>'
       +'<button type="button" class="pri" id="ta341Reload">Проверить обновление</button>'
       +'<button type="button" class="sec" id="ta341Out">Выйти</button></div>';
     document.body.appendChild(el);
@@ -19779,7 +19835,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       var view=document.getElementById('view'); if(!view)return r;
       var head=view.querySelector('.ta22-pagehead');
       if(head&&!document.getElementById('ta341UsersHint')){
-        head.insertAdjacentHTML('afterend','<div class="note g ta341-hint" id="ta341UsersHint"><b>Сотрудников теперь добавляют в программе на компьютере:</b> карточка сотрудника → Доступ в Manager. Там выбирают роль (представитель, кладовщик, водитель), а код входа сразу отправляют в WhatsApp. Кнопки ниже работают как раньше.</div>');
+        head.insertAdjacentHTML('afterend','<div class="note g ta341-hint" id="ta341UsersHint"><b>Сотрудников теперь добавляют в программе на компьютере:</b> карточка сотрудника → Доступ в IsTek Агент. Там выбирают роль (представитель, кладовщик, водитель), а код входа сразу отправляют в WhatsApp. Кнопки ниже работают как раньше.</div>');
       }
       var users=(typeof DB!=='undefined'&&DB&&DB.users)||{};
       view.querySelectorAll('[data-userreset22]').forEach(function(btn){
@@ -20357,9 +20413,9 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     g=document.createElement('div'); g.id='v20rGate'; g.setAttribute('role','dialog'); g.setAttribute('data-kind',kind);
     g.innerHTML='<div class="card"><div class="ic">'+svg('phone')+'</div>'
       +'<h3>'+(denied?'Вход с этого телефона запрещён':checking?'Проверяем телефон…':'Ждём разрешения руководителя')+'</h3>'
-      +'<p>'+(denied?'Руководитель запретил работать в Manager с этого телефона. Если это ошибка — позвоните ему: он может разрешить вход в IsTek.'
+      +'<p>'+(denied?'Руководитель запретил работать в IsTek Агент с этого телефона. Если это ошибка — позвоните ему: он может разрешить вход в IsTek.'
               :checking?'Это новый телефон для вашего входа. Сейчас узнаем, разрешён ли он.'
-              :'Вы вошли с нового телефона. Руководитель получил уведомление в IsTek. Как только он разрешит вход, Manager откроется сам.')+'</p>'
+              :'Вы вошли с нового телефона. Руководитель получил уведомление в IsTek. Как только он разрешит вход, IsTek Агент откроется сам.')+'</p>'
       +(denied?'':'<button type="button" class="pri" id="v20rGateCheck">Проверить</button>')
       +'<button type="button" class="sec" id="v20rGateOut">Выйти</button></div>';
     document.body.appendChild(g);
@@ -20626,7 +20682,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     if(!v){ say('Настройки появятся после обновления IsTek у руководителя.'); return; }
     var linked=v.linked!==false;
     sheet('Уведомления','<div class="v20r-form">'
-      +(linked?'':'<div class="v20r-err">Ваш вход не связан с сотрудником в IsTek — попросите руководителя: карточка сотрудника → «Доступ в Manager».</div>')
+      +(linked?'':'<div class="v20r-err">Ваш вход не связан с сотрудником в IsTek — попросите руководителя: карточка сотрудника → «Доступ в IsTek Агент».</div>')
       +'<label class="v20r-switch"><input type="checkbox" id="v20rQ"'+(p.quietOn?' checked':'')+'>Тихие часы — без звука и сообщений</label>'
       +'<div class="v20r-row"><select id="v20rQf">'+hours(p.quietFrom||'21:00')+'</select><select id="v20rQt">'+hours(p.quietTo||'08:00')+'</select></div>'
       +'<label class="v20r-switch"><input type="checkbox" id="v20rB"'+(p.batchOn?' checked':'')+'>Остальное — пачкой раз в час</label>'
@@ -22608,7 +22664,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       el.innerHTML='<div class="v20n-name">'+h(F.name)+'</div>'
         +'<div class="v20n-state" data-state="'+(ok?'ok':bad?'error':'busy')+'">'+(ok||bad?'':'<span class="v20n-spin"></span>')+'<span>'
         +h(ok||bad?item.msg:st==='queued'?(navigator.onLine===false?(MEMQ.some(function(m){ return m.id===item.id; })
-            ?'Нет сети, а фото не помещаются в память телефона: возврат уйдёт, когда появится интернет, только если Manager останется открытым. Не закрывайте приложение (или уберите фото и отправьте снова).'
+            ?'Нет сети, а фото не помещаются в память телефона: возврат уйдёт, когда появится интернет, только если IsTek Агент останется открытым. Не закрывайте приложение (или уберите фото и отправьте снова).'
             :'Нет сети — возврат уйдёт, когда появится интернет. Можно закрыть окно.'):'Отправляю…'):'Отправлено. Ждём ответ программы — можно закрыть окно, ответ придёт в колокольчик.')+'</span></div>'
         +'<div class="btns'+(bad?' two':'')+'">'+(bad?'<button type="button" class="btn pri" id="v20nAgain">Исправить и отправить</button>':'')
         +'<button type="button" class="btn" id="v20nClose">Закрыть</button></div>';
@@ -22756,7 +22812,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     if(!lines.length){ F.err='Укажите, сколько вернули, хотя бы в одной строке.'; paintForm(); return; }
     if(needPhoto()&&!F.photos.length){ F.err='Нужно фото товара ('+photoNames()+').'; paintForm(); return; }
     var uid=fbUid();
-    if(!fdb()||!uid||!me()){ F.err='Нет связи с базой. Войдите в Manager заново.'; paintForm(); return; }
+    if(!fdb()||!uid||!me()){ F.err='Нет связи с базой. Войдите в IsTek Агент заново.'; paintForm(); return; }
     var opId='rt-'+Date.now().toString(36)+'-'+rnd(10);
     var op={opId:opId,appId:appId(),uid:uid,kind:'return',cid:F.cid,lines:lines,pend:1,createdAt:Date.now()};
     if(F.mode==='inv'&&F.sale)op.sale=String(F.sale);
@@ -24963,7 +25019,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       if(!planOn())return r;
       var sec=[].slice.call(document.querySelectorAll('#view .sec')).find(function(s){ return (s.textContent||'').trim()==='План продаж на месяц'; });
       var card=sec&&sec.nextElementSibling;
-      if(card&&/\bcard\b/.test(card.className||'')){ card.innerHTML='<div class="note g">'+E(NOTE)+' Старые цели Manager не показываются, пока в программе есть планы.</div>'; }
+      if(card&&/\bcard\b/.test(card.className||'')){ card.innerHTML='<div class="note g">'+E(NOTE)+' Старые цели IsTek Агент не показываются, пока в программе есть планы.</div>'; }
     }catch(_){}
     return r;
   }; });
@@ -25018,8 +25074,8 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       var h=s.querySelector('h3'), p=s.querySelector('p');
       if(h&&/следующем обновлении/.test(h.textContent||'')){
         s.setAttribute('data-v20p','1');
-        h.textContent='Для этой роли в Manager нет своего экрана';
-        if(p)p.textContent='Вход работает. Попросите администратора выбрать в программе на компьютере (карточка сотрудника → «Доступ в Manager») роль: торговый, кладовщик или водитель.';
+        h.textContent='Для этой роли в IsTek Агент нет своего экрана';
+        if(p)p.textContent='Вход работает. Попросите администратора выбрать в программе на компьютере (карточка сотрудника → «Доступ в IsTek Агент») роль: торговый, кладовщик или водитель.';
       }
     }catch(_){}
   }
@@ -26589,10 +26645,10 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
       ['dynAddUser','dynAddKeeper'].forEach(function(id){ var b=document.getElementById(id); if(b)b.remove(); });
       view.querySelectorAll('.ta22-pagehead .actions').forEach(function(a){ if(!a.children.length)a.remove(); });
       var hint=document.getElementById('ta341UsersHint');
-      var html='<b>Новых сотрудников добавляют в программе на компьютере:</b> карточка сотрудника → Доступ в Manager (роль и код входа — сразу в WhatsApp).';
+      var html='<b>Новых сотрудников добавляют в программе на компьютере:</b> карточка сотрудника → Доступ в IsTek Агент (роль и код входа — сразу в WhatsApp).';
       if(hint){ if(hint.getAttribute('data-card')!=='1'){ hint.innerHTML=html; hint.setAttribute('data-card','1'); } }
       else { var head=view.querySelector('.ta22-pagehead'); if(head)head.insertAdjacentHTML('afterend','<div class="note g ta341-hint" id="ta341UsersHint" data-card="1">'+html+'</div>'); }
-      view.querySelectorAll('.note').forEach(function(n){ if(/Нажмите «\+ Новый представитель»/.test(n.textContent||''))n.textContent='Представителей пока нет. Добавьте их в программе на компьютере: карточка сотрудника → Доступ в Manager.'; });
+      view.querySelectorAll('.note').forEach(function(n){ if(/Нажмите «\+ Новый представитель»/.test(n.textContent||''))n.textContent='Представителей пока нет. Добавьте их в программе на компьютере: карточка сотрудника → Доступ в IsTek Агент.'; });
     }catch(e){ console.warn('card users',e); }
     return r;
   }; });
@@ -26630,14 +26686,14 @@ html.ta3413{
 }
 
 /* ---------- 1. Нижнее меню: активная вкладка — спокойная подложка, не салатовое пятно ---------- */
-html.ta3413 #app #tabs{background:rgba(17,20,20,.92)!important;border:1px solid var(--c-line2)!important;
+html.ta3413 :is(#app,body) #tabs{background:rgba(17,20,20,.92)!important;border:1px solid var(--c-line2)!important;
   box-shadow:0 18px 40px -22px rgba(0,0,0,.9)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-html.ta3413 #app #tabs button{color:var(--c-mut)!important;font-size:10.5px!important;font-weight:600!important;letter-spacing:0!important}
-html.ta3413 #app #tabs button.on,html.ta3413 #app #tabs button.true{background:rgba(240,237,227,.085)!important;color:var(--c-ink)!important;box-shadow:none!important}
-html.ta3413 #app #tabs button.on *,html.ta3413 #app #tabs button.true *{color:var(--c-ink)!important}
-html.ta3413 #app #tabs button.on svg,html.ta3413 #app #tabs button.true svg{color:var(--c-ink)!important;stroke:currentColor!important}
-html.ta3413 #app #tabs button.on::before{background:var(--c-ink)!important;box-shadow:none!important;opacity:.55;width:18px!important}
-html.ta3413 #app #tabs button.true::before{display:none!important}
+html.ta3413 :is(#app,body) #tabs button{color:var(--c-mut)!important;font-size:10.5px!important;font-weight:600!important;letter-spacing:0!important}
+html.ta3413 :is(#app,body) #tabs button.on,html.ta3413 :is(#app,body) #tabs button.true{background:rgba(240,237,227,.085)!important;color:var(--c-ink)!important;box-shadow:none!important}
+html.ta3413 :is(#app,body) #tabs button.on *,html.ta3413 :is(#app,body) #tabs button.true *{color:var(--c-ink)!important}
+html.ta3413 :is(#app,body) #tabs button.on svg,html.ta3413 :is(#app,body) #tabs button.true svg{color:var(--c-ink)!important;stroke:currentColor!important}
+html.ta3413 :is(#app,body) #tabs button.on::before{background:var(--c-ink)!important;box-shadow:none!important;opacity:.55;width:18px!important}
+html.ta3413 :is(#app,body) #tabs button.true::before{display:none!important}
 
 /* ---------- 2. Шапка: тише, без салатовых обводок ---------- */
 html.ta3413 #app #top{background:rgba(13,16,16,.86)!important;border-bottom:1px solid var(--c-line)!important;box-shadow:none!important}
@@ -28111,6 +28167,23 @@ html body #v20gDrv .v20p-help{border:0!important;background:none!important;paddi
         if(sel.dataset.sig!==sig){ sel.dataset.sig=sig;
           sel.innerHTML='<option value="">'+(onItem?esc(onItem.textContent.trim()):'Ещё')+'</option>'+items.map(function(b){ return '<option value="'+esc(b.dataset.f)+'">'+esc(b.textContent.trim())+'</option>'; }).join('');
           sel.value=''; sel.classList.toggle('on',!!onItem); }
+        /* 29.11 (Н-9): «Ещё» has the size, font, corners and colour of the chips next to it (it was a bigger plain-font box) */
+        /* fix6: still brighter and bolder than its neighbours on both phones — the sheet rules marked «!important» won over the copied
+           values, the chip's gradient was not copied, and the reference could be the chosen («on») chip; now an idle chip is the
+           reference and every value is put with «important» */
+        var ref=qa('button.chip',ch).filter(function(b){ return !b.classList.contains('ta355-hide')&&!b.classList.contains('on')&&b.getAttribute('aria-pressed')!=='true'; })[0];
+        if(ref&&window.getComputedStyle){ var cs=getComputedStyle(ref);
+          ['font-size','font-weight','font-family','letter-spacing','height','border-radius','background-color','border-width','border-style','box-shadow']
+            .forEach(function(k){ sel.style.setProperty(k,cs.getPropertyValue(k),'important'); });
+          if(!sel.dataset.arrow)sel.dataset.arrow=getComputedStyle(sel).backgroundImage||'none';   /* the «▾» of the list stays on top */
+          var chipBg=cs.getPropertyValue('background-image');
+          if(chipBg&&chipBg!=='none'&&sel.dataset.arrow!=='none'){
+            sel.style.setProperty('background-image',sel.dataset.arrow+', '+chipBg,'important');
+            sel.style.setProperty('background-repeat','no-repeat, no-repeat','important');
+            sel.style.setProperty('background-position','right 8px center, 0 0','important');
+            sel.style.setProperty('background-size','14px, 100% 100%','important'); }
+          if(!sel.classList.contains('on')){ sel.style.setProperty('color',cs.getPropertyValue('color'),'important'); sel.style.setProperty('border-color',cs.getPropertyValue('border-top-color'),'important'); }
+          else{ sel.style.removeProperty('color'); sel.style.removeProperty('border-color'); } }
       }else if(sel)sel.remove();
     }
     var cnt=q1('#ocount',v), list=q1('#olist',v), row=cnt&&cnt.parentNode;
@@ -28246,7 +28319,10 @@ html body #view .trp-repeat.tds-rep{flex:0 0 46px!important;width:46px!important
 html body #view #ochips.ta355-chips{gap:4px!important}
 html body #view #ochips.ta355-chips>.chip{flex:0 0 auto!important;white-space:nowrap!important;padding:0 9px!important;font-size:13px!important}
 html body #view #ochips.ta355-chips>.chip i{margin-left:4px!important}
-@media (max-width:380px){html body #view #ochips.ta355-chips>.chip i{display:none!important}}
+/* 29.11 (четвёртая проверка, Н-9): on a 360 px Android the count of «Сегодня» was hidden (the iPhone showed it) — the chips are a
+   little tighter instead, the count stays on every phone; «Ещё» is drawn like its neighbours (ta355-more: font of the chips) */
+@media (max-width:380px){html body #view #ochips.ta355-chips>.chip{padding:0 8px!important;font-size:12.5px!important}html body #view #ochips.ta355-chips>.chip i{margin-left:3px!important}}
+html body #view #ochips select.ta355-more{font-family:inherit!important;font-size:inherit;font-weight:600!important;line-height:normal!important;align-self:stretch!important}
 html body #view #ochips.ta355-chips>select.ta355-more{flex:1 1 auto!important;min-width:56px!important;max-width:96px!important;padding:0 20px 0 10px!important}
 #view .item.tds-item .m{white-space:normal}
 #view .item .trp-why.tds-w,#view .item .tds-w{color:var(--ta355-att,#F09A48)}
@@ -28447,7 +28523,12 @@ html body #view #ochips.ta355-chips>select.ta355-more{flex:1 1 auto!important;mi
       }
     });
     attnHome(v,s);
-    var sec=qa('.ta253-section',v).filter(function(z){ var h=q1('.ta253-section-head h3',z); return h&&/^Последние заявки/.test((h.textContent||'').trim()); })[0];
+    /* fix6: the section is found by its list — in Kazakh its heading is already translated */
+    var list0=q1('.ta253-list',v), sec=list0&&list0.closest('.ta253-section');
+    /* 29.11 (четвёртая проверка, Н-9): «Последние заказы» right under the figures of the day — below the plan of the month they
+       stood under the bottom bar of the phone on the first screen (iPhone) */
+    var plan=sec&&q1('.ta29-plan',v);
+    if(plan&&plan.parentNode&&(plan.compareDocumentPosition(sec)&4))plan.parentNode.insertBefore(sec,plan);
     var list=sec&&q1('.ta253-list',sec);
     if(list&&list.dataset.tds!==sig){
       list.dataset.tds=sig;
@@ -28565,7 +28646,7 @@ html body #view #ochips.ta355-chips>select.ta355-more{flex:1 1 auto!important;mi
   function clients(v){
     if(!sales())return;
     qa('.ta22-stat',v).forEach(function(t){ var u=((q1('u',t)||{}).textContent||'').trim(), i=q1('i',t); if(!i)return;
-      if(u==='Дебиторка'){ var b=q1('b',t), dv=mon(sales().sum.debt); if(b&&b.textContent!==dv)b.textContent=dv; }
+      if(u==='Долг клиентов'){ var b=q1('b',t), dv=mon(sales().sum.debt); if(b&&b.textContent!==dv)b.textContent=dv; }
       var w=u==='Оборот'?'₸ за 12 месяцев':u==='Активны в месяце'?'есть покупки':u==='Клиентов'?'с покупками и закреплённые':''; if(w&&i.textContent!==w)i.textContent=w; });
     var head=q1('.ta22-tr.head',v); if(head){ var c2=head.children[1]; if(c2&&c2.textContent!=='Покупок')c2.textContent='Покупок'; var c3=head.children[2]; if(c3&&c3.textContent!=='Оборот, год')c3.textContent='Оборот, год'; }
   }
@@ -29184,6 +29265,10 @@ html:not(.rail-collapsed) #tabs .railbrand22{grid-template-columns:1fr!important
   #login .tpl-intro .tplh-cut{animation:tplCut 300ms cubic-bezier(.2,.8,.2,1) 160ms both}
   #login .tpl-intro .tplh-word{animation:tplWord 260ms ease-out 320ms both}
   #login .tpl-intro .tplh-sub{animation-delay:400ms}
+  /* 28.11 (третья проверка, П-11): на русском экране входа подпись логотипа по-русски — «УЧЁТ И БИЗНЕС»;
+     казахская «ЕСЕП ЖӘНЕ БИЗНЕС» (кривые утверждённого логотипа) — только на казахском */
+  html:not([lang="kk"]) #login .tplh-sub path{display:none}
+  html[lang="kk"] #login .tplh-sub .tplh-sub-ru{display:none}
   #login .tpl-intro .tpl-bar .kk-lang{animation:tplFade 300ms ease-out 300ms both}
   html.ta32 body #login #ta32Login.tpl-intro .ta32-lg-card{animation:tplCard 420ms cubic-bezier(.2,.8,.2,1) 200ms both!important}
   @keyframes tplIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
@@ -29198,6 +29283,17 @@ html:not(.rail-collapsed) #tabs .railbrand22{grid-template-columns:1fr!important
   html.ta32 body #login #ta32Login #lGo:active{transform:none!important}
 }
 </style>
+<style id="ta-phone-tabs-scrim">
+/* 28.11 (третья проверка, П-11): под плавающей нижней панелью и полоской жестов iPhone больше не видны строки списка
+   («ЗК-261018-SE001 · 18.10.2026 · Сейт…» под панелью) — от нижнего края экрана до середины панели фон страницы. */
+#taTabsScrim{display:none}
+@media (max-width:767.98px){
+  #taTabsScrim{display:block;position:fixed;left:0;right:0;bottom:0;z-index:79;pointer-events:none;
+    height:calc(env(safe-area-inset-bottom) + 42px);
+    background:linear-gradient(180deg,rgba(14,17,17,0) 0,rgba(14,17,17,.96) 38%,#0E1111 60%)}
+  html.ta34-wh #taTabsScrim{display:none}
+}
+</style>
 <script id="ta-phone-login">
 /* IsTek 24.11.2026 — the sign-in screen of a phone: the top bar (the language switch of i18n-kk.js, moved, not copied) and the
    hero logo (the approved plate of docs/brand) are added here; the form, its fields and handlers are untouched. */
@@ -29206,7 +29302,7 @@ html:not(.rail-collapsed) #tabs .railbrand22{grid-template-columns:1fr!important
   var D=document, PHONE=window.matchMedia?window.matchMedia('(max-width:1023.98px)'):{matches:true};
   var RMQ=window.matchMedia?window.matchMedia('(prefers-reduced-motion:reduce)'):{matches:false};
   /* docs/brand/istek-logo-tablichka.svg: cropped to the plate (the shadow is CSS), ids made unique, the bars and the cut named for the entrance */
-  var HERO='<svg class="tplh-svg" viewBox="40 40 534.812 208" role="img" aria-label="IsTek" focusable="false"><defs><linearGradient id="tplh-pl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2E7458"/><stop offset="1" stop-color="#163F2F"/></linearGradient><linearGradient id="tplh-gm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6FBF97"/><stop offset="1" stop-color="#3E8E6C"/></linearGradient></defs><g transform="translate(40 40)"><g class="tplh-plate"><rect x="0" y="0" width="534.81" height="208" rx="40" fill="url(#tplh-pl)"/><rect x="0.75" y="0.75" width="533.31" height="206.5" rx="39.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1.5"/></g><rect x="34" y="34" width="140" height="140" rx="34" fill="#0E1413"/><g transform="translate(34 34) scale(0.4375) translate(-96 -96)"><defs><mask id="tplh-mkp"><rect x="0" y="0" width="512" height="512" fill="white"/><rect class="tplh-bar tplh-b0" x="158" y="180" width="50" height="180" rx="25" fill="black"/><rect class="tplh-bar tplh-b1" x="231" y="150" width="50" height="210" rx="25" fill="black"/><rect class="tplh-bar tplh-b2" x="304" y="130" width="50" height="230" rx="25" fill="black"/><polygon class="tplh-cut" points="100,282 380,130 380,-300 100,-300" fill="white"/></mask></defs><rect x="96" y="96" width="320" height="320" rx="80" fill="url(#tplh-gm)" mask="url(#tplh-mkp)"/></g><g transform="translate(204 120)"><g class="tplh-word"><path d="M5.46 -63.00H25.03V0.0H5.46Z" fill="#FFFFFF"/><path d="M89.96 -16.04Q89.96 -10.24 86.39 -6.34Q82.82 -2.43 76.31 -0.50Q69.80 1.42 60.90 1.42Q51.74 1.42 44.85 -0.75Q37.96 -2.94 34.02 -6.93Q30.07 -10.92 29.82 -16.21H49.39Q49.89 -14.53 51.49 -13.31Q53.08 -12.09 55.69 -11.50Q58.29 -10.92 61.90 -10.92Q66.44 -10.92 68.83 -11.71Q71.23 -12.51 71.23 -14.11Q71.23 -15.54 69.34 -16.21Q67.45 -16.88 63.0 -17.22L54.85 -17.80Q46.03 -18.39 40.82 -20.32Q35.61 -22.26 33.34 -25.45Q31.08 -28.64 31.08 -33.01Q31.08 -38.55 34.60 -42.25Q38.13 -45.94 44.47 -47.75Q50.82 -49.56 59.22 -49.56Q67.53 -49.56 74.00 -47.46Q80.47 -45.36 84.37 -41.58Q88.28 -37.80 88.95 -32.76H69.38Q68.96 -34.27 67.62 -35.40Q66.27 -36.54 64.00 -37.21Q61.74 -37.88 58.38 -37.88Q54.09 -37.88 51.99 -37.08Q49.89 -36.28 49.89 -34.77Q49.89 -33.43 51.19 -32.76Q52.5 -32.08 56.11 -31.83L67.03 -31.08Q75.68 -30.57 80.72 -28.68Q85.76 -26.79 87.86 -23.64Q89.96 -20.49 89.96 -16.04Z" fill="#FFFFFF"/><path d="M114.82 -54.51H134.4V0.0H114.82ZM91.47 -63.00H157.75V-45.61H91.47Z" fill="#B9E6D0"/><path d="M190.09 1.42Q181.18 1.42 174.21 -1.76Q167.24 -4.95 163.21 -10.75Q159.18 -16.54 159.18 -24.27Q159.18 -31.83 163.08 -37.54Q166.99 -43.26 173.75 -46.41Q180.51 -49.56 188.91 -49.56Q197.73 -49.56 203.95 -45.82Q210.16 -42.08 213.48 -35.15Q216.80 -28.22 216.80 -18.81H174.88V-29.82H205.71L200.08 -26.04Q199.75 -29.31 198.40 -31.62Q197.06 -33.93 194.83 -35.11Q192.61 -36.28 189.58 -36.28Q186.14 -36.28 183.70 -34.94Q181.27 -33.6 179.97 -31.20Q178.66 -28.81 178.66 -25.78Q178.66 -21.50 180.55 -18.56Q182.44 -15.62 186.31 -14.07Q190.17 -12.51 195.88 -12.51Q201.09 -12.51 206.22 -13.77Q211.34 -15.03 215.54 -17.47V-5.54Q210.42 -2.18 204.07 -0.37Q197.73 1.42 190.09 1.42Z" fill="#B9E6D0"/><path d="M240.32 -15.12 235.11 -16.88 260.48 -48.13H280.30L238.22 0.0H221.08V-64.68H240.32ZM246.79 -23.35 261.49 -33.18 281.56 0.0H260.06Z" fill="#B9E6D0"/></g></g><g transform="translate(207 160)"><g class="tplh-word tplh-sub"><path d="M1.19 0.0V-11.9H9.86V-9.55H4.25V-7.22H9.35V-5.01H4.25V-2.34H9.86V0.0Z" fill="#B9E6D0"/><path d="M22.33 0.22Q20.70 0.22 19.45 -0.38Q18.20 -0.98 17.51 -2.32Q16.81 -3.67 16.81 -5.88V-6.20Q16.81 -7.76 17.23 -8.89Q17.66 -10.01 18.41 -10.72Q19.17 -11.44 20.17 -11.78Q21.18 -12.12 22.33 -12.12Q23.37 -12.12 24.29 -11.88Q25.21 -11.64 25.89 -11.13Q26.58 -10.62 27.01 -9.80Q27.43 -8.99 27.52 -7.82H24.34Q24.19 -8.75 23.63 -9.16Q23.06 -9.57 22.33 -9.57Q21.65 -9.57 21.12 -9.23Q20.58 -8.90 20.28 -8.17Q19.97 -7.44 19.97 -6.20V-5.84Q19.97 -4.86 20.16 -4.18Q20.34 -3.50 20.68 -3.09Q21.01 -2.68 21.43 -2.50Q21.86 -2.32 22.33 -2.32Q23.20 -2.32 23.72 -2.74Q24.24 -3.16 24.34 -4.08H27.52Q27.45 -2.89 27.03 -2.06Q26.62 -1.24 25.93 -0.73Q25.24 -0.23 24.32 -0.00Q23.40 0.22 22.33 0.22Z" fill="#B9E6D0"/><path d="M34.74 0.0V-11.9H43.41V-9.55H37.80V-7.22H42.90V-5.01H37.80V-2.34H43.41V0.0Z" fill="#B9E6D0"/><path d="M50.79 0.0V-11.9H61.16V0.0H58.10V-9.38H53.85V0.0Z" fill="#B9E6D0"/><path d="M77.74 0.0 81.54 -6.10 77.91 -11.9H81.14L83.94 -7.19H84.64V-11.9H87.70V-7.19H88.4L91.29 -11.9H94.40L90.74 -6.35L94.57 0.0H91.23L88.4 -5.04H87.70V0.0H84.64V-5.04H83.96L80.97 0.0Z" fill="#B9E6D0"/><path d="M106.25 0.22Q105.06 0.22 104.08 -0.12Q103.10 -0.47 102.39 -1.20Q101.69 -1.93 101.32 -3.09Q100.94 -4.25 100.94 -5.88V-6.86H108.80Q108.71 -7.87 108.37 -8.46Q108.03 -9.06 107.50 -9.31Q106.98 -9.57 106.33 -9.57Q105.58 -9.57 105.06 -9.20Q104.55 -8.84 104.36 -7.99H101.20Q101.38 -9.45 102.10 -10.36Q102.81 -11.27 103.90 -11.69Q104.99 -12.12 106.31 -12.12Q107.49 -12.12 108.52 -11.77Q109.56 -11.42 110.34 -10.71Q111.12 -9.99 111.56 -8.87Q111.99 -7.75 111.99 -6.20V-5.86Q111.99 -3.70 111.22 -2.36Q110.44 -1.02 109.14 -0.39Q107.84 0.22 106.25 0.22ZM106.30 -2.32Q107.06 -2.32 107.58 -2.60Q108.10 -2.87 108.40 -3.47Q108.69 -4.08 108.80 -5.04H103.80Q103.90 -4.04 104.22 -3.42Q104.55 -2.80 105.08 -2.56Q105.62 -2.32 106.30 -2.32Z" fill="#B9E6D0"/><path d="M119.39 0.0V-11.9H122.45V-7.37H126.87V-11.9H129.93V0.0H126.87V-4.86H122.45V0.0Z" fill="#B9E6D0"/><path d="M137.75 0.0V-11.9H146.42V-9.55H140.81V-7.22H145.91V-5.01H140.81V-2.34H146.42V0.0Z" fill="#B9E6D0"/><path d="M163.48 0.0V-11.9H172.24V-9.38H166.54V-7.61H168.50Q170.98 -7.61 172.16 -6.60Q173.34 -5.59 173.34 -3.89Q173.34 -2.05 172.16 -1.02Q170.98 0.0 168.50 0.0ZM166.54 -2.51H168.16Q169.26 -2.51 169.72 -2.88Q170.18 -3.24 170.18 -3.89Q170.18 -4.53 169.72 -4.90Q169.26 -5.27 168.16 -5.27H166.54Z" fill="#B9E6D0"/><path d="M180.48 0.0V-11.9H183.54V-4.76L188.22 -11.9H191.02V0.0H187.96V-7.14L183.29 0.0Z" fill="#B9E6D0"/><path d="M203.35 0.22Q201.68 0.22 200.56 -0.27Q199.44 -0.76 198.87 -1.69Q198.30 -2.61 198.25 -3.91H201.41Q201.46 -3.36 201.66 -2.97Q201.85 -2.58 202.26 -2.37Q202.67 -2.15 203.35 -2.15Q204.37 -2.15 204.83 -2.53Q205.29 -2.90 205.29 -3.58Q205.29 -4.02 205.12 -4.36Q204.95 -4.70 204.49 -4.89Q204.03 -5.08 203.18 -5.08H202.09V-7.15H203.18Q204.13 -7.15 204.50 -7.56Q204.86 -7.97 204.86 -8.48Q204.86 -8.99 204.56 -9.36Q204.25 -9.74 203.35 -9.74Q202.81 -9.74 202.45 -9.57Q202.09 -9.41 201.90 -9.08Q201.70 -8.75 201.67 -8.24H198.50Q198.57 -10.21 199.75 -11.16Q200.92 -12.12 203.35 -12.12Q205.78 -12.12 206.90 -11.26Q208.02 -10.40 208.02 -8.73Q208.02 -7.80 207.56 -7.14Q207.09 -6.49 206.22 -6.20Q207.31 -5.95 207.88 -5.22Q208.45 -4.50 208.45 -3.34Q208.45 -2.29 207.90 -1.48Q207.34 -0.68 206.22 -0.22Q205.10 0.22 203.35 0.22Z" fill="#B9E6D0"/><path d="M215.64 0.0V-11.9H218.70V-7.37H223.12V-11.9H226.18V0.0H223.12V-4.86H218.70V0.0Z" fill="#B9E6D0"/><path d="M234.00 0.0V-11.9H242.67V-9.55H237.06V-7.22H242.16V-5.01H237.06V-2.34H242.67V0.0Z" fill="#B9E6D0"/><path d="M255.15 0.22Q253.52 0.22 252.27 -0.38Q251.02 -0.98 250.32 -2.32Q249.62 -3.67 249.62 -5.88V-6.20Q249.62 -7.76 250.05 -8.89Q250.47 -10.01 251.23 -10.72Q251.99 -11.44 252.99 -11.78Q253.99 -12.12 255.15 -12.12Q256.19 -12.12 257.10 -11.88Q258.02 -11.64 258.71 -11.13Q259.40 -10.62 259.82 -9.80Q260.25 -8.99 260.33 -7.82H257.15Q257.00 -8.75 256.44 -9.16Q255.88 -9.57 255.15 -9.57Q254.47 -9.57 253.93 -9.23Q253.40 -8.90 253.09 -8.17Q252.79 -7.44 252.79 -6.20V-5.84Q252.79 -4.86 252.97 -4.18Q253.16 -3.50 253.49 -3.09Q253.82 -2.68 254.25 -2.50Q254.67 -2.32 255.15 -2.32Q256.02 -2.32 256.53 -2.74Q257.05 -3.16 257.15 -4.08H260.33Q260.27 -2.89 259.85 -2.06Q259.43 -1.24 258.74 -0.73Q258.06 -0.23 257.14 -0.00Q256.22 0.22 255.15 0.22Z" fill="#B9E6D0"/></g></g></g></svg>';
+  var HERO='<svg class="tplh-svg" viewBox="40 40 534.812 208" role="img" aria-label="IsTek" focusable="false"><defs><linearGradient id="tplh-pl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2E7458"/><stop offset="1" stop-color="#163F2F"/></linearGradient><linearGradient id="tplh-gm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6FBF97"/><stop offset="1" stop-color="#3E8E6C"/></linearGradient></defs><g transform="translate(40 40)"><g class="tplh-plate"><rect x="0" y="0" width="534.81" height="208" rx="40" fill="url(#tplh-pl)"/><rect x="0.75" y="0.75" width="533.31" height="206.5" rx="39.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1.5"/></g><rect x="34" y="34" width="140" height="140" rx="34" fill="#0E1413"/><g transform="translate(34 34) scale(0.4375) translate(-96 -96)"><defs><mask id="tplh-mkp"><rect x="0" y="0" width="512" height="512" fill="white"/><rect class="tplh-bar tplh-b0" x="158" y="180" width="50" height="180" rx="25" fill="black"/><rect class="tplh-bar tplh-b1" x="231" y="150" width="50" height="210" rx="25" fill="black"/><rect class="tplh-bar tplh-b2" x="304" y="130" width="50" height="230" rx="25" fill="black"/><polygon class="tplh-cut" points="100,282 380,130 380,-300 100,-300" fill="white"/></mask></defs><rect x="96" y="96" width="320" height="320" rx="80" fill="url(#tplh-gm)" mask="url(#tplh-mkp)"/></g><g transform="translate(204 120)"><g class="tplh-word"><path d="M5.46 -63.00H25.03V0.0H5.46Z" fill="#FFFFFF"/><path d="M89.96 -16.04Q89.96 -10.24 86.39 -6.34Q82.82 -2.43 76.31 -0.50Q69.80 1.42 60.90 1.42Q51.74 1.42 44.85 -0.75Q37.96 -2.94 34.02 -6.93Q30.07 -10.92 29.82 -16.21H49.39Q49.89 -14.53 51.49 -13.31Q53.08 -12.09 55.69 -11.50Q58.29 -10.92 61.90 -10.92Q66.44 -10.92 68.83 -11.71Q71.23 -12.51 71.23 -14.11Q71.23 -15.54 69.34 -16.21Q67.45 -16.88 63.0 -17.22L54.85 -17.80Q46.03 -18.39 40.82 -20.32Q35.61 -22.26 33.34 -25.45Q31.08 -28.64 31.08 -33.01Q31.08 -38.55 34.60 -42.25Q38.13 -45.94 44.47 -47.75Q50.82 -49.56 59.22 -49.56Q67.53 -49.56 74.00 -47.46Q80.47 -45.36 84.37 -41.58Q88.28 -37.80 88.95 -32.76H69.38Q68.96 -34.27 67.62 -35.40Q66.27 -36.54 64.00 -37.21Q61.74 -37.88 58.38 -37.88Q54.09 -37.88 51.99 -37.08Q49.89 -36.28 49.89 -34.77Q49.89 -33.43 51.19 -32.76Q52.5 -32.08 56.11 -31.83L67.03 -31.08Q75.68 -30.57 80.72 -28.68Q85.76 -26.79 87.86 -23.64Q89.96 -20.49 89.96 -16.04Z" fill="#FFFFFF"/><path d="M114.82 -54.51H134.4V0.0H114.82ZM91.47 -63.00H157.75V-45.61H91.47Z" fill="#B9E6D0"/><path d="M190.09 1.42Q181.18 1.42 174.21 -1.76Q167.24 -4.95 163.21 -10.75Q159.18 -16.54 159.18 -24.27Q159.18 -31.83 163.08 -37.54Q166.99 -43.26 173.75 -46.41Q180.51 -49.56 188.91 -49.56Q197.73 -49.56 203.95 -45.82Q210.16 -42.08 213.48 -35.15Q216.80 -28.22 216.80 -18.81H174.88V-29.82H205.71L200.08 -26.04Q199.75 -29.31 198.40 -31.62Q197.06 -33.93 194.83 -35.11Q192.61 -36.28 189.58 -36.28Q186.14 -36.28 183.70 -34.94Q181.27 -33.6 179.97 -31.20Q178.66 -28.81 178.66 -25.78Q178.66 -21.50 180.55 -18.56Q182.44 -15.62 186.31 -14.07Q190.17 -12.51 195.88 -12.51Q201.09 -12.51 206.22 -13.77Q211.34 -15.03 215.54 -17.47V-5.54Q210.42 -2.18 204.07 -0.37Q197.73 1.42 190.09 1.42Z" fill="#B9E6D0"/><path d="M240.32 -15.12 235.11 -16.88 260.48 -48.13H280.30L238.22 0.0H221.08V-64.68H240.32ZM246.79 -23.35 261.49 -33.18 281.56 0.0H260.06Z" fill="#B9E6D0"/></g></g><g transform="translate(207 160)"><g class="tplh-word tplh-sub"><text class="tplh-sub-ru" x="1" y="0" textLength="259" lengthAdjust="spacing" font-size="16.5" font-weight="700" fill="#B9E6D0" style="font-family:var(--p-ui)">УЧЁТ И БИЗНЕС</text><path d="M1.19 0.0V-11.9H9.86V-9.55H4.25V-7.22H9.35V-5.01H4.25V-2.34H9.86V0.0Z" fill="#B9E6D0"/><path d="M22.33 0.22Q20.70 0.22 19.45 -0.38Q18.20 -0.98 17.51 -2.32Q16.81 -3.67 16.81 -5.88V-6.20Q16.81 -7.76 17.23 -8.89Q17.66 -10.01 18.41 -10.72Q19.17 -11.44 20.17 -11.78Q21.18 -12.12 22.33 -12.12Q23.37 -12.12 24.29 -11.88Q25.21 -11.64 25.89 -11.13Q26.58 -10.62 27.01 -9.80Q27.43 -8.99 27.52 -7.82H24.34Q24.19 -8.75 23.63 -9.16Q23.06 -9.57 22.33 -9.57Q21.65 -9.57 21.12 -9.23Q20.58 -8.90 20.28 -8.17Q19.97 -7.44 19.97 -6.20V-5.84Q19.97 -4.86 20.16 -4.18Q20.34 -3.50 20.68 -3.09Q21.01 -2.68 21.43 -2.50Q21.86 -2.32 22.33 -2.32Q23.20 -2.32 23.72 -2.74Q24.24 -3.16 24.34 -4.08H27.52Q27.45 -2.89 27.03 -2.06Q26.62 -1.24 25.93 -0.73Q25.24 -0.23 24.32 -0.00Q23.40 0.22 22.33 0.22Z" fill="#B9E6D0"/><path d="M34.74 0.0V-11.9H43.41V-9.55H37.80V-7.22H42.90V-5.01H37.80V-2.34H43.41V0.0Z" fill="#B9E6D0"/><path d="M50.79 0.0V-11.9H61.16V0.0H58.10V-9.38H53.85V0.0Z" fill="#B9E6D0"/><path d="M77.74 0.0 81.54 -6.10 77.91 -11.9H81.14L83.94 -7.19H84.64V-11.9H87.70V-7.19H88.4L91.29 -11.9H94.40L90.74 -6.35L94.57 0.0H91.23L88.4 -5.04H87.70V0.0H84.64V-5.04H83.96L80.97 0.0Z" fill="#B9E6D0"/><path d="M106.25 0.22Q105.06 0.22 104.08 -0.12Q103.10 -0.47 102.39 -1.20Q101.69 -1.93 101.32 -3.09Q100.94 -4.25 100.94 -5.88V-6.86H108.80Q108.71 -7.87 108.37 -8.46Q108.03 -9.06 107.50 -9.31Q106.98 -9.57 106.33 -9.57Q105.58 -9.57 105.06 -9.20Q104.55 -8.84 104.36 -7.99H101.20Q101.38 -9.45 102.10 -10.36Q102.81 -11.27 103.90 -11.69Q104.99 -12.12 106.31 -12.12Q107.49 -12.12 108.52 -11.77Q109.56 -11.42 110.34 -10.71Q111.12 -9.99 111.56 -8.87Q111.99 -7.75 111.99 -6.20V-5.86Q111.99 -3.70 111.22 -2.36Q110.44 -1.02 109.14 -0.39Q107.84 0.22 106.25 0.22ZM106.30 -2.32Q107.06 -2.32 107.58 -2.60Q108.10 -2.87 108.40 -3.47Q108.69 -4.08 108.80 -5.04H103.80Q103.90 -4.04 104.22 -3.42Q104.55 -2.80 105.08 -2.56Q105.62 -2.32 106.30 -2.32Z" fill="#B9E6D0"/><path d="M119.39 0.0V-11.9H122.45V-7.37H126.87V-11.9H129.93V0.0H126.87V-4.86H122.45V0.0Z" fill="#B9E6D0"/><path d="M137.75 0.0V-11.9H146.42V-9.55H140.81V-7.22H145.91V-5.01H140.81V-2.34H146.42V0.0Z" fill="#B9E6D0"/><path d="M163.48 0.0V-11.9H172.24V-9.38H166.54V-7.61H168.50Q170.98 -7.61 172.16 -6.60Q173.34 -5.59 173.34 -3.89Q173.34 -2.05 172.16 -1.02Q170.98 0.0 168.50 0.0ZM166.54 -2.51H168.16Q169.26 -2.51 169.72 -2.88Q170.18 -3.24 170.18 -3.89Q170.18 -4.53 169.72 -4.90Q169.26 -5.27 168.16 -5.27H166.54Z" fill="#B9E6D0"/><path d="M180.48 0.0V-11.9H183.54V-4.76L188.22 -11.9H191.02V0.0H187.96V-7.14L183.29 0.0Z" fill="#B9E6D0"/><path d="M203.35 0.22Q201.68 0.22 200.56 -0.27Q199.44 -0.76 198.87 -1.69Q198.30 -2.61 198.25 -3.91H201.41Q201.46 -3.36 201.66 -2.97Q201.85 -2.58 202.26 -2.37Q202.67 -2.15 203.35 -2.15Q204.37 -2.15 204.83 -2.53Q205.29 -2.90 205.29 -3.58Q205.29 -4.02 205.12 -4.36Q204.95 -4.70 204.49 -4.89Q204.03 -5.08 203.18 -5.08H202.09V-7.15H203.18Q204.13 -7.15 204.50 -7.56Q204.86 -7.97 204.86 -8.48Q204.86 -8.99 204.56 -9.36Q204.25 -9.74 203.35 -9.74Q202.81 -9.74 202.45 -9.57Q202.09 -9.41 201.90 -9.08Q201.70 -8.75 201.67 -8.24H198.50Q198.57 -10.21 199.75 -11.16Q200.92 -12.12 203.35 -12.12Q205.78 -12.12 206.90 -11.26Q208.02 -10.40 208.02 -8.73Q208.02 -7.80 207.56 -7.14Q207.09 -6.49 206.22 -6.20Q207.31 -5.95 207.88 -5.22Q208.45 -4.50 208.45 -3.34Q208.45 -2.29 207.90 -1.48Q207.34 -0.68 206.22 -0.22Q205.10 0.22 203.35 0.22Z" fill="#B9E6D0"/><path d="M215.64 0.0V-11.9H218.70V-7.37H223.12V-11.9H226.18V0.0H223.12V-4.86H218.70V0.0Z" fill="#B9E6D0"/><path d="M234.00 0.0V-11.9H242.67V-9.55H237.06V-7.22H242.16V-5.01H237.06V-2.34H242.67V0.0Z" fill="#B9E6D0"/><path d="M255.15 0.22Q253.52 0.22 252.27 -0.38Q251.02 -0.98 250.32 -2.32Q249.62 -3.67 249.62 -5.88V-6.20Q249.62 -7.76 250.05 -8.89Q250.47 -10.01 251.23 -10.72Q251.99 -11.44 252.99 -11.78Q253.99 -12.12 255.15 -12.12Q256.19 -12.12 257.10 -11.88Q258.02 -11.64 258.71 -11.13Q259.40 -10.62 259.82 -9.80Q260.25 -8.99 260.33 -7.82H257.15Q257.00 -8.75 256.44 -9.16Q255.88 -9.57 255.15 -9.57Q254.47 -9.57 253.93 -9.23Q253.40 -8.90 253.09 -8.17Q252.79 -7.44 252.79 -6.20V-5.84Q252.79 -4.86 252.97 -4.18Q253.16 -3.50 253.49 -3.09Q253.82 -2.68 254.25 -2.50Q254.67 -2.32 255.15 -2.32Q256.02 -2.32 256.53 -2.74Q257.05 -3.16 257.15 -4.08H260.33Q260.27 -2.89 259.85 -2.06Q259.43 -1.24 258.74 -0.73Q258.06 -0.23 257.14 -0.00Q256.22 0.22 255.15 0.22Z" fill="#B9E6D0"/></g></g></g></svg>';
   function byId(x){ return D.getElementById(x); }
   function visible(){ var l=byId('login'); return !!l&&!l.classList.contains('hide')&&!D.body.classList.contains('authenticated'); }
   function build(){
@@ -29243,6 +29339,32 @@ html:not(.rail-collapsed) #tabs .railbrand22{grid-template-columns:1fr!important
   D.addEventListener('click',function(e){ if(e.target&&e.target.closest&&e.target.closest('.kk-lang'))setTimeout(apply,500); },true);
   try{ PHONE.addEventListener('change',apply); }catch(_){}
   window.taPhoneLogin={apply:apply};
+})();
+</script>
+<style id="fix6-phone-style">
+/* fix6 (пятая проверка): the names of the figures on «Главная» go on a second line instead of «Клиенттердің б…» (Kazakh names are
+   longer); the end of every screen scrolls above the bottom bar: the room under the content is the bar itself (measured, with
+   its distance from the edge and the safe area of the phone) plus a gap — and never less than before */
+html body #view .ta253-kpis>.ta253-kpi u{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.25!important}
+@media (max-width:1023px){
+  html body main#view{padding-bottom:max(calc(var(--fix6-bar,0px) + 24px),calc(var(--tabh,64px) + 104px + env(safe-area-inset-bottom,0px)))!important}
+}
+</style>
+<script>
+(function(){
+  /* fix6: the height the bottom bar takes from the bottom of the screen (bar + its gap + safe area) → --fix6-bar */
+  function measure(){
+    try{
+      var t=document.getElementById('tabs'); if(!t)return;
+      var r=t.getBoundingClientRect(), h=r.height>0?Math.max(0,Math.round(window.innerHeight-r.top)):0;
+      document.documentElement.style.setProperty('--fix6-bar',h+'px');
+    }catch(_){}
+  }
+  window.addEventListener('resize',measure,{passive:true});
+  window.addEventListener('load',measure);
+  document.addEventListener('ta:lang',measure);
+  [300,1500,4000].forEach(function(ms){ setTimeout(measure,ms); });
+  try{ var t=document.getElementById('tabs'); if(t&&window.ResizeObserver)new ResizeObserver(measure).observe(t); }catch(_){}
 })();
 </script>
 </body>

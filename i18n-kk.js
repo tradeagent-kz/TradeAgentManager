@@ -24,15 +24,74 @@
     var parts = ru.split(/\{\d\}/);
     var lit = parts.join('');
     if (lit.trim().length < 4) return;
-    var rx = '^' + ru.replace(/[.*+?^$()|[\]\\]/g, '\\$&').replace(/\\?\{(\d)\\?\}/g, '(.+?)') + '$';
-    try { templates.push({ rx: new RegExp(rx), kk: DICT[ru], anchor: parts.sort(function (a, b) { return b.length - a.length; })[0], len: lit.length }); } catch (_) {}
+    // К-1 (пятая проверка), as KkDictionary.cs: the fixed pieces around the values, matched without a regular expression — a
+    // pattern with several «(.+?)» backtracked over a long glued text for seconds; match() gives the same values
+    templates.push({ pieces: parts.slice(), kk: DICT[ru], anchor: parts.sort(function (a, b) { return b.length - a.length; })[0], len: lit.length });
   });
   templates.sort(function (a, b) { return b.len - a.len; });
+  // a template can only fit a text that starts with its first fixed piece and ends with its last one: the templates are kept by the
+  // first two letters of the start (or else the last two of the end); a text tries only its own groups and the open ones, in the
+  // same order as the whole list (the first that fits wins, as before)
+  var byEdge = {}, open = [];
+  templates.forEach(function (tp, i) {
+    var head = tp.pieces[0], tail = tp.pieces[tp.pieces.length - 1];
+    tp.at = i;
+    if (head.length >= 2) (byEdge['^' + head.slice(0, 2)] = byEdge['^' + head.slice(0, 2)] || []).push(tp);
+    else if (tail.length >= 2) (byEdge['$' + tail.slice(-2)] = byEdge['$' + tail.slice(-2)] || []).push(tp);
+    else open.push(tp);
+  });
+  function candidates(t) {
+    var lists = [byEdge['^' + t.slice(0, 2)], byEdge['$' + t.slice(-2)], open].filter(Boolean), out = [], pos = [0, 0, 0], best, k, tp;
+    for (;;) {
+      best = -1;
+      for (k = 0; k < lists.length; k++) if (pos[k] < lists[k].length && (best < 0 || lists[k][pos[k]].at < lists[best][pos[best]].at)) best = k;
+      if (best < 0) return out;
+      tp = lists[best][pos[best]++];
+      out.push(tp);
+    }
+  }
+
+  /* The values of a template in a text (in the order of the text), or null: exactly what the regular expression
+     «^piece0(.+?)piece1(.+?)…$» gave — a value is never empty and never holds a line break (the «.» of a pattern without flags),
+     each value is the shortest that lets the rest fit; a place that cannot finish the match is remembered and never tried twice,
+     so the time is linear in the places tried. */
+  var LINE_BREAK = /[\n\r\u2028\u2029]/, LINE_BREAKS = /[\n\r\u2028\u2029]/g;
+  function match(pieces, t) {
+    var n = pieces.length - 1, head = pieces[0], tail = pieces[n], end = t.length - tail.length;
+    if (n < 1 || end < head.length + n || t.slice(0, head.length) !== head || t.slice(end) !== tail) return null;
+    var stop = null;   // stop[i]: where the first line break at or after i is (no value may cross it)
+    if (LINE_BREAK.test(t)) {
+      stop = []; var next = t.length, i, m, breaks = [];
+      LINE_BREAKS.lastIndex = 0;
+      while ((m = LINE_BREAKS.exec(t))) breaks.push(m.index);
+      for (i = t.length; i >= 0; i--) { if (breaks.length && breaks[breaks.length - 1] === i) next = breaks.pop(); stop[i] = next; }
+    }
+    var starts = [], dead = {};
+    function place(i, from) {
+      starts[i] = from;
+      var limit = stop ? Math.min(end, stop[from]) : end;
+      if (i === n - 1) return limit === end && end - from >= 1;
+      var key = i + ':' + from;
+      if (dead[key]) return false;
+      var piece = pieces[i + 1];
+      for (var at = from + 1; at <= limit; at++) {
+        if (piece.length) { at = t.indexOf(piece, at); if (at < 0 || at > limit || at + piece.length > end) break; }
+        if (place(i + 1, at + piece.length)) return true;
+      }
+      dead[key] = 1;
+      return false;
+    }
+    if (!place(0, head.length)) return null;
+    var values = [];
+    for (var k = 0; k < n; k++) values.push(t.slice(starts[k], k === n - 1 ? end : starts[k + 1] - pieces[k + 1].length));
+    return values;
+  }
 
   function upper(t) { var l = t.replace(/[^A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі]/g, ''); return l.length >= 2 && l === l.toUpperCase(); }
 
   /* 229: a value that is a Russian sentence (an imperative, or two verb forms), not a name — same rule as KkDictionary.cs */
   var RU_WORD = /[а-яё]{5,}/g, IMPER = /^[а-яё]{3,}(ите|йте)$/, VERB = /^[а-яё]{3,}(ет|ёт|ит|ут|ют|ат|ят|ется|ится|ются|ятся|ался|алась|ился|илась|лось|лись|ен|ён|ена|ено|ены|ан|ана|ано|аны)$/;
+  var LINKS = {}; ['в', 'во', 'на', 'по', 'с', 'со', 'до', 'от', 'из', 'за', 'к', 'ко', 'и', 'а', 'о', 'об', 'у', 'для', 'при', 'без', 'или', 'не'].forEach(function (w) { LINKS[w] = 1; });
   function ruPhrase(v, res) {
     var words = String(v).match(RU_WORD) || [], verbs = 0;
     for (var i = 0; i < words.length; i++) {
@@ -41,24 +100,63 @@
       if (IMPER.test(w)) return true;
       if (VERB.test(w) && ++verbs >= 2) return true;
     }
+    // 247: three long small-letter Russian words left as they are outside «quotes» — a phrase, not a name
+    var bare = String(v).replace(/«[^«»]*»|"[^"]*"/g, ' '), rest = bare.match(RU_WORD) || [], left = 0;
+    for (var j = 0; j < rest.length; j++) {
+      var at2 = bare.indexOf(rest[j]), b2 = at2 > 0 ? bare.charAt(at2 - 1) : '';
+      if (/[А-Яа-яЁёA-Za-z]/.test(b2) || String(res).indexOf(rest[j]) < 0) continue;
+      if (++left >= 3) return true;
+    }
     return false;
   }
   function fromTemplate(t, d) {
-    for (var i = 0; i < templates.length; i++) {
-      var tp = templates[i];
+    var list = candidates(t);
+    for (var i = 0; i < list.length; i++) {
+      var tp = list[i];
       if (tp.anchor && t.indexOf(tp.anchor) < 0) continue;
-      var m = tp.rx.exec(t);
-      if (!m) continue;
-      var vals = m.slice(1).map(function (v) { return compute(v, d + 1) || v; });
-      if (ruPhrase(m.slice(1).join(' '), vals.join(' '))) continue;   // 229: a Russian sentence in a broad template — it does not fit
+      var found = match(tp.pieces, t);
+      if (!found) continue;
+      var vals = found.map(function (v) { return LINKS[String(v).trim()] ? v : compute(v, d + 1) || segments(v) || v; });   // 247: «по», «с» — a piece of a phrase
+      if (ruPhrase(found.join(' '), vals.join(' '))) continue;   // 229: a Russian sentence in a broad template — it does not fit
       var r = tp.kk.replace(HOLE, function (h, n) { return vals[+n] != null ? vals[+n] : h; });
       if (r !== t) return r;
     }
     return null;
   }
 
-  function compute(t, d) {
+  /* 254: a month or a day in Russian words («ноябрь 2026», «Ноябрь 2026 г.», «27 ноября», «пятница, 27 ноября», «нояб 26») — a rule,
+     the same as KkDictionary.KkDate (computer) and kk_lookup.py */
+  var KK_M = ['қаңтар', 'ақпан', 'наурыз', 'сәуір', 'мамыр', 'маусым', 'шілде', 'тамыз', 'қыркүйек', 'қазан', 'қараша', 'желтоқсан'];
+  var KK_MS = ['қаң', 'ақп', 'нау', 'сәу', 'мам', 'мау', 'шіл', 'там', 'қыр', 'қаз', 'қар', 'жел'];
+  var RU_M = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
+  var RU_MOF = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  var RU_MS = [['янв'], ['фев', 'февр'], ['мар', 'март'], ['апр'], ['май', 'мая'], ['июн', 'июнь'], ['июл', 'июль'], ['авг'], ['сен', 'сент'], ['окт'], ['ноя', 'нояб'], ['дек']];
+  var RU_W = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье'];
+  var KK_W = ['дүйсенбі', 'сейсенбі', 'сәрсенбі', 'бейсенбі', 'жұма', 'сенбі', 'жексенбі'];
+  var RX_MY = new RegExp('^(' + RU_M.join('|') + ')[ \\u00a0](\\d{4})([ \\u00a0]г\\.?|[ \\u00a0]года)?$', 'i');
+  var RX_DM = new RegExp('^(?:(' + RU_W.join('|') + '),[ \\u00a0])?(\\d{1,2})[ \\u00a0](' + RU_MOF.join('|') + ')(?:[ \\u00a0](\\d{4})(?:[ \\u00a0]г\\.?|[ \\u00a0]года)?)?$', 'i');
+  var RX_MS = /^(янв|февр|фев|март|мар|апр|май|мая|июнь|июн|июль|июл|авг|сент|сен|окт|нояб|ноя|дек)\.?[ \u00a0](\d{2}|\d{4})$/i;
+  function kkDate(t) {
+    if (t.length < 5 || t.length > 64 || !/^[0-9A-Za-zА-Яа-яЁё]/.test(t)) return null;
+    var m, kk = null, n, i, colon = t.indexOf(': ');
+    if (colon > 0) { n = CYR.test(t.slice(colon + 2)) ? null : kkDate(t.slice(0, colon)); return n ? n + t.slice(colon) : null; }   // «ноябрь 2026: 1 250 ₸»
+    if ((m = RX_MY.exec(t))) { n = KK_M[RU_M.indexOf(m[1].toLowerCase())]; kk = m[3] ? m[2] + ' жылғы ' + n : n + ' ' + m[2]; }
+    else if ((m = RX_DM.exec(t))) {
+      kk = (m[4] ? m[4] + ' жылғы ' : '') + m[2] + ' ' + KK_M[RU_MOF.indexOf(m[3].toLowerCase())];
+      if (m[1]) kk = KK_W[RU_W.indexOf(m[1].toLowerCase())] + ', ' + kk;
+    } else if ((m = RX_MS.exec(t))) {
+      n = m[1].toLowerCase();
+      for (i = 0; i < RU_MS.length; i++) if (RU_MS[i].indexOf(n) >= 0) { kk = KK_MS[i] + ' ' + m[2]; break; }
+    }
+    if (!kk) return null;
+    var c = t.charAt(0);
+    return c !== c.toLowerCase() && kk.charAt(0) !== kk.charAt(0).toUpperCase() ? kk.charAt(0).toUpperCase() + kk.slice(1) : kk;
+  }
+
+  function computeCore(t, d) {
     if (Object.prototype.hasOwnProperty.call(DICT, t)) return DICT[t];
+    var dt = kkDate(t);
+    if (dt) return dt;
     if (d > 4 || !t) return null;
     var r, i;
     if (upper(t)) { r = compute(t.charAt(0) + t.slice(1).toLowerCase(), d + 1); if (r) return r.toUpperCase(); }
@@ -66,6 +164,10 @@
     if (c0 !== c0.toUpperCase()) {
       var cap = c0.toUpperCase() + t.slice(1);
       if (Object.prototype.hasOwnProperty.call(DICT, cap)) { r = DICT[cap]; return r.charAt(0).toLowerCase() + r.slice(1); }
+    } else if (c0 !== c0.toLowerCase()) {
+      // fix6: «НА СВЯЗИ» (a status written in small letters and shown in capitals) — the dictionary has «на связи»
+      var low = c0.toLowerCase() + t.slice(1);
+      if (Object.prototype.hasOwnProperty.call(DICT, low)) { r = DICT[low]; return r.charAt(0).toUpperCase() + r.slice(1); }
     }
     var core = t.trim();
     if (core !== t) {
@@ -85,7 +187,7 @@
       for (k = 0; k < raw.length; k += 3) {
         sentence = raw[k] + (raw[k + 1] || '');
         tail = raw[k + 2] || '';
-        r = sentence ? compute(sentence, d <= 1 ? 1 : d + 1) : null;
+        r = sentence ? compute(sentence, d <= 1 ? 1 : d + 1) || segments(sentence) : null;
         if (r) any = true;
         out += (r || sentence) + tail;
       }
@@ -99,11 +201,56 @@
     return d <= 1 ? fromTemplate(t, d) : null;
   }
 
+  // 247: a line glued from parts with « · » (a whole text, a sentence, a template value): when it has no translation, each part on
+  // its own, after every other way failed (as on the computer). 251: also « — », « → » and «, » (not inside brackets or quotes);
+  // a part is tried whole first, then by the next joint
+  var JOINTS = [' · ', ' — ', ' → ', ', '];
+  function count(s, c) { return s.split(c).length - 1; }
+  function balanced(p) { return count(p, '(') === count(p, ')') && count(p, '«') === count(p, '»') && count(p, '"') % 2 === 0; }
+  function segmentsCore(t, from) {
+    for (var k = from || 0; k < JOINTS.length; k++) {
+      var joint = JOINTS[k];
+      if (t.indexOf(joint) < 0 || (k > 0 && t.indexOf('<') >= 0)) continue;
+      var parts = t.split(joint), any = false, j, r2;
+      if (k === JOINTS.length - 1 && !parts.every(balanced)) continue;
+      for (j = 0; j < parts.length; j++) if (parts[j] && /[А-Яа-яЁё]/.test(parts[j]) && (r2 = compute(parts[j], 0) || segments(parts[j], k + 1))) { parts[j] = r2; any = true; }
+      return any ? parts.join(joint) : null;
+    }
+    return null;
+  }
+
+  // К-1 (пятая проверка), as KkDictionary.cs: every translation is bounded. The ways above call each other on the parts of a text
+  // (a sentence → a template value → the parts between « · », « — », «, » → a template again …) and meet the same part many times:
+  // within one translation each part is worked out once (the same text at the same depth gives the same answer, so the result is
+  // the same as before), and the work has a ceiling — a text that needs more than STEP_LIMIT steps or TIME_LIMIT_MS stays as it is
+  // (Russian): the screen never waits for the dictionary.
+  var STEP_LIMIT = 40000, TIME_LIMIT_MS = 250, LIMIT = {};
+  var memo = null, steps = 0, deadline = 0, lastSteps = 0;
+  function step() {
+    if (++steps > STEP_LIMIT || ((steps & 255) === 0 && Date.now() > deadline)) throw LIMIT;
+  }
+  function remembered(key, work) {
+    if (!memo) return work();
+    if (memo.has(key)) return memo.get(key);
+    step();
+    var r = work();
+    memo.set(key, r);
+    return r;
+  }
+  function compute(t, d) { return remembered(d + '|' + t, function () { return computeCore(t, d); }); }
+  // segments: the key holds −1 − the first joint tried (compute uses 0 and up)
+  function segments(t, from) { from = from || 0; return remembered((-1 - from) + '|' + t, function () { return segmentsCore(t, from); }); }
+  function bounded(t) {
+    if (memo) return compute(t, 0) || segments(t);   // already inside a translation (never expected): the same limits go on
+    memo = new Map(); steps = 0; deadline = Date.now() + TIME_LIMIT_MS;
+    try { return compute(t, 0) || segments(t); } catch (_) { return null; }   // over the limit or an error: the text stays as it is
+    finally { lastSteps = steps; memo = null; }
+  }
+
   function tr(t) {
     if (!t || !CYR.test(t)) return null;
     if (cache.has(t)) return cache.get(t);
-    var r = null;
-    try { r = compute(t, 0); } catch (_) {}
+    var r = bounded(t);
     if (cache.size > 20000) cache.clear();
     cache.set(t, r);
     return r;
@@ -274,6 +421,10 @@
   }
 
   window.TA_LANG = { get: function () { return lang; }, set: setLang, t: function (s) { return lang === 'kk' ? (tr(s) || s) : s; } };
+  // checks (tools/i18n/kk_js_check.js): a translation worked out anew (not from the cache) with the same limits, the steps it took,
+  // the template matcher
+  window.TA_KK_ENGINE = { uncached: function (s) { return !s || !CYR.test(s) ? null : bounded(s); }, lastSteps: function () { return lastSteps; },
+    stepLimit: STEP_LIMIT, match: match };
 
   function start() {
     document.documentElement.lang = lang === 'kk' ? 'kk' : 'ru';
