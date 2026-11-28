@@ -6049,7 +6049,7 @@ function vAdmin(){
     <div class="card pad">
       <div class="note g">Сейчас <b>${Math.round(discOf()*100)}%</b>. Применяется ко всем позициям
         для представителей, которые не могут менять цену. Если ассортимент и цены приходят
-        из программы на компьютере, цена Desktop окончательная и скидка Manager не применяется.</div>
+        из программы на компьютере, её цена окончательная и скидка IsTek Агент не применяется.</div>
       <label class="f" style="margin:0"><span>Размер скидки, %</span>
         <input class="inp mono" id="discPct" inputmode="numeric" value="${Math.round(discOf()*100)}"></label>
       <button class="btn pri" id="discSave" style="margin-top:10px">Применить ко всему прайсу</button>
@@ -18450,7 +18450,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
     var r=''; try{ var a=new Uint8Array(8); crypto.getRandomValues(a); for(var i=0;i<a.length;i++)r+=a[i].toString(16).padStart(2,'0'); }catch(_){ r=Math.random().toString(16).slice(2,18); }
     return 'w'+Date.now().toString(36)+r;
   }
-  function device(){ var u=navigator.userAgent||''; var m=/(iPhone|iPad|Android[^;)]*)/.exec(u); return ((m?m[1]:'')+' · Manager '+VER).trim().slice(0,120); }
+  function device(){ var u=navigator.userAgent||''; var m=/(iPhone|iPad|Android[^;)]*)/.exec(u); return ((m?m[1]:'')+' · IsTek Агент '+VER).trim().slice(0,120); }
   var EXTRA=['reason','from','to','docType'];
   function enqueue(kind,docId,lines,extra){
     var op={opId:opId(),appId:appId(),uid:fbUid(),kind:kind,docId:docId||'',lines:lines||[],createdAt:Date.now(),device:device(),state:'queued',tries:0};
@@ -23599,7 +23599,7 @@ html.ta34-wh #app,html.ta34-wh #sheet,html.ta34-wh #toast,html.ta34-wh #docView,
   function qOps(){ if(!OQ.ops||OQ.app!==appId()){ OQ.ops=(lsGet(qKey(),[])||[]).filter(function(o){ return o&&o.appId===appId(); }); OQ.app=appId(); } return OQ.ops; }
   function qSave(){ lsSet(qKey(),qOps().filter(function(o){ return o.state!=='done'||Date.now()-num(o.doneAt)<3*864e5; })); }
   function opId(){ var r=''; try{ var a=new Uint8Array(8); crypto.getRandomValues(a); for(var i=0;i<a.length;i++)r+=a[i].toString(16).padStart(2,'0'); }catch(_){ r=Math.random().toString(16).slice(2,18); } return 'x'+Date.now().toString(36)+r; }
-  function device(){ var u=navigator.userAgent||''; var m=/(iPhone|iPad|Android[^;)]*)/.exec(u); return ((m?m[1]:'')+' · Manager v20w').trim().slice(0,120); }
+  function device(){ var u=navigator.userAgent||''; var m=/(iPhone|iPad|Android[^;)]*)/.exec(u); return ((m?m[1]:'')+' · IsTek Агент v20w').trim().slice(0,120); }
   var ON={};   /* op kind → result callback */
   function enqueue(kind,docId,lines,meta){
     var op={opId:opId(),appId:appId(),uid:fbUid(),kind:kind,docId:docId||'',lines:lines||[],createdAt:Date.now(),device:device(),state:'queued',meta:meta||{}};
